@@ -410,6 +410,187 @@ overflow: hidden;
 }
 
 /* =========================================================
+PHASE 01 DESKTOP LAYOUT
+========================================================= */
+
+.mijdo-app-shell {
+display: flex;
+flex-direction: column;
+
+width: 100%;
+height: 100vh;
+min-height: 320px;
+}
+
+.mijdo-top-bar {
+flex: 0 0 auto;
+}
+
+.mijdo-desktop {
+flex: 1 1 auto;
+height: auto;
+min-height: 0;
+}
+
+.mijdo-status-bar {
+display: flex;
+align-items: center;
+justify-content: space-between;
+
+flex: 0 0 auto;
+min-height: 28px;
+padding: 2px 8px;
+
+background: var(--mijdo-light);
+color: var(--mijdo-black);
+
+border-top: 1px solid var(--mijdo-white);
+}
+
+.mijdo-status-item {
+min-width: 112px;
+}
+
+.mijdo-desktop-icon {
+position: absolute;
+top: 18px;
+left: 18px;
+
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 4px;
+
+width: 76px;
+padding: 4px;
+
+background: transparent;
+color: var(--mijdo-white);
+
+border: 0;
+cursor: pointer;
+font-size: 12px;
+text-align: center;
+}
+
+.mijdo-desktop-icon:hover,
+.mijdo-desktop-icon:focus-visible {
+background: var(--mijdo-navy);
+}
+
+.mijdo-desktop-icon-art {
+display: grid;
+place-items: center;
+
+width: 42px;
+height: 32px;
+
+background: var(--mijdo-light);
+color: var(--mijdo-black);
+
+border-top: 2px solid var(--mijdo-white);
+border-left: 2px solid var(--mijdo-white);
+border-right: 2px solid var(--mijdo-dark);
+border-bottom: 2px solid var(--mijdo-dark);
+
+font-size: 11px;
+font-weight: 700;
+}
+
+.mijdo-profile-window {
+position: absolute;
+z-index: 2;
+
+display: flex;
+flex-direction: column;
+
+width: min(560px, calc(100% - 24px));
+height: min(520px, calc(100% - 36px));
+overflow: hidden;
+}
+
+.mijdo-profile-window.is-dragging {
+user-select: none;
+}
+
+.mijdo-window-title {
+flex: 1 1 auto;
+overflow: hidden;
+
+white-space: nowrap;
+text-overflow: ellipsis;
+}
+
+.mijdo-titlebar {
+cursor: move;
+touch-action: none;
+}
+
+.mijdo-window-control {
+flex: 0 0 auto;
+cursor: pointer;
+font-weight: 700;
+}
+
+.mijdo-profile-content {
+flex: 1 1 auto;
+overflow: auto;
+
+padding: 18px;
+}
+
+.mijdo-profile-heading {
+padding-bottom: 14px;
+border-bottom: 1px solid var(--mijdo-gray);
+}
+
+.mijdo-profile-heading h1,
+.mijdo-profile-heading p,
+.mijdo-profile-section h2,
+.mijdo-profile-section p {
+margin: 0;
+}
+
+.mijdo-profile-heading h1 {
+font-size: 22px;
+line-height: 1.1;
+}
+
+.mijdo-profile-heading p {
+margin-top: 5px;
+}
+
+.mijdo-profile-section {
+padding: 14px 0;
+border-bottom: 1px solid var(--mijdo-gray);
+}
+
+.mijdo-profile-section:last-child {
+border-bottom: 0;
+}
+
+.mijdo-profile-section h2 {
+margin-bottom: 7px;
+
+color: var(--mijdo-navy);
+font-size: 14px;
+}
+
+.mijdo-profile-section p + p {
+margin-top: 5px;
+}
+
+.mijdo-empty-value {
+color: var(--mijdo-dark);
+font-style: italic;
+}
+
+.mijdo-profile-list {
+margin: 0;
+padding-left: 22px;
+}
+
+/* =========================================================
 CRT EFFECT
 ========================================================= */
 
@@ -493,5 +674,18 @@ min-height: 24px;
 
 .mijdo-command-bar {
 min-height: 30px;
+}
+
+.mijdo-command-item {
+padding: 4px 5px;
+}
+
+.mijdo-profile-window {
+width: calc(100% - 16px);
+height: calc(100% - 24px);
+}
+
+.mijdo-profile-content {
+padding: 14px;
 }
 }
