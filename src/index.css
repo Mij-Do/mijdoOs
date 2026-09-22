@@ -1,0 +1,497 @@
+@import "tailwindcss";
+
+/* =========================================================
+MIJDOOS DESIGN TOKENS
+========================================================= */
+
+@theme {
+--color-mijdo-black: #000000;
+--color-mijdo-white: #ffffff;
+
+--color-mijdo-light: #c0c0c0;
+--color-mijdo-gray: #808080;
+--color-mijdo-dark: #404040;
+
+--color-mijdo-navy: #000080;
+--color-mijdo-teal: #008080;
+
+--font-mijdo:
+"IBM Plex Mono",
+"Courier New",
+Courier,
+monospace;
+}
+
+/* =========================================================
+ROOT VARIABLES
+========================================================= */
+
+:root {
+--mijdo-black: #000000;
+--mijdo-white: #ffffff;
+
+--mijdo-light: #c0c0c0;
+--mijdo-gray: #808080;
+--mijdo-dark: #404040;
+
+--mijdo-navy: #000080;
+--mijdo-teal: #008080;
+
+--mijdo-font:
+"IBM Plex Mono",
+"Courier New",
+Courier,
+monospace;
+
+--mijdo-border-width: 1px;
+--mijdo-window-border: 2px;
+}
+
+/* =========================================================
+BASE
+========================================================= */
+
+html,
+body,
+#root {
+width: 100%;
+min-height: 100%;
+margin: 0;
+}
+
+html {
+background: var(--mijdo-teal);
+}
+
+body {
+min-height: 100vh;
+
+background: var(--mijdo-teal);
+color: var(--mijdo-black);
+
+font-family: var(--mijdo-font);
+font-size: 14px;
+line-height: 1.35;
+
+overflow: hidden;
+
+-webkit-font-smoothing: none;
+-moz-osx-font-smoothing: grayscale;
+
+text-rendering: geometricPrecision;
+}
+
+/* =========================================================
+RESET
+========================================================= */
+
+*,
+*::before,
+*::after {
+box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+font: inherit;
+}
+
+button {
+color: inherit;
+}
+
+button,
+a {
+-webkit-tap-highlight-color: transparent;
+}
+
+img {
+display: block;
+max-width: 100%;
+}
+
+/* =========================================================
+SELECTION
+========================================================= */
+
+::selection {
+background: var(--mijdo-navy);
+color: var(--mijdo-white);
+}
+
+/* =========================================================
+SCROLLBARS
+========================================================= */
+
+* {
+  scrollbar-width: auto;
+  scrollbar-color:
+  var(--mijdo-gray)
+  var(--mijdo-light);
+  }
+
+*::-webkit-scrollbar {
+width: 16px;
+height: 16px;
+}
+
+*::-webkit-scrollbar-track {
+background: var(--mijdo-light);
+}
+
+*::-webkit-scrollbar-thumb {
+background: var(--mijdo-gray);
+
+border-top: 2px solid var(--mijdo-white);
+border-left: 2px solid var(--mijdo-white);
+
+border-right: 2px solid var(--mijdo-dark);
+border-bottom: 2px solid var(--mijdo-dark);
+}
+
+*::-webkit-scrollbar-button {
+width: 16px;
+height: 16px;
+
+background: var(--mijdo-light);
+
+border-top: 2px solid var(--mijdo-white);
+border-left: 2px solid var(--mijdo-white);
+
+border-right: 2px solid var(--mijdo-dark);
+border-bottom: 2px solid var(--mijdo-dark);
+}
+
+/* =========================================================
+MIJDOOS BEVELS
+========================================================= */
+
+/*
+Raised surface:
+white highlight → gray body → dark shadow
+*/
+
+.mijdo-raised {
+border-top: 2px solid var(--mijdo-white);
+border-left: 2px solid var(--mijdo-white);
+
+border-right: 2px solid var(--mijdo-dark);
+border-bottom: 2px solid var(--mijdo-dark);
+
+background: var(--mijdo-light);
+}
+
+/*
+Sunken surface:
+dark edge → gray body → white inner edge
+*/
+
+.mijdo-sunken {
+border-top: 2px solid var(--mijdo-dark);
+border-left: 2px solid var(--mijdo-dark);
+
+border-right: 2px solid var(--mijdo-white);
+border-bottom: 2px solid var(--mijdo-white);
+
+background: var(--mijdo-light);
+}
+
+/* =========================================================
+BUTTON
+========================================================= */
+
+.mijdo-button {
+display: inline-flex;
+
+align-items: center;
+justify-content: center;
+
+min-height: 24px;
+padding: 2px 10px;
+
+background: var(--mijdo-light);
+color: var(--mijdo-black);
+
+border-top: 2px solid var(--mijdo-white);
+border-left: 2px solid var(--mijdo-white);
+
+border-right: 2px solid var(--mijdo-dark);
+border-bottom: 2px solid var(--mijdo-dark);
+
+border-radius: 0;
+
+cursor: default;
+
+user-select: none;
+}
+
+.mijdo-button:hover {
+background: #d0d0d0;
+}
+
+.mijdo-button:active {
+border-top-color: var(--mijdo-dark);
+border-left-color: var(--mijdo-dark);
+
+border-right-color: var(--mijdo-white);
+border-bottom-color: var(--mijdo-white);
+}
+
+/* =========================================================
+WINDOW
+========================================================= */
+
+.mijdo-window {
+background: var(--mijdo-light);
+
+border-top: var(--mijdo-window-border) solid var(--mijdo-white);
+border-left: var(--mijdo-window-border) solid var(--mijdo-white);
+
+border-right: var(--mijdo-window-border) solid var(--mijdo-dark);
+border-bottom: var(--mijdo-window-border) solid var(--mijdo-dark);
+}
+
+/* =========================================================
+WINDOW TITLE BAR
+========================================================= */
+
+.mijdo-titlebar {
+display: flex;
+
+align-items: center;
+
+min-height: 22px;
+padding: 1px 3px;
+
+background: var(--mijdo-navy);
+color: var(--mijdo-white);
+
+font-weight: 700;
+
+user-select: none;
+}
+
+.mijdo-titlebar.inactive {
+background:
+repeating-linear-gradient(
+-45deg,
+var(--mijdo-gray) 0,
+var(--mijdo-gray) 1px,
+var(--mijdo-light) 1px,
+var(--mijdo-light) 2px
+);
+
+color: var(--mijdo-black);
+}
+
+/* =========================================================
+WINDOW CONTROL
+========================================================= */
+
+.mijdo-window-control {
+display: inline-flex;
+
+align-items: center;
+justify-content: center;
+
+width: 18px;
+height: 18px;
+
+padding: 0;
+
+background: var(--mijdo-light);
+color: var(--mijdo-black);
+
+border-top: 1px solid var(--mijdo-white);
+border-left: 1px solid var(--mijdo-white);
+
+border-right: 1px solid var(--mijdo-dark);
+border-bottom: 1px solid var(--mijdo-dark);
+
+border-radius: 0;
+
+line-height: 1;
+
+user-select: none;
+}
+
+.mijdo-window-control:active {
+border-top-color: var(--mijdo-dark);
+border-left-color: var(--mijdo-dark);
+
+border-right-color: var(--mijdo-white);
+border-bottom-color: var(--mijdo-white);
+}
+
+/* =========================================================
+COMMAND BAR
+========================================================= */
+
+.mijdo-command-bar {
+display: flex;
+
+align-items: center;
+
+min-height: 28px;
+
+background: var(--mijdo-light);
+color: var(--mijdo-black);
+
+border-bottom: 1px solid var(--mijdo-dark);
+
+user-select: none;
+}
+
+.mijdo-command-item {
+padding: 4px 8px;
+
+cursor: default;
+}
+
+.mijdo-command-item:hover,
+.mijdo-command-item[data-active="true"] {
+background: var(--mijdo-navy);
+color: var(--mijdo-white);
+}
+
+/* =========================================================
+MENU
+========================================================= */
+
+.mijdo-menu {
+min-width: 180px;
+
+background: var(--mijdo-light);
+
+border-top: 2px solid var(--mijdo-white);
+border-left: 2px solid var(--mijdo-white);
+
+border-right: 2px solid var(--mijdo-dark);
+border-bottom: 2px solid var(--mijdo-dark);
+}
+
+.mijdo-menu-item {
+display: flex;
+
+align-items: center;
+
+width: 100%;
+
+padding: 4px 8px;
+
+background: transparent;
+color: var(--mijdo-black);
+
+border: 0;
+
+text-align: left;
+}
+
+.mijdo-menu-item:hover {
+background: var(--mijdo-navy);
+color: var(--mijdo-white);
+}
+
+/* =========================================================
+DESKTOP
+========================================================= */
+
+.mijdo-desktop {
+position: relative;
+
+width: 100%;
+height: 100%;
+
+background: var(--mijdo-teal);
+
+overflow: hidden;
+}
+
+/* =========================================================
+CRT EFFECT
+========================================================= */
+
+.mijdo-crt::after {
+content: "";
+
+position: fixed;
+inset: 0;
+
+pointer-events: none;
+
+background:
+repeating-linear-gradient(
+to bottom,
+transparent 0,
+transparent 2px,
+rgba(0, 0, 0, 0.045) 3px
+);
+
+z-index: 99999;
+}
+
+/* =========================================================
+TERMINAL
+========================================================= */
+
+.mijdo-terminal {
+background: var(--mijdo-black);
+color: var(--mijdo-white);
+
+font-family: var(--mijdo-font);
+
+overflow: auto;
+}
+
+.mijdo-terminal::selection {
+background: var(--mijdo-white);
+color: var(--mijdo-black);
+}
+
+/* =========================================================
+FOCUS
+========================================================= */
+
+:focus-visible {
+outline: 1px dotted var(--mijdo-black);
+outline-offset: 2px;
+}
+
+/* =========================================================
+ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+*,
+*::before,
+*::after {
+scroll-behavior: auto !important;
+animation-duration: 0.01ms !important;
+animation-iteration-count: 1 !important;
+transition-duration: 0.01ms !important;
+}
+}
+
+/* =========================================================
+MOBILE
+========================================================= */
+
+@media (max-width: 640px) {
+body {
+font-size: 13px;
+}
+
+.mijdo-window {
+border-width: 1px;
+}
+
+.mijdo-titlebar {
+min-height: 24px;
+}
+
+.mijdo-command-bar {
+min-height: 30px;
+}
+}
