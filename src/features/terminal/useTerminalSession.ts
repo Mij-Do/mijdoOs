@@ -5,11 +5,8 @@ import {
   type HistoryDirection,
 } from "./terminalHistory";
 import { parseCommandLine } from "./terminalParser";
-import {
-  TERMINAL_PROMPT,
-  type TerminalLine,
-  type TerminalLineKind,
-} from "./terminalTypes";
+import { TERMINAL_PROMPT } from "./terminalPrompt";
+import type { TerminalLine, TerminalLineKind } from "./terminalTypes";
 
 const BANNER_LINES = [
   "MijdoOS Terminal",

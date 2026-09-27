@@ -4,6 +4,7 @@ import type {
   MenuDefinition,
   MenuItemAction,
 } from "../../types/menu";
+import type { WindowId } from "../../types/window";
 
 type MenuDefinitionState = {
   hasActiveWindow: boolean;
@@ -11,6 +12,18 @@ type MenuDefinitionState = {
 };
 
 const separator: MenuItemAction = { type: "separator" };
+
+/*
+  Most menu entries do the same thing: open a window. The helper is the one
+  place those entries are built, so the boilerplate is written once.
+*/
+function openWindowItem(
+  actions: MenuActions,
+  label: string,
+  windowId: WindowId,
+): MenuItemAction {
+  return { type: "item", label, onSelect: () => actions.openWindow(windowId) };
+}
 
 export function createMenuDefinitions(
   actions: MenuActions,
@@ -21,18 +34,8 @@ export function createMenuDefinitions(
       id: "system",
       label: "SYSTEM",
       items: [
-        {
-          type: "item",
-          label: "About MijdoOS",
-          onSelect: () => actions.openWindow("about"),
-        },
-        {
-          type: "item",
-          label: "System Info",
-          onSelect: () => actions.openWindow("system-info"),
-        },
-        separator,
-        { type: "item", label: "Refresh Desktop", onSelect: actions.refreshDesktop },
+        openWindowItem(actions, "About MijdoOS", "about"),
+        openWindowItem(actions, "System Info", "system-info"),
         separator,
         { type: "item", label: "Close Menu", onSelect: actions.closeMenu },
       ],
@@ -41,11 +44,7 @@ export function createMenuDefinitions(
       id: "file",
       label: "File",
       items: [
-        {
-          type: "item",
-          label: "Open Mijdo.exe",
-          onSelect: () => actions.openWindow("mijdo"),
-        },
+        openWindowItem(actions, "Open Mijdo.exe", "mijdo"),
         { type: "item", label: "Open CV", onSelect: actions.closeMenu, href: contact.cvUrl },
         separator,
         {
@@ -74,78 +73,34 @@ export function createMenuDefinitions(
       id: "special",
       label: "Special",
       items: [
-        {
-          type: "item",
-          label: "My Profile",
-          onSelect: () => actions.openWindow("profile"),
-        },
-        {
-          type: "item",
-          label: "My Education",
-          onSelect: () => actions.openWindow("education"),
-        },
-        {
-          type: "item",
-          label: "My Skills",
-          onSelect: () => actions.openWindow("skills"),
-        },
-        {
-          type: "item",
-          label: "My Experience",
-          onSelect: () => actions.openWindow("experience"),
-        },
-        {
-          type: "item",
-          label: "My Projects",
-          onSelect: () => actions.openWindow("projects"),
-        },
-        {
-          type: "item",
-          label: "Contact",
-          onSelect: () => actions.openWindow("contact"),
-        },
+        openWindowItem(actions, "My Profile", "profile"),
+        openWindowItem(actions, "My Education", "education"),
+        openWindowItem(actions, "My Skills", "skills"),
+        openWindowItem(actions, "My Experience", "experience"),
+        openWindowItem(actions, "My Projects", "projects"),
+        openWindowItem(actions, "Contact", "contact"),
       ],
     },
     {
       id: "run",
       label: "Run",
       items: [
-        { type: "item", label: "Mijdo.exe", onSelect: () => actions.openWindow("mijdo") },
-        {
-          type: "item",
-          label: "Terminal.exe",
-          onSelect: () => actions.openWindow("terminal"),
-        },
-        {
-          type: "item",
-          label: "Projects",
-          onSelect: () => actions.openWindow("projects"),
-        },
-        { type: "item", label: "Skills", onSelect: () => actions.openWindow("skills") },
-        {
-          type: "item",
-          label: "Experience",
-          onSelect: () => actions.openWindow("experience"),
-        },
-        {
-          type: "item",
-          label: "Contact",
-          onSelect: () => actions.openWindow("contact"),
-        },
+        openWindowItem(actions, "Mijdo.exe", "mijdo"),
+        openWindowItem(actions, "Terminal.exe", "terminal"),
+        openWindowItem(actions, "Projects", "projects"),
+        openWindowItem(actions, "Skills", "skills"),
+        openWindowItem(actions, "Experience", "experience"),
+        openWindowItem(actions, "Contact", "contact"),
       ],
     },
     {
       id: "help",
       label: "Help",
       items: [
-        { type: "item", label: "MijdoOS Help", onSelect: () => actions.openWindow("help") },
-        {
-          type: "item",
-          label: "Keyboard Shortcuts",
-          onSelect: () => actions.openWindow("shortcuts"),
-        },
+        openWindowItem(actions, "MijdoOS Help", "help"),
+        openWindowItem(actions, "Keyboard Shortcuts", "shortcuts"),
         separator,
-        { type: "item", label: "About", onSelect: () => actions.openWindow("about") },
+        openWindowItem(actions, "About", "about"),
       ],
     },
   ];
@@ -156,12 +111,7 @@ export function createDesktopMenuDefinitions(
   isIconsArranged: boolean,
 ): MenuItemAction[] {
   return [
-    {
-      type: "item",
-      label: "Open Mijdo.exe",
-      onSelect: () => actions.openWindow("mijdo"),
-    },
-    { type: "item", label: "Refresh", onSelect: actions.refreshDesktop },
+    openWindowItem(actions, "Open Mijdo.exe", "mijdo"),
     {
       type: "item",
       label: "Arrange Icons",
@@ -169,11 +119,7 @@ export function createDesktopMenuDefinitions(
       checked: isIconsArranged,
     },
     separator,
-    {
-      type: "item",
-      label: "System Info",
-      onSelect: () => actions.openWindow("system-info"),
-    },
+    openWindowItem(actions, "System Info", "system-info"),
     separator,
     { type: "item", label: "Close Menu", onSelect: actions.closeMenu },
   ];

@@ -20,8 +20,9 @@ export function recallHistoryEntry(
   const from = historyIndex ?? history.length;
   const to = Math.min(history.length, Math.max(0, from + direction));
 
-  return {
-    index: to,
-    input: to >= history.length ? "" : history[to],
-  };
+  if (to >= history.length) return { index: to, input: "" };
+
+  const input = history[to];
+
+  return input === undefined ? null : { index: to, input };
 }

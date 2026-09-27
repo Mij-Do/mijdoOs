@@ -56,20 +56,32 @@ export function MenuPanel({
 
   const focusItem = useCallback(
     (offset: number) => {
-      if (focusableIndexes.length === 0) {
+      const total = focusableIndexes.length;
+
+      if (total === 0) {
         setFocusedIndex(null);
         panelRef.current?.focus();
         return;
       }
 
-      const step =
-        (offset + focusableIndexes.length) % focusableIndexes.length;
-      const index = focusableIndexes[step];
+      /*
+        Arrows move relative to the current position. Until the keyboard is
+        used there is no recorded selection, but the panel has focused the
+        first item on open, so the movement continues from there.
+      */
+      const recorded = focusedIndex === null
+        ? -1
+        : focusableIndexes.indexOf(focusedIndex);
+      const current = recorded === -1 ? 0 : recorded;
+      const next = (current + offset + total) % total;
+      const index = focusableIndexes[next];
+
+      if (index === undefined) return;
 
       setFocusedIndex(index);
       itemRefs.current[index]?.focus();
     },
-    [focusableIndexes],
+    [focusableIndexes, focusedIndex],
   );
 
   useEffect(() => {
@@ -78,11 +90,14 @@ export function MenuPanel({
       focus only: no selection is recorded, so opening a menu with the mouse
       must not paint anything.
     */
-    if (focusableIndexes.length > 0) {
-      itemRefs.current[focusableIndexes[0]]?.focus();
-    } else {
+    const firstIndex = focusableIndexes[0];
+
+    if (firstIndex === undefined) {
       panelRef.current?.focus();
+      return;
     }
+
+    itemRefs.current[firstIndex]?.focus();
   }, [focusableIndexes]);
 
   useEffect(() => {

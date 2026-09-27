@@ -155,81 +155,6 @@ SCROLLBARS
 }
 
 /* =========================================================
-MIJDOOS BEVELS
-========================================================= */
-
-/*
-Raised surface:
-white highlight → gray body → dark shadow
-*/
-
-.mijdo-raised {
-  border-top: 2px solid var(--mijdo-white);
-  border-left: 2px solid var(--mijdo-white);
-
-  border-right: 2px solid var(--mijdo-dark);
-  border-bottom: 2px solid var(--mijdo-dark);
-
-  background: var(--mijdo-light);
-}
-
-/*
-Sunken surface:
-dark edge → gray body → white inner edge
-*/
-
-.mijdo-sunken {
-  border-top: 2px solid var(--mijdo-dark);
-  border-left: 2px solid var(--mijdo-dark);
-
-  border-right: 2px solid var(--mijdo-white);
-  border-bottom: 2px solid var(--mijdo-white);
-
-  background: var(--mijdo-light);
-}
-
-/* =========================================================
-BUTTON
-========================================================= */
-
-.mijdo-button {
-  display: inline-flex;
-
-  align-items: center;
-  justify-content: center;
-
-  min-height: 24px;
-  padding: 2px 10px;
-
-  background: var(--mijdo-light);
-  color: var(--mijdo-black);
-
-  border-top: 2px solid var(--mijdo-white);
-  border-left: 2px solid var(--mijdo-white);
-
-  border-right: 2px solid var(--mijdo-dark);
-  border-bottom: 2px solid var(--mijdo-dark);
-
-  border-radius: 0;
-
-  cursor: default;
-
-  user-select: none;
-}
-
-.mijdo-button:hover {
-  background: #d0d0d0;
-}
-
-.mijdo-button:active {
-  border-top-color: var(--mijdo-dark);
-  border-left-color: var(--mijdo-dark);
-
-  border-right-color: var(--mijdo-white);
-  border-bottom-color: var(--mijdo-white);
-}
-
-/* =========================================================
 WINDOW
 ========================================================= */
 
@@ -792,16 +717,6 @@ PHASE 01 DESKTOP LAYOUT
 
 .mijdo-profile-section p + p {
   margin-top: 5px;
-}
-
-.mijdo-empty-value {
-  color: var(--mijdo-dark);
-  font-style: italic;
-}
-
-.mijdo-profile-list {
-  margin: 0;
-  padding-left: 22px;
 }
 
 .mijdo-detail-content {

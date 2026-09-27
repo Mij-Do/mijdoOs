@@ -1,10 +1,3 @@
-/*
-  The terminal is a simulated portfolio command line.
-  It has no access to the host system: only the commands declared in
-  terminalCommands.ts can ever run.
-*/
-export const TERMINAL_PROMPT = "C:\\MIJDO>";
-
 export type TerminalLineKind = "banner" | "echo" | "output";
 
 export type TerminalLine = {

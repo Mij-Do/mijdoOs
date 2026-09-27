@@ -35,6 +35,19 @@ export type WindowState = {
   zIndex: number;
 };
 
+/*
+  A window as declared in the registry, before any runtime state exists.
+  "icon" is only present for desktop applications, which is what separates
+  them from system dialogs.
+*/
+export type WindowDefinition = {
+  id: WindowId;
+  title: string;
+  variant: WindowVariant;
+  position: WindowPosition;
+  icon?: string;
+};
+
 export type WindowMap = Record<WindowId, WindowState>;
 
 /*

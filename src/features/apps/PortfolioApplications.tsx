@@ -9,6 +9,7 @@ import {
   technicalSkills,
 } from "../../data/skills";
 import type { WindowControllerProps } from "../../types/window";
+import { formatProjectPeriod } from "../../utils/portfolio";
 import {
   DetailLinkRow,
   DetailLinks,
@@ -100,9 +101,7 @@ export function ProjectsApplication(props: WindowControllerProps) {
     <DetailWindow {...props}>
       {projects.map((project) => (
         <DetailSection title={project.name} key={project.name}>
-          <p>
-            {[project.date, project.type].filter(Boolean).join(" - ")}
-          </p>
+          <p>{formatProjectPeriod(project)}</p>
           <p>TECH: {project.technologies.join(" / ")}</p>
           <p>{project.description}</p>
           <DetailList items={project.features} />
@@ -124,6 +123,11 @@ export function ContactApplication(props: WindowControllerProps) {
       </DetailSection>
       <DetailSection title="PROFILES">
         <DetailLinkRow links={socialLinks} />
+        {/*
+          The CV keeps its own paragraph: folding it into the row above would
+          move it onto the same line and give it the row's link styling, which
+          is a visual change rather than a refactor.
+        */}
         <p>
           <a href={contact.cvUrl} target="_blank" rel="noopener noreferrer">
             [CV]

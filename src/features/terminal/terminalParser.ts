@@ -15,7 +15,9 @@ export function parseCommandLine(input: string): ParsedCommandLine | null {
 
   if (normalized.length === 0) return null;
 
-  const [name] = normalized.split(" ");
+  const name = normalized.split(" ")[0];
+
+  if (name === undefined) return null;
 
   return { name: name.toLowerCase(), input: normalized };
 }

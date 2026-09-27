@@ -58,15 +58,22 @@ function settleFocus(
   return { ...state, windows: setFocus(windows, activeWindowId), activeWindowId };
 }
 
+/*
+  Brings a window to the front. The map is rebuilt rather than mutated so the
+  reducer can never write through a reference the previous state still holds.
+*/
 function raiseWindow(
   state: WindowManagerState,
   windows: WindowMap,
   id: WindowId,
 ): WindowManagerState {
   const zIndex = state.topZIndex + 1;
-  windows[id] = { ...windows[id], isFocused: true, zIndex };
 
-  return { windows, activeWindowId: id, topZIndex: zIndex };
+  return {
+    windows: { ...windows, [id]: { ...windows[id], isFocused: true, zIndex } },
+    activeWindowId: id,
+    topZIndex: zIndex,
+  };
 }
 
 function windowManagerReducer(

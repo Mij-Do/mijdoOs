@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import type { WindowPosition } from "../types/window";
 
 type PointerOffset = WindowPosition;
@@ -17,7 +18,7 @@ export function useDraggableWindow(
   const [isDragging, setIsDragging] = useState(false);
   const offsetRef = useRef<PointerOffset>({ x: 0, y: 0 });
 
-  function startDragging(event: React.PointerEvent<HTMLElement>) {
+  function startDragging(event: ReactPointerEvent<HTMLElement>) {
     if (event.button !== 0) return;
 
     offsetRef.current = {

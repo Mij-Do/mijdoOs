@@ -1,12 +1,4 @@
-export type HelpTopic = {
-  title: string;
-  lines: string[];
-};
-
-export type KeyboardShortcut = {
-  keys: string;
-  action: string;
-};
+import type { HelpTopic, KeyboardShortcut } from "../types/portfolio";
 
 /*
   Every documented interaction is implemented in the shell.

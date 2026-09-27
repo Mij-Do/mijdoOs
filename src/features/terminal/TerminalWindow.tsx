@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import type { KeyboardEvent } from "react";
 import type { WindowControllerProps } from "../../types/window";
 import { WindowFrame } from "../window/WindowFrame";
-import { TERMINAL_PROMPT } from "./terminalTypes";
+import { TERMINAL_PROMPT } from "./terminalPrompt";
 import { useTerminalSession } from "./useTerminalSession";
 
 const INPUT_ID = "mijdo-terminal-input";

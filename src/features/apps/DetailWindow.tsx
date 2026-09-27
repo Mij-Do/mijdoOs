@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { LinkItem, ProjectRecord } from "../../types/portfolio";
 import type { WindowControllerProps } from "../../types/window";
 import { WindowFrame } from "../window/WindowFrame";
 
@@ -42,10 +43,11 @@ export function DetailList({ items }: { items: string[] }) {
 }
 
 /*
-  Verified profile links. Each row keeps the retro link styling used by
-  project links, so the terminal and the window share one source of truth.
+  The one place a row of outbound links is rendered. Project links and the
+  profile links both come in as LinkItem data, so the retro link styling and
+  the new-tab behaviour cannot drift apart between windows.
 */
-export function DetailLinkRow({ links }: { links: { label: string; url: string }[] }) {
+export function DetailLinkRow({ links }: { links: LinkItem[] }) {
   if (links.length === 0) return null;
 
   return (
@@ -59,28 +61,15 @@ export function DetailLinkRow({ links }: { links: { label: string; url: string }
   );
 }
 
-type DetailLinksProps = {
-  links: {
-    github?: string;
-    liveDemo?: string;
-  };
-};
-
-export function DetailLinks({ links }: DetailLinksProps) {
-  const availableLinks = [
+/*
+  Project links are optional, so missing entries are dropped before the row
+  is rendered rather than producing an empty or broken link.
+*/
+export function DetailLinks({ links }: { links: ProjectRecord["links"] }) {
+  const availableLinks: LinkItem[] = [
     { label: "GITHUB", url: links.github },
     { label: "LIVE DEMO", url: links.liveDemo },
-  ].filter((link) => Boolean(link.url));
+  ].filter((link): link is LinkItem => Boolean(link.url));
 
-  if (availableLinks.length === 0) return null;
-
-  return (
-    <p className="mijdo-detail-links">
-      {availableLinks.map((link) => (
-        <a href={link.url} key={link.label} target="_blank" rel="noopener noreferrer">
-          [{link.label}]
-        </a>
-      ))}
-    </p>
-  );
+  return <DetailLinkRow links={availableLinks} />;
 }

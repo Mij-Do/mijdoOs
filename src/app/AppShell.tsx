@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { ReactElement } from "react";
-import { initialWindows } from "../data/windows";
+import { initialWindows, windowDefinitions } from "../data/windows";
 import {
   ContactApplication,
   EducationApplication,
@@ -26,6 +26,10 @@ import type { WindowControllerProps, WindowId } from "../types/window";
 
 type WindowComponent = (props: WindowControllerProps) => ReactElement;
 
+/*
+  Every declared window must have a component. The Record type enforces
+  this at compile time, so the registry and the window table cannot drift.
+*/
 const windowRegistry: Record<WindowId, WindowComponent> = {
   mijdo: MijdoWindow,
   profile: ProfileApplication,
@@ -41,7 +45,11 @@ const windowRegistry: Record<WindowId, WindowComponent> = {
   shortcuts: ShortcutsApplication,
 };
 
-const windowIds = Object.keys(windowRegistry) as WindowId[];
+/*
+  Render order follows the registry table, so a new window is placed by
+  declaring it in data/windows.ts rather than by editing this file.
+*/
+const windowIds = windowDefinitions.map((definition) => definition.id);
 
 export function AppShell() {
   const {
@@ -57,7 +65,6 @@ export function AppShell() {
   } = useWindowManager(initialWindows);
 
   const [isIconsArranged, setIsIconsArranged] = useState(false);
-  const [desktopRevision, setDesktopRevision] = useState(0);
 
   /*
     Window callbacks stay stable per window so dragging never
@@ -90,7 +97,6 @@ export function AppShell() {
       },
       showDesktop,
       toggleArrangeIcons: () => setIsIconsArranged((current) => !current),
-      refreshDesktop: () => setDesktopRevision((current) => current + 1),
     }),
     [openWindow, closeWindow, activeWindowId, showDesktop],
   );
@@ -121,7 +127,6 @@ export function AppShell() {
       <Desktop
         actions={systemActions}
         isIconsArranged={isIconsArranged}
-        layoutKey={`${isIconsArranged ? "arranged" : "stacked"}:${desktopRevision}`}
         onOpenWindow={openWindow}
       >
         {windowIds.map(renderWindow)}

@@ -1,3 +1,22 @@
+/*
+  A rendered outbound link. Social rows and project rows share this shape so
+  every external link in the app is produced by one component.
+*/
+export type LinkItem = {
+  label: string;
+  url: string;
+};
+
+export type HelpTopic = {
+  title: string;
+  lines: string[];
+};
+
+export type KeyboardShortcut = {
+  keys: string;
+  action: string;
+};
+
 export type EducationRecord = {
   institution: string;
   period: string;

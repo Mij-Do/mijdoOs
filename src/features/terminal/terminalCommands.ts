@@ -1,9 +1,10 @@
-import { contact, socialLinks } from "../../data/contact";
+import { contact, contactLinks } from "../../data/contact";
 import { experience } from "../../data/experience";
 import { profile } from "../../data/profile";
 import { projects } from "../../data/projects";
 import { technicalSkills } from "../../data/skills";
 import { systemInfo } from "../../data/system";
+import { formatProjectPeriod } from "../../utils/portfolio";
 import type { TerminalCommand, TerminalCommandOutcome } from "./terminalTypes";
 
 const NAME_COLUMN_WIDTH = 12;
@@ -50,9 +51,9 @@ function createProjectLines() {
 
     lines.push(`${number}  ${project.name}`);
 
-    const details = [project.date, project.type].filter(Boolean).join(" - ");
+    const period = formatProjectPeriod(project);
 
-    if (details) lines.push(`${DETAIL_INDENT}${details}`);
+    if (period) lines.push(`${DETAIL_INDENT}${period}`);
     if (project.links.github) lines.push(`${DETAIL_INDENT}${project.links.github}`);
 
     lines.push("");
@@ -91,8 +92,7 @@ function createContactLines() {
     `Phone: ${contact.phone}`,
     `Location: ${contact.location}`,
     "",
-    ...socialLinks.map((link) => `${link.label}: ${link.url}`),
-    `CV: ${contact.cvUrl}`,
+    ...contactLinks.map((link) => `${link.label}: ${link.url}`),
   ];
 }
 

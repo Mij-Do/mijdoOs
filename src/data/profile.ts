@@ -1,4 +1,13 @@
-export const profile = {
+export type Profile = {
+  name: string;
+  title: string;
+  role: string;
+  location: string;
+  summary: string;
+  about: string;
+};
+
+export const profile: Profile = {
   name: "Ahmed Samir",
   title: "Full-Stack / Front-End Developer",
   role: "Technical Co-Founder at Meem Langs",

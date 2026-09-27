@@ -1,4 +1,5 @@
 import { helpTopics, keyboardShortcuts } from "../../data/help";
+import { profile } from "../../data/profile";
 import { systemInfo } from "../../data/system";
 import type { WindowControllerProps } from "../../types/window";
 import { DetailSection, DetailWindow } from "./DetailWindow";
@@ -12,8 +13,8 @@ export function AboutApplication(props: WindowControllerProps) {
       </div>
       <DetailSection title="SYSTEM">
         <p>Version: {systemInfo.version}</p>
-        <p>System: {systemInfo.system}</p>
-        <p>Developer: {systemInfo.developer}</p>
+        <p>System: {systemInfo.productName}</p>
+        <p>Developer: {profile.name}</p>
       </DetailSection>
     </DetailWindow>
   );
@@ -23,10 +24,10 @@ export function SystemInfoApplication(props: WindowControllerProps) {
   return (
     <DetailWindow {...props}>
       <DetailSection title="SYSTEM">
-        <p>System: {systemInfo.system}</p>
+        <p>System: {systemInfo.productName}</p>
         <p>Version: {systemInfo.version}</p>
         <p>Platform: {systemInfo.platform}</p>
-        <p>Developer: {systemInfo.developer}</p>
+        <p>Developer: {profile.name}</p>
       </DetailSection>
       <DetailSection title="TECHNOLOGY">
         {systemInfo.technology.map((item) => (

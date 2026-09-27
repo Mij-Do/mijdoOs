@@ -40,7 +40,6 @@ export type SystemActions = {
   closeActiveWindow: () => void;
   showDesktop: () => void;
   toggleArrangeIcons: () => void;
-  refreshDesktop: () => void;
 };
 
 export type MenuActions = SystemActions & {
