@@ -20,6 +20,7 @@ import { Desktop } from "../features/desktop/Desktop";
 import { StatusBar } from "../features/desktop/StatusBar";
 import { TopBar } from "../features/desktop/TopBar";
 import { MijdoWindow } from "../features/mijdo/MijdoWindow";
+import { TerminalWindow } from "../features/terminal/TerminalWindow";
 import { useWindowManager } from "../hooks/useWindowManager";
 import type { SystemActions } from "../types/menu";
 import type { WindowControllerProps, WindowId } from "../types/window";
@@ -34,6 +35,7 @@ const windowRegistry: Record<WindowId, WindowComponent> = {
   experience: ExperienceApplication,
   projects: ProjectsApplication,
   contact: ContactApplication,
+  terminal: TerminalWindow,
   about: AboutApplication,
   "system-info": SystemInfoApplication,
   help: HelpApplication,

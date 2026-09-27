@@ -10,7 +10,8 @@ export type DesktopAppId =
   | "skills"
   | "experience"
   | "projects"
-  | "contact";
+  | "contact"
+  | "terminal";
 
 export type SystemAppId = "about" | "system-info" | "help" | "shortcuts";
 

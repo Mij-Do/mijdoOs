@@ -890,12 +890,77 @@ TERMINAL
 ========================================================= */
 
 .mijdo-terminal {
+  flex: 1 1 auto;
+  min-height: 0;
+
+  padding: 10px 12px;
+
   background: var(--mijdo-black);
   color: var(--mijdo-white);
 
   font-family: var(--mijdo-font);
+  font-size: 13px;
+  line-height: 1.4;
 
   overflow: auto;
+  overflow-wrap: break-word;
+
+  white-space: pre-wrap;
+  cursor: text;
+  user-select: text;
+}
+
+.mijdo-terminal:focus-within {
+  outline: 1px dotted var(--mijdo-gray);
+  outline-offset: -2px;
+}
+
+.mijdo-terminal-line {
+  min-height: 1.4em;
+}
+
+/*
+  Entered commands stay visually separate from command output.
+*/
+.mijdo-terminal-line[data-kind="echo"] {
+  color: var(--mijdo-light);
+}
+
+.mijdo-terminal-line[data-kind="banner"] {
+  color: var(--mijdo-light);
+}
+
+.mijdo-terminal-prompt {
+  display: flex;
+  gap: 6px;
+}
+
+.mijdo-terminal-prompt-label {
+  flex: 0 0 auto;
+
+  color: var(--mijdo-light);
+}
+
+.mijdo-terminal-input {
+  flex: 1 1 auto;
+  min-width: 0;
+
+  padding: 0;
+
+  background: transparent;
+  color: var(--mijdo-white);
+
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+
+  font: inherit;
+  caret-color: var(--mijdo-white);
+}
+
+.mijdo-terminal-input:focus,
+.mijdo-terminal-input:focus-visible {
+  outline: none;
 }
 
 .mijdo-terminal::selection {
@@ -993,6 +1058,11 @@ MOBILE
 
   .mijdo-shortcut-key {
     min-width: 116px;
+  }
+
+  .mijdo-terminal {
+    padding: 8px;
+    font-size: 12px;
   }
 }
 

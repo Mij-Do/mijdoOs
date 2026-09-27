@@ -82,6 +82,17 @@ export const initialWindows: WindowMap = {
     isFocused: false,
     zIndex: 0,
   },
+  terminal: {
+    id: "terminal",
+    title: "Terminal.exe",
+    variant: "window",
+    position: { x: 334, y: 260 },
+    isOpen: false,
+    isMinimized: false,
+    isMaximized: false,
+    isFocused: false,
+    zIndex: 0,
+  },
   about: {
     id: "about",
     title: "About MijdoOS.exe",
