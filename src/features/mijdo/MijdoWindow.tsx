@@ -1,78 +1,71 @@
-import { profile } from '../../data/profile'
-import { useDraggableWindow } from '../../hooks/useDraggableWindow'
+import { contact } from "../../data/contact";
+import { education } from "../../data/education";
+import { experience } from "../../data/experience";
+import { profile } from "../../data/profile";
+import { projects } from "../../data/projects";
+import { technicalSkills } from "../../data/skills";
+import type { WindowControllerProps } from "../../types/window";
+import { WindowFrame } from "../window/WindowFrame";
 
-function ProfileList({ items }: { items: string[] }) {
-  if (items.length === 0) {
-    return <p className="mijdo-empty-value">No records available.</p>
-  }
-
+export function MijdoWindow(props: WindowControllerProps) {
   return (
-    <ul className="mijdo-profile-list">
-      {items.map((item) => <li key={item}>{item}</li>)}
-    </ul>
-  )
-}
-
-export function MijdoWindow({ onClose }: { onClose: () => void }) {
-  const { position, isDragging, startDragging } = useDraggableWindow({ x: 96, y: 78 })
-
-  return (
-    <section
-      className={`mijdo-window mijdo-profile-window${isDragging ? ' is-dragging' : ''}`}
-      style={{ left: position.x, top: position.y }}
-      aria-label="Mijdo.exe portfolio window"
-      onPointerDown={(event) => event.stopPropagation()}
-    >
-      <header className="mijdo-titlebar" onPointerDown={startDragging}>
-        <span className="mijdo-window-title">Mijdo.exe</span>
-        <button
-          className="mijdo-window-control"
-          type="button"
-          aria-label="Close Mijdo.exe"
-          onPointerDown={(event) => event.stopPropagation()}
-          onClick={onClose}
-        >
-          X
-        </button>
-      </header>
-
+    <WindowFrame {...props}>
       <div className="mijdo-profile-content">
         <div className="mijdo-profile-heading">
           <h1>{profile.name}</h1>
+          <p>{profile.title}</p>
+          <p>{profile.role}</p>
           <p>{profile.location}</p>
         </div>
 
         <section className="mijdo-profile-section">
-          <h2>ABOUT</h2>
+          <h2>ABOUT THIS USER</h2>
+          <p>{profile.summary}</p>
           <p>{profile.about}</p>
         </section>
 
         <section className="mijdo-profile-section">
+          <h2>EXPERIENCE OVERVIEW</h2>
+          {experience.map((record) => (
+            <p key={record.company}>
+              {record.role} at {record.company} - {record.description}.
+            </p>
+          ))}
+          <p>See EXPERIENCE.EXE for documented responsibilities.</p>
+        </section>
+
+        <section className="mijdo-profile-section">
           <h2>EDUCATION</h2>
-          <p>{profile.education.degree}</p>
-          <p>{profile.education.computerScience}</p>
+          {education.map((record) => (
+            <p key={record.institution}>
+              {record.institution} - {record.degree} ({record.period})
+            </p>
+          ))}
         </section>
 
         <section className="mijdo-profile-section">
-          <h2>SKILLS</h2>
-          <ProfileList items={profile.skills} />
+          <h2>SKILLS OVERVIEW</h2>
+          <p>{technicalSkills.map((group) => group.category).join(" / ")}</p>
+          <p>See SKILLS.EXE for the full configuration.</p>
         </section>
 
         <section className="mijdo-profile-section">
-          <h2>EXPERIENCE</h2>
-          <ProfileList items={profile.experience} />
-        </section>
-
-        <section className="mijdo-profile-section">
-          <h2>PROJECTS</h2>
-          <ProfileList items={profile.projects} />
+          <h2>PROJECTS OVERVIEW</h2>
+          {projects.map((project) => (
+            <p key={project.name}>
+              {project.name} ({project.date})
+            </p>
+          ))}
+          <p>See PROJECTS.EXE for documented project details.</p>
         </section>
 
         <section className="mijdo-profile-section">
           <h2>CONTACT</h2>
-          <p>{profile.links.email || 'Contact details not available.'}</p>
+          <p>Email: {contact.email}</p>
+          <p>Phone: {contact.phone}</p>
+          <p>See CONTACT.EXE for full contact information.</p>
         </section>
       </div>
-    </section>
-  )
+    </WindowFrame>
+  );
 }

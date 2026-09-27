@@ -5,21 +5,17 @@ MIJDOOS DESIGN TOKENS
 ========================================================= */
 
 @theme {
---color-mijdo-black: #000000;
---color-mijdo-white: #ffffff;
+  --color-mijdo-black: #000000;
+  --color-mijdo-white: #ffffff;
 
---color-mijdo-light: #c0c0c0;
---color-mijdo-gray: #808080;
---color-mijdo-dark: #404040;
+  --color-mijdo-light: #c0c0c0;
+  --color-mijdo-gray: #808080;
+  --color-mijdo-dark: #404040;
 
---color-mijdo-navy: #000080;
---color-mijdo-teal: #008080;
+  --color-mijdo-navy: #000080;
+  --color-mijdo-teal: #008080;
 
---font-mijdo:
-"IBM Plex Mono",
-"Courier New",
-Courier,
-monospace;
+  --font-mijdo: "IBM Plex Mono", "Courier New", Courier, monospace;
 }
 
 /* =========================================================
@@ -27,24 +23,20 @@ ROOT VARIABLES
 ========================================================= */
 
 :root {
---mijdo-black: #000000;
---mijdo-white: #ffffff;
+  --mijdo-black: #000000;
+  --mijdo-white: #ffffff;
 
---mijdo-light: #c0c0c0;
---mijdo-gray: #808080;
---mijdo-dark: #404040;
+  --mijdo-light: #c0c0c0;
+  --mijdo-gray: #808080;
+  --mijdo-dark: #404040;
 
---mijdo-navy: #000080;
---mijdo-teal: #008080;
+  --mijdo-navy: #000080;
+  --mijdo-teal: #008080;
 
---mijdo-font:
-"IBM Plex Mono",
-"Courier New",
-Courier,
-monospace;
+  --mijdo-font: "IBM Plex Mono", "Courier New", Courier, monospace;
 
---mijdo-border-width: 1px;
---mijdo-window-border: 2px;
+  --mijdo-border-width: 1px;
+  --mijdo-window-border: 2px;
 }
 
 /* =========================================================
@@ -54,31 +46,31 @@ BASE
 html,
 body,
 #root {
-width: 100%;
-min-height: 100%;
-margin: 0;
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
 }
 
 html {
-background: var(--mijdo-teal);
+  background: var(--mijdo-teal);
 }
 
 body {
-min-height: 100vh;
+  min-height: 100vh;
 
-background: var(--mijdo-teal);
-color: var(--mijdo-black);
+  background: var(--mijdo-teal);
+  color: var(--mijdo-black);
 
-font-family: var(--mijdo-font);
-font-size: 14px;
-line-height: 1.35;
+  font-family: var(--mijdo-font);
+  font-size: 14px;
+  line-height: 1.35;
 
-overflow: hidden;
+  overflow: hidden;
 
--webkit-font-smoothing: none;
--moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
 
-text-rendering: geometricPrecision;
+  text-rendering: geometricPrecision;
 }
 
 /* =========================================================
@@ -88,28 +80,28 @@ RESET
 *,
 *::before,
 *::after {
-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 button,
 input,
 textarea,
 select {
-font: inherit;
+  font: inherit;
 }
 
 button {
-color: inherit;
+  color: inherit;
 }
 
 button,
 a {
--webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent;
 }
 
 img {
-display: block;
-max-width: 100%;
+  display: block;
+  max-width: 100%;
 }
 
 /* =========================================================
@@ -117,8 +109,8 @@ SELECTION
 ========================================================= */
 
 ::selection {
-background: var(--mijdo-navy);
-color: var(--mijdo-white);
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
 }
 
 /* =========================================================
@@ -127,41 +119,39 @@ SCROLLBARS
 
 * {
   scrollbar-width: auto;
-  scrollbar-color:
-  var(--mijdo-gray)
-  var(--mijdo-light);
-  }
+  scrollbar-color: var(--mijdo-gray) var(--mijdo-light);
+}
 
 *::-webkit-scrollbar {
-width: 16px;
-height: 16px;
+  width: 16px;
+  height: 16px;
 }
 
 *::-webkit-scrollbar-track {
-background: var(--mijdo-light);
+  background: var(--mijdo-light);
 }
 
 *::-webkit-scrollbar-thumb {
-background: var(--mijdo-gray);
+  background: var(--mijdo-gray);
 
-border-top: 2px solid var(--mijdo-white);
-border-left: 2px solid var(--mijdo-white);
+  border-top: 2px solid var(--mijdo-white);
+  border-left: 2px solid var(--mijdo-white);
 
-border-right: 2px solid var(--mijdo-dark);
-border-bottom: 2px solid var(--mijdo-dark);
+  border-right: 2px solid var(--mijdo-dark);
+  border-bottom: 2px solid var(--mijdo-dark);
 }
 
 *::-webkit-scrollbar-button {
-width: 16px;
-height: 16px;
+  width: 16px;
+  height: 16px;
 
-background: var(--mijdo-light);
+  background: var(--mijdo-light);
 
-border-top: 2px solid var(--mijdo-white);
-border-left: 2px solid var(--mijdo-white);
+  border-top: 2px solid var(--mijdo-white);
+  border-left: 2px solid var(--mijdo-white);
 
-border-right: 2px solid var(--mijdo-dark);
-border-bottom: 2px solid var(--mijdo-dark);
+  border-right: 2px solid var(--mijdo-dark);
+  border-bottom: 2px solid var(--mijdo-dark);
 }
 
 /* =========================================================
@@ -174,13 +164,13 @@ white highlight → gray body → dark shadow
 */
 
 .mijdo-raised {
-border-top: 2px solid var(--mijdo-white);
-border-left: 2px solid var(--mijdo-white);
+  border-top: 2px solid var(--mijdo-white);
+  border-left: 2px solid var(--mijdo-white);
 
-border-right: 2px solid var(--mijdo-dark);
-border-bottom: 2px solid var(--mijdo-dark);
+  border-right: 2px solid var(--mijdo-dark);
+  border-bottom: 2px solid var(--mijdo-dark);
 
-background: var(--mijdo-light);
+  background: var(--mijdo-light);
 }
 
 /*
@@ -189,13 +179,13 @@ dark edge → gray body → white inner edge
 */
 
 .mijdo-sunken {
-border-top: 2px solid var(--mijdo-dark);
-border-left: 2px solid var(--mijdo-dark);
+  border-top: 2px solid var(--mijdo-dark);
+  border-left: 2px solid var(--mijdo-dark);
 
-border-right: 2px solid var(--mijdo-white);
-border-bottom: 2px solid var(--mijdo-white);
+  border-right: 2px solid var(--mijdo-white);
+  border-bottom: 2px solid var(--mijdo-white);
 
-background: var(--mijdo-light);
+  background: var(--mijdo-light);
 }
 
 /* =========================================================
@@ -203,40 +193,40 @@ BUTTON
 ========================================================= */
 
 .mijdo-button {
-display: inline-flex;
+  display: inline-flex;
 
-align-items: center;
-justify-content: center;
+  align-items: center;
+  justify-content: center;
 
-min-height: 24px;
-padding: 2px 10px;
+  min-height: 24px;
+  padding: 2px 10px;
 
-background: var(--mijdo-light);
-color: var(--mijdo-black);
+  background: var(--mijdo-light);
+  color: var(--mijdo-black);
 
-border-top: 2px solid var(--mijdo-white);
-border-left: 2px solid var(--mijdo-white);
+  border-top: 2px solid var(--mijdo-white);
+  border-left: 2px solid var(--mijdo-white);
 
-border-right: 2px solid var(--mijdo-dark);
-border-bottom: 2px solid var(--mijdo-dark);
+  border-right: 2px solid var(--mijdo-dark);
+  border-bottom: 2px solid var(--mijdo-dark);
 
-border-radius: 0;
+  border-radius: 0;
 
-cursor: default;
+  cursor: default;
 
-user-select: none;
+  user-select: none;
 }
 
 .mijdo-button:hover {
-background: #d0d0d0;
+  background: #d0d0d0;
 }
 
 .mijdo-button:active {
-border-top-color: var(--mijdo-dark);
-border-left-color: var(--mijdo-dark);
+  border-top-color: var(--mijdo-dark);
+  border-left-color: var(--mijdo-dark);
 
-border-right-color: var(--mijdo-white);
-border-bottom-color: var(--mijdo-white);
+  border-right-color: var(--mijdo-white);
+  border-bottom-color: var(--mijdo-white);
 }
 
 /* =========================================================
@@ -244,13 +234,13 @@ WINDOW
 ========================================================= */
 
 .mijdo-window {
-background: var(--mijdo-light);
+  background: var(--mijdo-light);
 
-border-top: var(--mijdo-window-border) solid var(--mijdo-white);
-border-left: var(--mijdo-window-border) solid var(--mijdo-white);
+  border-top: var(--mijdo-window-border) solid var(--mijdo-white);
+  border-left: var(--mijdo-window-border) solid var(--mijdo-white);
 
-border-right: var(--mijdo-window-border) solid var(--mijdo-dark);
-border-bottom: var(--mijdo-window-border) solid var(--mijdo-dark);
+  border-right: var(--mijdo-window-border) solid var(--mijdo-dark);
+  border-bottom: var(--mijdo-window-border) solid var(--mijdo-dark);
 }
 
 /* =========================================================
@@ -258,32 +248,31 @@ WINDOW TITLE BAR
 ========================================================= */
 
 .mijdo-titlebar {
-display: flex;
+  display: flex;
 
-align-items: center;
+  align-items: center;
 
-min-height: 22px;
-padding: 1px 3px;
+  min-height: 22px;
+  padding: 1px 3px;
 
-background: var(--mijdo-navy);
-color: var(--mijdo-white);
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
 
-font-weight: 700;
+  font-weight: 700;
 
-user-select: none;
+  user-select: none;
 }
 
 .mijdo-titlebar.inactive {
-background:
-repeating-linear-gradient(
--45deg,
-var(--mijdo-gray) 0,
-var(--mijdo-gray) 1px,
-var(--mijdo-light) 1px,
-var(--mijdo-light) 2px
-);
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--mijdo-gray) 0,
+    var(--mijdo-gray) 1px,
+    var(--mijdo-light) 1px,
+    var(--mijdo-light) 2px
+  );
 
-color: var(--mijdo-black);
+  color: var(--mijdo-black);
 }
 
 /* =========================================================
@@ -291,38 +280,38 @@ WINDOW CONTROL
 ========================================================= */
 
 .mijdo-window-control {
-display: inline-flex;
+  display: inline-flex;
 
-align-items: center;
-justify-content: center;
+  align-items: center;
+  justify-content: center;
 
-width: 18px;
-height: 18px;
+  width: 18px;
+  height: 18px;
 
-padding: 0;
+  padding: 0;
 
-background: var(--mijdo-light);
-color: var(--mijdo-black);
+  background: var(--mijdo-light);
+  color: var(--mijdo-black);
 
-border-top: 1px solid var(--mijdo-white);
-border-left: 1px solid var(--mijdo-white);
+  border-top: 1px solid var(--mijdo-white);
+  border-left: 1px solid var(--mijdo-white);
 
-border-right: 1px solid var(--mijdo-dark);
-border-bottom: 1px solid var(--mijdo-dark);
+  border-right: 1px solid var(--mijdo-dark);
+  border-bottom: 1px solid var(--mijdo-dark);
 
-border-radius: 0;
+  border-radius: 0;
 
-line-height: 1;
+  line-height: 1;
 
-user-select: none;
+  user-select: none;
 }
 
 .mijdo-window-control:active {
-border-top-color: var(--mijdo-dark);
-border-left-color: var(--mijdo-dark);
+  border-top-color: var(--mijdo-dark);
+  border-left-color: var(--mijdo-dark);
 
-border-right-color: var(--mijdo-white);
-border-bottom-color: var(--mijdo-white);
+  border-right-color: var(--mijdo-white);
+  border-bottom-color: var(--mijdo-white);
 }
 
 /* =========================================================
@@ -330,30 +319,46 @@ COMMAND BAR
 ========================================================= */
 
 .mijdo-command-bar {
-display: flex;
+  display: flex;
 
-align-items: center;
+  align-items: center;
 
-min-height: 28px;
+  min-height: 28px;
 
-background: var(--mijdo-light);
-color: var(--mijdo-black);
+  background: var(--mijdo-light);
+  color: var(--mijdo-black);
 
-border-bottom: 1px solid var(--mijdo-dark);
+  border-bottom: 1px solid var(--mijdo-dark);
 
-user-select: none;
+  user-select: none;
+
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.mijdo-command-bar::-webkit-scrollbar {
+  display: none;
+}
+
+button.mijdo-command-item {
+  background: transparent;
+  color: inherit;
+  border: 0;
+  font: inherit;
+  text-align: left;
 }
 
 .mijdo-command-item {
-padding: 4px 8px;
+  padding: 4px 8px;
 
-cursor: default;
+  cursor: default;
 }
 
 .mijdo-command-item:hover,
 .mijdo-command-item[data-active="true"] {
-background: var(--mijdo-navy);
-color: var(--mijdo-white);
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
 }
 
 /* =========================================================
@@ -361,37 +366,80 @@ MENU
 ========================================================= */
 
 .mijdo-menu {
-min-width: 180px;
+  position: fixed;
+  z-index: 2000;
 
-background: var(--mijdo-light);
+  min-width: 190px;
+  max-width: min(240px, calc(100vw - 8px));
+  max-height: calc(100vh - 8px);
 
-border-top: 2px solid var(--mijdo-white);
-border-left: 2px solid var(--mijdo-white);
+  padding: 2px;
+  overflow-y: auto;
 
-border-right: 2px solid var(--mijdo-dark);
-border-bottom: 2px solid var(--mijdo-dark);
+  background: var(--mijdo-light);
+
+  border-top: 2px solid var(--mijdo-white);
+  border-left: 2px solid var(--mijdo-white);
+
+  border-right: 2px solid var(--mijdo-dark);
+  border-bottom: 2px solid var(--mijdo-dark);
+
+  user-select: none;
+}
+
+.mijdo-menu-separator {
+  height: 0;
+  margin: 3px 2px;
+
+  border-top: 1px solid var(--mijdo-gray);
+  border-bottom: 1px solid var(--mijdo-white);
 }
 
 .mijdo-menu-item {
-display: flex;
+  display: flex;
 
-align-items: center;
+  align-items: center;
 
-width: 100%;
+  width: 100%;
 
-padding: 4px 8px;
+  padding: 4px 6px;
 
-background: transparent;
-color: var(--mijdo-black);
+  background: transparent;
+  color: var(--mijdo-black);
 
-border: 0;
+  border: 0;
 
-text-align: left;
+  text-align: left;
 }
 
-.mijdo-menu-item:hover {
-background: var(--mijdo-navy);
-color: var(--mijdo-white);
+.mijdo-menu-item-mark {
+  flex: 0 0 auto;
+
+  width: 12px;
+
+  font-size: 12px;
+  line-height: 1;
+}
+
+.mijdo-menu-item-label {
+  flex: 1 1 auto;
+}
+
+.mijdo-menu-item:hover:not(:disabled),
+.mijdo-menu-item:focus,
+.mijdo-menu-item:focus-visible {
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
+}
+
+.mijdo-menu-item:focus-visible {
+  outline: 1px dotted var(--mijdo-white);
+  outline-offset: -3px;
+}
+
+.mijdo-menu-item:disabled {
+  color: var(--mijdo-dark);
+  cursor: default;
 }
 
 /* =========================================================
@@ -399,14 +447,14 @@ DESKTOP
 ========================================================= */
 
 .mijdo-desktop {
-position: relative;
+  position: relative;
 
-width: 100%;
-height: 100%;
+  width: 100%;
+  height: 100%;
 
-background: var(--mijdo-teal);
+  background: var(--mijdo-teal);
 
-overflow: hidden;
+  overflow: hidden;
 }
 
 /* =========================================================
@@ -414,180 +462,405 @@ PHASE 01 DESKTOP LAYOUT
 ========================================================= */
 
 .mijdo-app-shell {
-display: flex;
-flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-width: 100%;
-height: 100vh;
-min-height: 320px;
+  width: 100%;
+  height: 100vh;
+  min-height: 320px;
 }
 
 .mijdo-top-bar {
-flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 
 .mijdo-desktop {
-flex: 1 1 auto;
-height: auto;
-min-height: 0;
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
 }
 
 .mijdo-status-bar {
-display: flex;
-align-items: center;
-justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-flex: 0 0 auto;
-min-height: 28px;
-padding: 2px 8px;
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 2px 8px;
 
-background: var(--mijdo-light);
-color: var(--mijdo-black);
+  background: var(--mijdo-light);
+  color: var(--mijdo-black);
 
-border-top: 1px solid var(--mijdo-white);
+  border-top: 1px solid var(--mijdo-white);
+}
+
+.mijdo-status-apps,
+.mijdo-status-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .mijdo-status-item {
-min-width: 112px;
+  min-width: 112px;
+
+  padding: 2px 6px;
+
+  background: var(--mijdo-light);
+  border: 0;
+  color: var(--mijdo-black);
+  cursor: pointer;
+  text-align: left;
+}
+
+.mijdo-status-item:hover,
+.mijdo-status-item:focus-visible {
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
+}
+
+.mijdo-status-item[data-active="true"] {
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
+}
+
+.mijdo-status-item[data-minimized="true"] {
+  color: var(--mijdo-dark);
+  font-style: italic;
+}
+
+.mijdo-status-item[data-minimized="true"]::before {
+  content: "_ ";
+}
+
+.mijdo-status-cv {
+  padding: 2px 6px;
+
+  background: var(--mijdo-light);
+  border: 0;
+  color: var(--mijdo-black);
+  cursor: pointer;
+}
+
+.mijdo-status-cv:hover,
+.mijdo-status-cv:focus-visible {
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
+}
+
+.mijdo-desktop-icons {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+
+}
+
+/*
+  Arrange Icons fills the desktop downwards, then starts a new column,
+  which is how a classic desktop tidies its icons.
+*/
+.mijdo-desktop-icons.is-arranged {
+  bottom: 18px;
+
+  height: auto;
+
+  flex-flow: column wrap;
+  align-content: flex-start;
+  justify-content: flex-start;
+
+  overflow: hidden;
+}
+
+.mijdo-desktop-icons.is-arranged .mijdo-desktop-icon {
+  flex: 0 0 auto;
+
+  width: 82px;
+  height: 66px;
+
+  justify-content: flex-start;
 }
 
 .mijdo-desktop-icon {
-position: absolute;
-top: 18px;
-left: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 4px;
+  width: 76px;
+  padding: 4px;
 
-width: 76px;
-padding: 4px;
+  background: transparent;
+  color: var(--mijdo-white);
 
-background: transparent;
-color: var(--mijdo-white);
 
-border: 0;
-cursor: pointer;
-font-size: 12px;
-text-align: center;
+  border: 0;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: center;
 }
 
 .mijdo-desktop-icon:hover,
 .mijdo-desktop-icon:focus-visible {
-background: var(--mijdo-navy);
+  background: var(--mijdo-navy);
+  border-radius: 2px;
 }
 
 .mijdo-desktop-icon-art {
-display: grid;
-place-items: center;
+  display: grid;
+  place-items: center;
 
-width: 42px;
-height: 32px;
+  width: 42px;
+  height: 32px;
 
-background: var(--mijdo-light);
-color: var(--mijdo-black);
+  background: var(--mijdo-light);
+  color: var(--mijdo-black);
 
-border-top: 2px solid var(--mijdo-white);
-border-left: 2px solid var(--mijdo-white);
-border-right: 2px solid var(--mijdo-dark);
-border-bottom: 2px solid var(--mijdo-dark);
+  border-top: 2px solid var(--mijdo-white);
+  border-left: 2px solid var(--mijdo-white);
+  border-right: 2px solid var(--mijdo-dark);
+  border-bottom: 2px solid var(--mijdo-dark);
 
-font-size: 11px;
-font-weight: 700;
+  font-size: 11px;
+  font-weight: 700;
 }
 
-.mijdo-profile-window {
-position: absolute;
-z-index: 2;
+.mijdo-application-window {
+  position: absolute;
 
-display: flex;
-flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-width: min(560px, calc(100% - 24px));
-height: min(520px, calc(100% - 36px));
-overflow: hidden;
+  width: min(560px, calc(100% - 24px));
+  height: min(520px, calc(100% - 36px));
+  overflow: hidden;
 }
 
-.mijdo-profile-window.is-dragging {
-user-select: none;
+/*
+  System dialogs are small windows without a maximize control.
+*/
+.mijdo-application-window.is-dialog {
+  width: min(400px, calc(100% - 24px));
+  height: min(300px, calc(100% - 36px));
+}
+
+.mijdo-application-window.is-maximized {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mijdo-application-window.is-dragging {
+  user-select: none;
 }
 
 .mijdo-window-title {
-flex: 1 1 auto;
-overflow: hidden;
+  flex: 1 1 auto;
+  overflow: hidden;
 
-white-space: nowrap;
-text-overflow: ellipsis;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .mijdo-titlebar {
-cursor: move;
-touch-action: none;
+  cursor: move;
+  touch-action: none;
+}
+
+.mijdo-application-window.is-maximized .mijdo-titlebar {
+  cursor: default;
 }
 
 .mijdo-window-control {
-flex: 0 0 auto;
-cursor: pointer;
-font-weight: 700;
+  flex: 0 0 auto;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.mijdo-window-controls {
+  display: flex;
+  gap: 2px;
 }
 
 .mijdo-profile-content {
-flex: 1 1 auto;
-overflow: auto;
+  flex: 1 1 auto;
+  overflow: auto;
 
-padding: 18px;
+  padding: 18px;
 }
 
 .mijdo-profile-heading {
-padding-bottom: 14px;
-border-bottom: 1px solid var(--mijdo-gray);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--mijdo-gray);
 }
 
 .mijdo-profile-heading h1,
 .mijdo-profile-heading p,
 .mijdo-profile-section h2,
 .mijdo-profile-section p {
-margin: 0;
+  margin: 0;
 }
 
 .mijdo-profile-heading h1 {
-font-size: 22px;
-line-height: 1.1;
+  font-size: 22px;
+  line-height: 1.1;
 }
 
 .mijdo-profile-heading p {
-margin-top: 5px;
+  margin-top: 5px;
 }
 
 .mijdo-profile-section {
-padding: 14px 0;
-border-bottom: 1px solid var(--mijdo-gray);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--mijdo-gray);
 }
 
 .mijdo-profile-section:last-child {
-border-bottom: 0;
+  border-bottom: 0;
 }
 
 .mijdo-profile-section h2 {
-margin-bottom: 7px;
+  margin-bottom: 7px;
 
-color: var(--mijdo-navy);
-font-size: 14px;
+  color: var(--mijdo-navy);
+  font-size: 14px;
 }
 
 .mijdo-profile-section p + p {
-margin-top: 5px;
+  margin-top: 5px;
 }
 
 .mijdo-empty-value {
-color: var(--mijdo-dark);
-font-style: italic;
+  color: var(--mijdo-dark);
+  font-style: italic;
 }
 
 .mijdo-profile-list {
-margin: 0;
-padding-left: 22px;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.mijdo-detail-content {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 18px;
+}
+
+.mijdo-detail-section {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--mijdo-gray);
+}
+
+.mijdo-detail-section:first-child {
+  padding-top: 0;
+}
+
+.mijdo-detail-section:last-child {
+  border-bottom: 0;
+}
+
+.mijdo-detail-section h2,
+.mijdo-detail-section h3,
+.mijdo-detail-section p {
+  margin: 0;
+}
+
+.mijdo-detail-section h2 {
+  margin-bottom: 8px;
+  color: var(--mijdo-navy);
+  font-size: 14px;
+}
+
+.mijdo-detail-section h3 {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.mijdo-detail-section p + p {
+  margin-top: 5px;
+}
+
+.mijdo-detail-list {
+  margin: 8px 0 0;
+  padding-left: 22px;
+}
+
+.mijdo-detail-links {
+  display: flex;
+  gap: 12px;
+
+  margin-top: 10px;
+}
+
+.mijdo-detail-links a {
+  color: var(--mijdo-navy);
+  text-decoration: none;
+}
+
+.mijdo-detail-links a:hover,
+.mijdo-detail-links a:focus-visible {
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
+}
+
+.mijdo-detail-group + .mijdo-detail-group {
+  margin-top: 8px;
+}
+
+/* =========================================================
+SYSTEM DIALOG CONTENT
+========================================================= */
+
+.mijdo-about {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+
+  border-bottom: 1px solid var(--mijdo-gray);
+}
+
+.mijdo-about-title {
+  margin: 0;
+
+  color: var(--mijdo-navy);
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.mijdo-about-tagline {
+  margin: 5px 0 0;
+
+  color: var(--mijdo-dark);
+}
+
+.mijdo-shortcut {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.mijdo-shortcut + .mijdo-shortcut {
+  margin-top: 5px;
+}
+
+.mijdo-shortcut-key {
+  flex: 0 0 auto;
+
+  min-width: 150px;
+
+  padding: 0 4px;
+
+  background: var(--mijdo-white);
+  border-top: 1px solid var(--mijdo-gray);
+  border-left: 1px solid var(--mijdo-gray);
+  border-right: 1px solid var(--mijdo-white);
+  border-bottom: 1px solid var(--mijdo-white);
+
+  font-size: 12px;
 }
 
 /* =========================================================
@@ -595,22 +868,21 @@ CRT EFFECT
 ========================================================= */
 
 .mijdo-crt::after {
-content: "";
+  content: "";
 
-position: fixed;
-inset: 0;
+  position: fixed;
+  inset: 0;
 
-pointer-events: none;
+  pointer-events: none;
 
-background:
-repeating-linear-gradient(
-to bottom,
-transparent 0,
-transparent 2px,
-rgba(0, 0, 0, 0.045) 3px
-);
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgba(0, 0, 0, 0.045) 3px
+  );
 
-z-index: 99999;
+  z-index: 99999;
 }
 
 /* =========================================================
@@ -618,17 +890,17 @@ TERMINAL
 ========================================================= */
 
 .mijdo-terminal {
-background: var(--mijdo-black);
-color: var(--mijdo-white);
+  background: var(--mijdo-black);
+  color: var(--mijdo-white);
 
-font-family: var(--mijdo-font);
+  font-family: var(--mijdo-font);
 
-overflow: auto;
+  overflow: auto;
 }
 
 .mijdo-terminal::selection {
-background: var(--mijdo-white);
-color: var(--mijdo-black);
+  background: var(--mijdo-white);
+  color: var(--mijdo-black);
 }
 
 /* =========================================================
@@ -636,8 +908,8 @@ FOCUS
 ========================================================= */
 
 :focus-visible {
-outline: 1px dotted var(--mijdo-black);
-outline-offset: 2px;
+  outline: 1px dotted var(--mijdo-black);
+  outline-offset: 2px;
 }
 
 /* =========================================================
@@ -645,14 +917,14 @@ ACCESSIBILITY
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-*,
-*::before,
-*::after {
-scroll-behavior: auto !important;
-animation-duration: 0.01ms !important;
-animation-iteration-count: 1 !important;
-transition-duration: 0.01ms !important;
-}
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* =========================================================
@@ -660,32 +932,86 @@ MOBILE
 ========================================================= */
 
 @media (max-width: 640px) {
-body {
-font-size: 13px;
+  body {
+    font-size: 13px;
+  }
+
+  .mijdo-window {
+    border-width: 1px;
+  }
+
+  .mijdo-titlebar {
+    min-height: 24px;
+  }
+
+  .mijdo-command-bar {
+    min-height: 30px;
+  }
+
+  .mijdo-command-item {
+    padding: 4px 5px;
+  }
+
+  .mijdo-application-window {
+    width: calc(100% - 16px);
+    height: calc(100% - 24px);
+  }
+
+  .mijdo-application-window.is-dialog {
+    width: calc(100% - 16px);
+    height: min(320px, calc(100% - 24px));
+  }
+
+  .mijdo-profile-content {
+    padding: 14px;
+  }
+
+  .mijdo-detail-content {
+    padding: 14px;
+  }
+
+  .mijdo-status-bar {
+    padding-inline: 4px;
+  }
+
+  .mijdo-status-item {
+    min-width: 0;
+  }
+
+  .mijdo-status-actions {
+    gap: 4px;
+  }
+
+  .mijdo-status-apps {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .mijdo-status-apps::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mijdo-shortcut-key {
+    min-width: 116px;
+  }
 }
 
-.mijdo-window {
-border-width: 1px;
-}
+/* =========================================================
+NARROW SCREENS
+========================================================= */
 
-.mijdo-titlebar {
-min-height: 24px;
-}
+@media (max-width: 420px) {
+  .mijdo-command-bar {
+    font-size: 12px;
+  }
 
-.mijdo-command-bar {
-min-height: 30px;
-}
+  .mijdo-command-item {
+    padding: 4px 4px;
+  }
 
-.mijdo-command-item {
-padding: 4px 5px;
-}
-
-.mijdo-profile-window {
-width: calc(100% - 16px);
-height: calc(100% - 24px);
-}
-
-.mijdo-profile-content {
-padding: 14px;
-}
+  .mijdo-desktop-icons.is-arranged .mijdo-desktop-icon {
+    width: 72px;
+    height: 62px;
+    font-size: 11px;
+  }
 }

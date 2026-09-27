@@ -1,53 +1,58 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from "react";
+import type { WindowPosition } from "../types/window";
 
-type WindowPosition = {
-  x: number
-  y: number
-}
+type PointerOffset = WindowPosition;
 
-type PointerOffset = WindowPosition
+/*
+ Keeps at least this much of the window reachable from the left/top edges,
+ so a window can never be dragged somewhere its title bar cannot be grabbed.
+*/
+const MIN_REACHABLE_WIDTH = 140;
+const MIN_REACHABLE_HEIGHT = 60;
 
-export function useDraggableWindow(initialPosition: WindowPosition) {
-  const [position, setPosition] = useState(() => ({
-    x: Math.min(initialPosition.x, Math.max(8, window.innerWidth - 320)),
-    y: initialPosition.y,
-  }))
-  const [isDragging, setIsDragging] = useState(false)
-  const offsetRef = useRef<PointerOffset>({ x: 0, y: 0 })
+export function useDraggableWindow(
+  position: WindowPosition,
+  onMove: (position: WindowPosition) => void,
+) {
+  const [isDragging, setIsDragging] = useState(false);
+  const offsetRef = useRef<PointerOffset>({ x: 0, y: 0 });
 
   function startDragging(event: React.PointerEvent<HTMLElement>) {
-    if (event.button !== 0) return
+    if (event.button !== 0) return;
 
     offsetRef.current = {
       x: event.clientX - position.x,
       y: event.clientY - position.y,
-    }
-    event.currentTarget.setPointerCapture(event.pointerId)
-    setIsDragging(true)
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setIsDragging(true);
   }
 
   useEffect(() => {
-    if (!isDragging) return
+    if (!isDragging) return;
 
     function moveWindow(event: PointerEvent) {
-      setPosition({
-        x: Math.max(0, event.clientX - offsetRef.current.x),
-        y: Math.max(0, event.clientY - offsetRef.current.y),
-      })
+      const maxX = Math.max(0, window.innerWidth - MIN_REACHABLE_WIDTH);
+      const maxY = Math.max(0, window.innerHeight - MIN_REACHABLE_HEIGHT);
+
+      onMove({
+        x: Math.min(Math.max(0, event.clientX - offsetRef.current.x), maxX),
+        y: Math.min(Math.max(0, event.clientY - offsetRef.current.y), maxY),
+      });
     }
 
     function stopDragging() {
-      setIsDragging(false)
+      setIsDragging(false);
     }
 
-    window.addEventListener('pointermove', moveWindow)
-    window.addEventListener('pointerup', stopDragging)
+    window.addEventListener("pointermove", moveWindow);
+    window.addEventListener("pointerup", stopDragging);
 
     return () => {
-      window.removeEventListener('pointermove', moveWindow)
-      window.removeEventListener('pointerup', stopDragging)
-    }
-  }, [isDragging])
+      window.removeEventListener("pointermove", moveWindow);
+      window.removeEventListener("pointerup", stopDragging);
+    };
+  }, [isDragging, onMove]);
 
-  return { position, isDragging, startDragging }
+  return { isDragging, startDragging };
 }

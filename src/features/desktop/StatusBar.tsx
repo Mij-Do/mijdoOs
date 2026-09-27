@@ -1,26 +1,63 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
+import type { WindowId, WindowState } from "../../types/window";
 
 function getCurrentTime() {
   return new Intl.DateTimeFormat(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
+    hour: "2-digit",
+    minute: "2-digit",
     hour12: false,
-  }).format(new Date())
+  }).format(new Date());
 }
 
-export function StatusBar({ isMijdoOpen }: { isMijdoOpen: boolean }) {
-  const [time, setTime] = useState(getCurrentTime)
+type StatusBarProps = {
+  windows: WindowState[];
+  onOpenWindow: (id: WindowId) => void;
+  onOpenCv: () => void;
+};
+
+export function StatusBar({ windows, onOpenWindow, onOpenCv }: StatusBarProps) {
+  const [time, setTime] = useState(getCurrentTime);
 
   useEffect(() => {
-    const clock = window.setInterval(() => setTime(getCurrentTime()), 1000)
+    const clock = window.setInterval(() => setTime(getCurrentTime()), 1000);
 
-    return () => window.clearInterval(clock)
-  }, [])
+    return () => window.clearInterval(clock);
+  }, []);
 
   return (
     <footer className="mijdo-status-bar">
-      {isMijdoOpen && <span className="mijdo-status-item">[Mijdo.exe]</span>}
-      <time dateTime={new Date().toISOString()}>{time}</time>
+      <div className="mijdo-status-apps">
+        {windows
+          .filter((windowState) => windowState.isOpen)
+          .map((windowState) => (
+            <button
+              className="mijdo-status-item"
+              type="button"
+              key={windowState.id}
+              data-active={windowState.isFocused}
+              data-minimized={windowState.isMinimized}
+              aria-label={
+                windowState.isMinimized
+                  ? `Restore ${windowState.title}`
+                  : `Focus ${windowState.title}`
+              }
+              onClick={() => onOpenWindow(windowState.id)}
+            >
+              [{windowState.title}]
+            </button>
+          ))}
+      </div>
+      <div className="mijdo-status-actions">
+        <button
+          className="mijdo-status-cv"
+          type="button"
+          aria-label="Open CV"
+          onClick={onOpenCv}
+        >
+          [CV]
+        </button>
+        <time dateTime={new Date().toISOString()}>{time}</time>
+      </div>
     </footer>
-  )
+  );
 }
