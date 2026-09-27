@@ -1,0 +1,122 @@
+import { contact } from "../../data/contact";
+import { education } from "../../data/education";
+import { experience } from "../../data/experience";
+import { profile } from "../../data/profile";
+import { projects } from "../../data/projects";
+import {
+  softSkills,
+  spokenLanguages,
+  technicalSkills,
+} from "../../data/skills";
+import type { WindowControllerProps } from "../../types/window";
+import { DetailLinks, DetailList, DetailSection, DetailWindow } from "./DetailWindow";
+
+export function ProfileApplication(props: WindowControllerProps) {
+  return (
+    <DetailWindow {...props}>
+      <DetailSection title="IDENTITY">
+        <p>{profile.name}</p>
+        <p>{profile.title}</p>
+        <p>{profile.role}</p>
+        <p>{profile.location}</p>
+      </DetailSection>
+      <DetailSection title="SUMMARY">
+        <p>{profile.summary}</p>
+        <p>{profile.about}</p>
+      </DetailSection>
+    </DetailWindow>
+  );
+}
+
+export function EducationApplication(props: WindowControllerProps) {
+  return (
+    <DetailWindow {...props}>
+      {education.map((record) => (
+        <DetailSection title={record.institution} key={record.institution}>
+          <p>{record.degree}</p>
+          <p>{record.period}</p>
+          <p>{record.location}</p>
+        </DetailSection>
+      ))}
+    </DetailWindow>
+  );
+}
+
+export function SkillsApplication(props: WindowControllerProps) {
+  return (
+    <DetailWindow {...props}>
+      <DetailSection title="TECHNICAL SKILLS">
+        {technicalSkills.map((group) => (
+          <div className="mijdo-detail-group" key={group.category}>
+            <h3>{group.category}</h3>
+            <p>{group.items.join(" / ")}</p>
+          </div>
+        ))}
+      </DetailSection>
+      <DetailSection title="SOFT SKILLS">
+        {softSkills.map((group) => (
+          <div className="mijdo-detail-group" key={group.category}>
+            <h3>{group.category}</h3>
+            <p>{group.items.join(" ")}</p>
+          </div>
+        ))}
+      </DetailSection>
+      <DetailSection title="LANGUAGES">
+        {spokenLanguages.map((group) => (
+          <p key={group.category}>
+            {group.category}: {group.items.join(", ")}
+          </p>
+        ))}
+      </DetailSection>
+    </DetailWindow>
+  );
+}
+
+export function ExperienceApplication(props: WindowControllerProps) {
+  return (
+    <DetailWindow {...props}>
+      {experience.map((record) => (
+        <DetailSection
+          title={`${record.role} - ${record.company}`}
+          key={record.company}
+        >
+          <p>{record.period}</p>
+          <p>{record.description}</p>
+          <DetailList items={record.responsibilities} />
+        </DetailSection>
+      ))}
+    </DetailWindow>
+  );
+}
+
+export function ProjectsApplication(props: WindowControllerProps) {
+  return (
+    <DetailWindow {...props}>
+      {projects.map((project) => (
+        <DetailSection title={project.name} key={project.name}>
+          <p>
+            {project.date}
+            {project.type ? ` - ${project.type}` : ""}
+          </p>
+          <p>TECH: {project.technologies.join(" / ")}</p>
+          <p>{project.description}</p>
+          <DetailList items={project.features} />
+          <DetailLinks links={project.links} />
+        </DetailSection>
+      ))}
+    </DetailWindow>
+  );
+}
+
+export function ContactApplication(props: WindowControllerProps) {
+  return (
+    <DetailWindow {...props}>
+      <DetailSection title="CONTACT">
+        <p>{contact.name}</p>
+        <p>Email: {contact.email}</p>
+        <p>Phone: {contact.phone}</p>
+        <p>Location: {contact.location}</p>
+      </DetailSection>
+    </DetailWindow>
+  );
+}
