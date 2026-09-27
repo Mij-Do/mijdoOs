@@ -21,6 +21,7 @@ const desktopApplications: { id: DesktopAppId; label: string; icon: string }[] =
   { id: "experience", label: "Experience.exe", icon: "EXP" },
   { id: "projects", label: "Projects.exe", icon: "PRJ" },
   { id: "contact", label: "Contact.exe", icon: "CNT" },
+  { id: "terminal", label: "Terminal.exe", icon: "TRM" },
 ];
 
 export function Desktop({

@@ -112,6 +112,11 @@ export function createMenuDefinitions(
         { type: "item", label: "Mijdo.exe", onSelect: () => actions.openWindow("mijdo") },
         {
           type: "item",
+          label: "Terminal.exe",
+          onSelect: () => actions.openWindow("terminal"),
+        },
+        {
+          type: "item",
           label: "Projects",
           onSelect: () => actions.openWindow("projects"),
         },
