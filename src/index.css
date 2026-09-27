@@ -37,6 +37,31 @@ ROOT VARIABLES
 
   --mijdo-border-width: 1px;
   --mijdo-window-border: 2px;
+
+  /*
+    Six colours and nothing else. Every surface, every border and every state
+    in the system is one of them, which is what keeps a system of this age
+    looking deliberate rather than decorated.
+  */
+  --mijdo-surface-raised: inset -1px -1px 0 0 var(--mijdo-dark),
+    inset 1px 1px 0 0 var(--mijdo-white);
+  --mijdo-surface-sunken: inset -1px -1px 0 0 var(--mijdo-white),
+    inset 1px 1px 0 0 var(--mijdo-gray);
+  --mijdo-raised-border: var(--mijdo-white) var(--mijdo-dark) var(--mijdo-dark)
+    var(--mijdo-white);
+  --mijdo-sunken-border: var(--mijdo-gray) var(--mijdo-white) var(--mijdo-white)
+    var(--mijdo-gray);
+
+  /*
+    Motion is short and stepped. A machine of this vintage moved in discrete
+    jumps, and steps() keeps the interface from drifting into eased, modern
+    motion no matter what is being animated.
+  */
+  --mijdo-motion-fast: 80ms;
+  --mijdo-motion-base: 120ms;
+  --mijdo-motion-slow: 160ms;
+  --mijdo-ease: steps(2, end);
+  --mijdo-ease-soft: linear;
 }
 
 /* =========================================================
@@ -104,6 +129,16 @@ img {
   max-width: 100%;
 }
 
+/*
+  Tailwind's preflight clears list markers, which would leave the feature
+  lists in the applications without any marker at all. The system keeps its own
+  markers so those lists read as lists.
+*/
+ol,
+ul {
+  list-style: disc;
+}
+
 /* =========================================================
 SELECTION
 ========================================================= */
@@ -155,6 +190,37 @@ SCROLLBARS
 }
 
 /* =========================================================
+SCREEN
+========================================================= */
+
+/*
+  Everything sits inside one screen-sized box: the shell, the boot sequence
+  and the tube effect. The shell is not the positioning context for the CRT
+  layer, which is why the wrapper exists.
+*/
+.mijdo-screen {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+}
+
+.mijdo-sr-only {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  margin: -1px;
+  padding: 0;
+  border: 0;
+
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* =========================================================
 WINDOW
 ========================================================= */
 
@@ -168,36 +234,81 @@ WINDOW
   border-bottom: var(--mijdo-window-border) solid var(--mijdo-dark);
 }
 
+/*
+  A hard, unblurred shadow is how windows of this era separated from the
+  desktop. The focused window casts a black one and the unfocused windows cast
+  a smaller gray one, so the stacking order stays readable without any glow.
+*/
+.mijdo-window {
+  box-shadow: 1px 1px 0 0 var(--mijdo-dark);
+
+  transition: box-shadow var(--mijdo-motion-fast) var(--mijdo-ease-soft);
+}
+
+.mijdo-window.is-focused {
+  box-shadow: 2px 2px 0 0 var(--mijdo-black);
+}
+
 /* =========================================================
 WINDOW TITLE BAR
 ========================================================= */
 
 .mijdo-titlebar {
   display: flex;
-
   align-items: center;
 
-  min-height: 22px;
-  padding: 1px 3px;
+  flex: 0 0 auto;
+
+  min-height: 20px;
+  padding: 1px 2px 1px 4px;
 
   background: var(--mijdo-navy);
   color: var(--mijdo-white);
 
+  font-size: 13px;
   font-weight: 700;
 
   user-select: none;
+
+  transition: background-color var(--mijdo-motion-fast) var(--mijdo-ease-soft),
+    color var(--mijdo-motion-fast) var(--mijdo-ease-soft);
 }
 
+/*
+  An unfocused caption is flat light gray with black text rather than a
+  hatched or dimmed navy one. It keeps the title readable when the window
+  loses focus, and it separates active from inactive through surface and
+  contrast instead of through a texture that competes with the text.
+*/
 .mijdo-titlebar.inactive {
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--mijdo-gray) 0,
-    var(--mijdo-gray) 1px,
-    var(--mijdo-light) 1px,
-    var(--mijdo-light) 2px
-  );
-
+  background: var(--mijdo-light);
   color: var(--mijdo-black);
+
+  border-bottom: 1px solid var(--mijdo-gray);
+}
+
+.mijdo-window-title {
+  flex: 1 1 auto;
+  overflow: hidden;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mijdo-titlebar {
+  cursor: move;
+  touch-action: none;
+}
+
+.mijdo-application-window.is-maximized .mijdo-titlebar {
+  cursor: default;
+}
+
+.mijdo-window-controls {
+  display: flex;
+  gap: 2px;
+
+  flex: 0 0 auto;
 }
 
 /* =========================================================
@@ -210,33 +321,224 @@ WINDOW CONTROL
   align-items: center;
   justify-content: center;
 
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 15px;
 
   padding: 0;
 
   background: var(--mijdo-light);
   color: var(--mijdo-black);
 
-  border-top: 1px solid var(--mijdo-white);
-  border-left: 1px solid var(--mijdo-white);
-
-  border-right: 1px solid var(--mijdo-dark);
-  border-bottom: 1px solid var(--mijdo-dark);
-
-  border-radius: 0;
+  border: 1px solid;
+  border-color: var(--mijdo-raised-border);
 
   line-height: 1;
 
+  cursor: default;
   user-select: none;
+
+  transition: background-color var(--mijdo-motion-fast) var(--mijdo-ease-soft);
+}
+
+.mijdo-window-control:hover {
+  background: var(--mijdo-white);
 }
 
 .mijdo-window-control:active {
-  border-top-color: var(--mijdo-dark);
-  border-left-color: var(--mijdo-dark);
+  border-color: var(--mijdo-sunken-border);
+}
 
-  border-right-color: var(--mijdo-white);
-  border-bottom-color: var(--mijdo-white);
+/*
+  The three caption glyphs are drawn rather than typed. A box drawing
+  character depends on whatever font happens to be installed, while these stay
+  the same pixel shape on every machine.
+*/
+.mijdo-glyph-minimize {
+  width: 8px;
+  height: 2px;
+
+  background: currentColor;
+}
+
+.mijdo-glyph-close {
+  position: relative;
+
+  width: 10px;
+  height: 10px;
+}
+
+.mijdo-glyph-close::before,
+.mijdo-glyph-close::after {
+  content: "";
+
+  position: absolute;
+  left: 4px;
+  top: -1px;
+
+  width: 2px;
+  height: 12px;
+
+  background: currentColor;
+}
+
+.mijdo-glyph-close::before {
+  transform: rotate(45deg);
+}
+
+.mijdo-glyph-close::after {
+  transform: rotate(-45deg);
+}
+
+.mijdo-glyph-maximize {
+  width: 10px;
+  height: 9px;
+
+  border: 1px solid currentColor;
+  border-top-width: 3px;
+}
+
+.mijdo-glyph-restore {
+  position: relative;
+
+  width: 10px;
+  height: 9px;
+
+  border: 1px solid currentColor;
+}
+
+/*
+  The back box of the restore glyph is masked with the control's own surface
+  colour, so only the two offset outlines remain.
+*/
+.mijdo-glyph-restore::after {
+  content: "";
+
+  position: absolute;
+  right: -1px;
+  bottom: 2px;
+
+  width: 8px;
+  height: 6px;
+
+  background: var(--mijdo-light);
+  border: 1px solid currentColor;
+}
+
+.mijdo-window-control:hover .mijdo-glyph-restore::after {
+  background: var(--mijdo-white);
+}
+
+.mijdo-window-control:active .mijdo-glyph-restore::after {
+  background: var(--mijdo-light);
+}
+
+/* =========================================================
+WINDOW PLACEMENT
+========================================================= */
+
+.mijdo-application-window {
+  position: absolute;
+
+  display: flex;
+  flex-direction: column;
+
+  width: min(560px, calc(100% - 24px));
+  height: min(520px, calc(100% - 24px));
+
+  /*
+    The frame writes its own offset into these two variables, so the window can
+    measure what is left below and beside itself. A window therefore cannot be
+    opened or dragged far enough to slide under the command bar or the status
+    bar, whatever the viewport does, and no runtime measurement is needed.
+  */
+  max-width: calc(100% - max(var(--mijdo-window-offset-x, 0px), 24px) - 8px);
+  max-height: calc(100% - max(var(--mijdo-window-offset-y, 0px), 24px) - 8px);
+
+  overflow: hidden;
+
+  /*
+    Maximizing and restoring is the one movement worth animating, and it is
+    animated as geometry rather than as a transform so the window really does
+    resize into the desktop.
+  */
+  transition: left var(--mijdo-motion-base) var(--mijdo-ease),
+    top var(--mijdo-motion-base) var(--mijdo-ease),
+    width var(--mijdo-motion-base) var(--mijdo-ease),
+    height var(--mijdo-motion-base) var(--mijdo-ease);
+}
+
+/*
+  System dialogs are small windows without a maximize control.
+*/
+.mijdo-application-window.is-dialog {
+  width: min(400px, calc(100% - 24px));
+  height: min(300px, calc(100% - 24px));
+}
+
+.mijdo-application-window.is-maximized {
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.mijdo-application-window.is-dragging {
+  user-select: none;
+
+  /* A window must track the pointer exactly, never chase it a frame behind. */
+  transition: none;
+}
+
+/* =========================================================
+WINDOW MOTION
+========================================================= */
+
+@keyframes mijdo-window-open {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes mijdo-window-close {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@keyframes mijdo-window-minimize {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.2) translateY(70%);
+  }
+}
+
+.mijdo-application-window {
+  animation: mijdo-window-open var(--mijdo-motion-base) var(--mijdo-ease) both;
+}
+
+.mijdo-application-window[data-exiting="close"] {
+  animation: mijdo-window-close 110ms var(--mijdo-ease) both;
+}
+
+.mijdo-application-window[data-exiting="minimize"] {
+  animation: mijdo-window-minimize 140ms var(--mijdo-ease) both;
 }
 
 /* =========================================================
@@ -245,10 +547,9 @@ COMMAND BAR
 
 .mijdo-command-bar {
   display: flex;
+  align-items: stretch;
 
-  align-items: center;
-
-  min-height: 28px;
+  min-height: 26px;
 
   background: var(--mijdo-light);
   color: var(--mijdo-black);
@@ -275,9 +576,17 @@ button.mijdo-command-item {
 }
 
 .mijdo-command-item {
-  padding: 4px 8px;
+  display: inline-flex;
+  align-items: center;
+
+  flex: 0 0 auto;
+
+  padding: 0 9px;
 
   cursor: default;
+
+  transition: background-color var(--mijdo-motion-fast) var(--mijdo-ease-soft),
+    color var(--mijdo-motion-fast) var(--mijdo-ease-soft);
 }
 
 .mijdo-command-item:hover,
@@ -290,12 +599,21 @@ button.mijdo-command-item {
 MENU
 ========================================================= */
 
+@keyframes mijdo-menu-open {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .mijdo-menu {
   position: fixed;
   z-index: 2000;
 
-  min-width: 190px;
-  max-width: min(240px, calc(100vw - 8px));
+  min-width: 200px;
+  max-width: min(260px, calc(100vw - 8px));
   max-height: calc(100vh - 8px);
 
   padding: 2px;
@@ -309,7 +627,11 @@ MENU
   border-right: 2px solid var(--mijdo-dark);
   border-bottom: 2px solid var(--mijdo-dark);
 
+  box-shadow: 2px 2px 0 0 var(--mijdo-black);
+
   user-select: none;
+
+  animation: mijdo-menu-open var(--mijdo-motion-fast) var(--mijdo-ease) both;
 }
 
 .mijdo-menu-separator {
@@ -335,12 +657,14 @@ MENU
   border: 0;
 
   text-align: left;
+
+  cursor: default;
 }
 
 .mijdo-menu-item-mark {
   flex: 0 0 auto;
 
-  width: 12px;
+  width: 14px;
 
   font-size: 12px;
   line-height: 1;
@@ -384,22 +708,7 @@ MENU
 }
 
 /* =========================================================
-DESKTOP
-========================================================= */
-
-.mijdo-desktop {
-  position: relative;
-
-  width: 100%;
-  height: 100%;
-
-  background: var(--mijdo-teal);
-
-  overflow: hidden;
-}
-
-/* =========================================================
-PHASE 01 DESKTOP LAYOUT
+APP SHELL LAYOUT
 ========================================================= */
 
 .mijdo-app-shell {
@@ -408,6 +717,7 @@ PHASE 01 DESKTOP LAYOUT
 
   width: 100%;
   height: 100vh;
+  height: 100dvh;
   min-height: 320px;
 }
 
@@ -416,133 +726,33 @@ PHASE 01 DESKTOP LAYOUT
 }
 
 .mijdo-desktop {
+  position: relative;
+
   flex: 1 1 auto;
+  width: 100%;
   height: auto;
   min-height: 0;
-}
 
-.mijdo-status-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  flex: 0 0 auto;
-  min-height: 28px;
-  padding: 2px 8px;
-
-  background: var(--mijdo-light);
-  color: var(--mijdo-black);
-
-  border-top: 1px solid var(--mijdo-white);
+  background: var(--mijdo-teal);
 
   overflow: hidden;
 }
 
-/*
-  The task list is the only part allowed to give up room. Without min-width: 0
-  and overflow it kept its full intrinsic width and pushed the clock, the CV
-  control and the social links off the right edge of the window.
-*/
-.mijdo-status-apps {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-}
-
-/*
-  The clock and the CV/social links must never be squeezed or pushed away, so
-  they hold their natural size and the task list absorbs the difference.
-*/
-.mijdo-status-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  flex: 0 0 auto;
-}
-
-.mijdo-status-item {
-  /* Shrinkable so a full task list never crowds out the clock area. */
-  flex: 0 1 auto;
-  min-width: 0;
-
-  padding: 2px 6px;
-
-  background: var(--mijdo-light);
-  border: 0;
-  color: var(--mijdo-black);
-  cursor: pointer;
-  text-align: left;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.mijdo-status-item:hover,
-.mijdo-status-item:focus-visible {
-  background: var(--mijdo-navy);
-  color: var(--mijdo-white);
-}
-
-.mijdo-status-item[data-active="true"] {
-  background: var(--mijdo-navy);
-  color: var(--mijdo-white);
-}
-
-.mijdo-status-item[data-minimized="true"] {
-  color: var(--mijdo-dark);
-  font-style: italic;
-}
-
-.mijdo-status-item[data-minimized="true"]::before {
-  content: "_ ";
-}
-
-/*
-  Status bar links share the flat retro surface of the task buttons.
-  They are anchors, so they are keyboard focusable and open in a new tab.
-*/
-.mijdo-status-links {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.mijdo-status-link,
-.mijdo-status-cv {
-  padding: 2px 6px;
-
-  background: var(--mijdo-light);
-  border: 0;
-  color: var(--mijdo-black);
-  cursor: pointer;
-
-  text-decoration: none;
-}
-
-.mijdo-status-link:hover,
-.mijdo-status-link:focus-visible,
-.mijdo-status-cv:hover,
-.mijdo-status-cv:focus-visible {
-  background: var(--mijdo-navy);
-  color: var(--mijdo-white);
-}
+/* =========================================================
+DESKTOP ICONS
+========================================================= */
 
 .mijdo-desktop-icons {
   position: absolute;
-  top: 18px;
-  left: 18px;
+  top: 14px;
+  left: 14px;
 
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  gap: 1px;
 
+  max-height: calc(100% - 28px);
 }
 
 /*
@@ -550,9 +760,10 @@ PHASE 01 DESKTOP LAYOUT
   which is how a classic desktop tidies its icons.
 */
 .mijdo-desktop-icons.is-arranged {
-  bottom: 18px;
+  bottom: 14px;
 
   height: auto;
+  max-height: none;
 
   flex-flow: column wrap;
   align-content: flex-start;
@@ -563,123 +774,407 @@ PHASE 01 DESKTOP LAYOUT
 
 .mijdo-desktop-icons.is-arranged .mijdo-desktop-icon {
   flex: 0 0 auto;
-
-  width: 82px;
-  height: 66px;
-
-  justify-content: flex-start;
 }
 
 .mijdo-desktop-icon {
+  position: relative;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 
   width: 76px;
-  padding: 4px;
+  min-height: 70px;
+  padding: 3px 2px 4px;
 
   background: transparent;
   color: var(--mijdo-white);
 
-
   border: 0;
-  cursor: pointer;
-  font-size: 12px;
+  cursor: default;
   text-align: center;
+
+  transition: background-color var(--mijdo-motion-fast) var(--mijdo-ease-soft);
+}
+
+/*
+  The label wraps to two lines instead of growing, and the .exe suffix is kept
+  on its own line by the component, so "Experience" over ".exe" is a readable
+  break rather than a mid-word one. The fixed height keeps every cell the same
+  size whatever the name.
+*/
+.mijdo-desktop-icon-label {
+  display: block;
+
+  max-width: 72px;
+
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.mijdo-desktop-icon-name,
+.mijdo-desktop-icon-extension {
+  display: block;
 }
 
 .mijdo-desktop-icon:hover,
 .mijdo-desktop-icon:focus-visible {
   background: var(--mijdo-navy);
-  border-radius: 2px;
+}
+
+.mijdo-desktop-icon:focus-visible {
+  outline: 1px dotted var(--mijdo-white);
+  outline-offset: -2px;
 }
 
 .mijdo-desktop-icon-art {
-  display: grid;
-  place-items: center;
+  display: block;
 
-  width: 42px;
+  flex: 0 0 auto;
+
+  width: 32px;
   height: 32px;
+}
+
+/*
+  A pip in the corner of the cell marks an application that is already running,
+  which is the only cue a classic desktop gave and the only one needed here.
+*/
+.mijdo-desktop-icon-flag {
+  position: absolute;
+  left: 3px;
+  top: 30px;
+
+  width: 3px;
+  height: 3px;
+
+  background: var(--mijdo-navy);
+}
+
+.mijdo-desktop-icon:hover .mijdo-desktop-icon-flag,
+.mijdo-desktop-icon:focus-visible .mijdo-desktop-icon-flag {
+  background: var(--mijdo-white);
+}
+
+/* =========================================================
+STATUS BAR
+========================================================= */
+
+.mijdo-status-bar {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+
+  flex: 0 0 auto;
+  height: 30px;
+  padding: 3px 4px;
 
   background: var(--mijdo-light);
   color: var(--mijdo-black);
 
-  border-top: 2px solid var(--mijdo-white);
-  border-left: 2px solid var(--mijdo-white);
-  border-right: 2px solid var(--mijdo-dark);
-  border-bottom: 2px solid var(--mijdo-dark);
+  border-top: 1px solid var(--mijdo-white);
 
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.mijdo-application-window {
-  position: absolute;
-
-  display: flex;
-  flex-direction: column;
-
-  width: min(560px, calc(100% - 24px));
-  height: min(520px, calc(100% - 36px));
   overflow: hidden;
 }
 
 /*
-  System dialogs are small windows without a maximize control.
+  The task list is the only part allowed to give up room. It sits in a sunken
+  well, and because it holds a minimum width per button the list degrades by
+  shortening labels rather than by pushing the clock, the CV control and the
+  social links off the edge of the window.
 */
-.mijdo-application-window.is-dialog {
-  width: min(400px, calc(100% - 24px));
-  height: min(300px, calc(100% - 36px));
-}
+.mijdo-status-apps {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
 
-.mijdo-application-window.is-maximized {
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.mijdo-application-window.is-dragging {
-  user-select: none;
-}
-
-.mijdo-window-title {
   flex: 1 1 auto;
+  min-width: 0;
+
+  padding: 1px;
   overflow: hidden;
 
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  background: var(--mijdo-light);
+  border: 1px solid;
+  border-color: var(--mijdo-sunken-border);
 }
 
-.mijdo-titlebar {
-  cursor: move;
-  touch-action: none;
-}
+.mijdo-status-item {
+  flex: 0 1 auto;
+  min-width: 42px;
+  max-width: 150px;
 
-.mijdo-application-window.is-maximized .mijdo-titlebar {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 0 6px;
+
+  background: var(--mijdo-light);
+  border: 1px solid transparent;
+  color: var(--mijdo-black);
+
+  font-size: 12px;
+
   cursor: default;
+  text-align: left;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  transition: background-color var(--mijdo-motion-fast) var(--mijdo-ease-soft),
+    color var(--mijdo-motion-fast) var(--mijdo-ease-soft);
 }
 
-.mijdo-window-control {
-  flex: 0 0 auto;
-  cursor: pointer;
+.mijdo-status-item:hover,
+.mijdo-status-item:focus-visible {
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
+}
+
+.mijdo-status-item:focus-visible {
+  outline: 1px dotted var(--mijdo-white);
+  outline-offset: -3px;
+}
+
+/*
+  The focused window's task button is pressed, the way a task list on a real
+  desktop shows the current item. Hover stays flat, so the two states can
+  never be mistaken for one another.
+*/
+.mijdo-status-item[data-active="true"] {
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
+
   font-weight: 700;
+  border-color: var(--mijdo-black);
+
+  box-shadow: inset 1px 1px 0 0 var(--mijdo-gray);
 }
 
-.mijdo-window-controls {
+.mijdo-status-item[data-minimized="true"] {
+  color: var(--mijdo-dark);
+}
+
+.mijdo-status-item[data-minimized="true"]::before {
+  content: "_ ";
+}
+
+/*
+  The clock and the CV/social links must never be squeezed or pushed away, so
+  they hold their natural size and the task list absorbs the difference.
+*/
+.mijdo-status-actions {
   display: flex;
+  align-items: center;
+  gap: 2px;
+
+  flex: 0 0 auto;
+
+  padding-left: 6px;
+  border-left: 1px solid var(--mijdo-gray);
+}
+
+/*
+  Status bar links share the flat retro surface of the task buttons.
+  They are anchors, so they are keyboard focusable and open in a new tab.
+*/
+.mijdo-status-links {
+  display: flex;
+  align-items: center;
   gap: 2px;
 }
 
-.mijdo-profile-content {
-  flex: 1 1 auto;
-  overflow: auto;
+.mijdo-status-link,
+.mijdo-status-cv {
+  display: inline-flex;
+  align-items: center;
 
-  padding: 18px;
+  padding: 0 5px;
+
+  background: var(--mijdo-light);
+  border: 1px solid transparent;
+  color: var(--mijdo-black);
+
+  font-size: 12px;
+
+  cursor: default;
+  text-decoration: none;
+
+  transition: background-color var(--mijdo-motion-fast) var(--mijdo-ease-soft),
+    color var(--mijdo-motion-fast) var(--mijdo-ease-soft);
 }
 
+.mijdo-status-link:hover,
+.mijdo-status-link:focus-visible,
+.mijdo-status-cv:hover,
+.mijdo-status-cv:focus-visible {
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
+}
+
+.mijdo-status-link:focus-visible,
+.mijdo-status-cv:focus-visible {
+  outline: 1px dotted var(--mijdo-white);
+  outline-offset: -2px;
+}
+
+.mijdo-status-clock {
+  padding: 0 5px;
+
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+APPLICATION CONTENT
+========================================================= */
+
+.mijdo-detail-content,
+.mijdo-profile-content {
+  flex: 1 1 auto;
+  min-height: 0;
+
+  overflow: auto;
+
+  padding: 14px 16px;
+}
+
+.mijdo-detail-section {
+  padding: 12px 0;
+
+  border-bottom: 1px solid var(--mijdo-gray);
+}
+
+.mijdo-detail-section:first-child {
+  padding-top: 0;
+}
+
+.mijdo-detail-section:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.mijdo-detail-section h2,
+.mijdo-detail-section h3,
+.mijdo-detail-section p {
+  margin: 0;
+}
+
+/*
+  Section headings are uppercased here rather than in the data, so every
+  application presents its sections the same way without a single title in the
+  portfolio having to be rewritten.
+*/
+.mijdo-detail-section h2 {
+  margin-bottom: 8px;
+
+  color: var(--mijdo-navy);
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.mijdo-detail-section h3 {
+  margin-top: 10px;
+
+  color: var(--mijdo-dark);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.mijdo-detail-section > p:first-of-type + p,
+.mijdo-detail-section p + p {
+  margin-top: 5px;
+}
+
+.mijdo-detail-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+
+  list-style: square;
+}
+
+.mijdo-detail-list li {
+  margin-top: 3px;
+}
+
+.mijdo-detail-list li::marker {
+  color: var(--mijdo-navy);
+}
+
+.mijdo-detail-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  margin-top: 10px;
+}
+
+.mijdo-detail-links a {
+  color: var(--mijdo-navy);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mijdo-detail-links a:hover,
+.mijdo-detail-links a:focus-visible {
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
+  text-decoration: none;
+}
+
+.mijdo-detail-group + .mijdo-detail-group {
+  margin-top: 8px;
+}
+
+/* =========================================================
+DIALOG ACTIONS
+========================================================= */
+
+.mijdo-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  flex: 0 0 auto;
+
+  padding: 8px 10px;
+
+  border-top: 1px solid var(--mijdo-gray);
+}
+
+.mijdo-dialog-button {
+  min-width: 68px;
+
+  padding: 3px 12px;
+
+  background: var(--mijdo-light);
+  color: var(--mijdo-black);
+
+  border: 1px solid;
+  border-color: var(--mijdo-raised-border);
+
+  cursor: default;
+
+  transition: background-color var(--mijdo-motion-fast) var(--mijdo-ease-soft);
+}
+
+.mijdo-dialog-button:hover {
+  background: var(--mijdo-white);
+}
+
+.mijdo-dialog-button:active {
+  border-color: var(--mijdo-sunken-border);
+}
+
+/* =========================================================
+MIJDO.EXE
+========================================================= */
+
 .mijdo-profile-heading {
-  padding-bottom: 14px;
+  padding-bottom: 12px;
+
   border-bottom: 1px solid var(--mijdo-gray);
 }
 
@@ -691,99 +1186,35 @@ PHASE 01 DESKTOP LAYOUT
 }
 
 .mijdo-profile-heading h1 {
-  font-size: 22px;
-  line-height: 1.1;
+  font-size: 20px;
+  line-height: 1.15;
 }
 
 .mijdo-profile-heading p {
-  margin-top: 5px;
+  margin-top: 4px;
 }
 
 .mijdo-profile-section {
-  padding: 14px 0;
+  padding: 12px 0;
+
   border-bottom: 1px solid var(--mijdo-gray);
 }
 
 .mijdo-profile-section:last-child {
   border-bottom: 0;
+  padding-bottom: 0;
 }
 
 .mijdo-profile-section h2 {
   margin-bottom: 7px;
 
   color: var(--mijdo-navy);
-  font-size: 14px;
+  font-size: 13px;
+  text-transform: uppercase;
 }
 
 .mijdo-profile-section p + p {
   margin-top: 5px;
-}
-
-.mijdo-detail-content {
-  flex: 1 1 auto;
-  overflow: auto;
-  padding: 18px;
-}
-
-.mijdo-detail-section {
-  padding: 14px 0;
-  border-bottom: 1px solid var(--mijdo-gray);
-}
-
-.mijdo-detail-section:first-child {
-  padding-top: 0;
-}
-
-.mijdo-detail-section:last-child {
-  border-bottom: 0;
-}
-
-.mijdo-detail-section h2,
-.mijdo-detail-section h3,
-.mijdo-detail-section p {
-  margin: 0;
-}
-
-.mijdo-detail-section h2 {
-  margin-bottom: 8px;
-  color: var(--mijdo-navy);
-  font-size: 14px;
-}
-
-.mijdo-detail-section h3 {
-  margin-top: 10px;
-  font-size: 13px;
-}
-
-.mijdo-detail-section p + p {
-  margin-top: 5px;
-}
-
-.mijdo-detail-list {
-  margin: 8px 0 0;
-  padding-left: 22px;
-}
-
-.mijdo-detail-links {
-  display: flex;
-  gap: 12px;
-
-  margin-top: 10px;
-}
-
-.mijdo-detail-links a {
-  color: var(--mijdo-navy);
-  text-decoration: none;
-}
-
-.mijdo-detail-links a:hover,
-.mijdo-detail-links a:focus-visible {
-  background: var(--mijdo-navy);
-  color: var(--mijdo-white);
-}
-
-.mijdo-detail-group + .mijdo-detail-group {
-  margin-top: 8px;
 }
 
 /* =========================================================
@@ -791,8 +1222,8 @@ SYSTEM DIALOG CONTENT
 ========================================================= */
 
 .mijdo-about {
-  padding-bottom: 12px;
-  margin-bottom: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
 
   border-bottom: 1px solid var(--mijdo-gray);
 }
@@ -801,8 +1232,8 @@ SYSTEM DIALOG CONTENT
   margin: 0;
 
   color: var(--mijdo-navy);
-  font-size: 22px;
-  line-height: 1.1;
+  font-size: 20px;
+  line-height: 1.15;
 }
 
 .mijdo-about-tagline {
@@ -821,42 +1252,22 @@ SYSTEM DIALOG CONTENT
   margin-top: 5px;
 }
 
+/*
+  A shortcut key is a sunken cap: dark on the top and left, light on the
+  bottom and right, so it reads as pressed into the page.
+*/
 .mijdo-shortcut-key {
   flex: 0 0 auto;
 
-  min-width: 150px;
+  min-width: 148px;
 
-  padding: 0 4px;
+  padding: 1px 5px;
 
   background: var(--mijdo-white);
-  border-top: 1px solid var(--mijdo-gray);
-  border-left: 1px solid var(--mijdo-gray);
-  border-right: 1px solid var(--mijdo-white);
-  border-bottom: 1px solid var(--mijdo-white);
+  border: 1px solid;
+  border-color: var(--mijdo-sunken-border);
 
   font-size: 12px;
-}
-
-/* =========================================================
-CRT EFFECT
-========================================================= */
-
-.mijdo-crt::after {
-  content: "";
-
-  position: fixed;
-  inset: 0;
-
-  pointer-events: none;
-
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 2px,
-    rgba(0, 0, 0, 0.045) 3px
-  );
-
-  z-index: 99999;
 }
 
 /* =========================================================
@@ -874,7 +1285,7 @@ TERMINAL
 
   font-family: var(--mijdo-font);
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.45;
 
   overflow: auto;
   overflow-wrap: break-word;
@@ -884,23 +1295,38 @@ TERMINAL
   user-select: text;
 }
 
+/*
+  The input paints no ring of its own, the way a console prompt does not, so
+  the whole terminal screen takes the indicator instead.
+*/
 .mijdo-terminal:focus-within {
-  outline: 1px dotted var(--mijdo-gray);
+  outline: 1px dotted var(--mijdo-white);
   outline-offset: -2px;
 }
 
 .mijdo-terminal-line {
-  min-height: 1.4em;
+  min-height: 1.45em;
 }
 
 /*
-  Entered commands stay visually separate from command output.
+  Three levels of output. Fresh output is the screen colour, a heading is
+  bright and bold, and anything the system reports back is stepped down to
+  light gray, which separates the command and its result from the result
+  itself without adding a colour to the system.
 */
 .mijdo-terminal-line[data-kind="echo"] {
   color: var(--mijdo-light);
 }
 
 .mijdo-terminal-line[data-kind="banner"] {
+  color: var(--mijdo-light);
+}
+
+.mijdo-terminal-line[data-kind="heading"] {
+  font-weight: 700;
+}
+
+.mijdo-terminal-line[data-kind="error"] {
   color: var(--mijdo-light);
 }
 
@@ -948,7 +1374,173 @@ FOCUS
 
 :focus-visible {
   outline: 1px dotted var(--mijdo-black);
-  outline-offset: 2px;
+  outline-offset: 1px;
+}
+
+/*
+  A black ring disappears on the navy caption, on the black terminal and on a
+  navy highlight, so those surfaces get the white one instead.
+*/
+.mijdo-titlebar :focus-visible,
+.mijdo-terminal :focus-visible,
+.mijdo-menu-item:focus-visible,
+.mijdo-status-item:focus-visible,
+.mijdo-status-link:focus-visible,
+.mijdo-status-cv:focus-visible {
+  outline-color: var(--mijdo-white);
+}
+
+/* =========================================================
+BOOT
+========================================================= */
+
+@keyframes mijdo-boot-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mijdo-boot-cursor {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.mijdo-boot {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 20px 22px;
+
+  background: var(--mijdo-black);
+  color: var(--mijdo-light);
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  /* A command line has no pointer of its own. */
+  cursor: none;
+
+  animation: mijdo-boot-in var(--mijdo-motion-fast) var(--mijdo-ease) both;
+
+  transition: opacity var(--mijdo-motion-base) var(--mijdo-ease-soft);
+}
+
+.mijdo-boot.is-leaving {
+  opacity: 0;
+}
+
+.mijdo-boot-screen {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mijdo-boot-line {
+  margin: 0;
+
+  white-space: pre-wrap;
+}
+
+.mijdo-boot-prompt {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mijdo-boot-cursor {
+  width: 8px;
+  height: 14px;
+
+  background: var(--mijdo-light);
+
+  animation: mijdo-boot-cursor 900ms steps(1, end) infinite;
+}
+
+.mijdo-boot-skip {
+  margin: 0;
+
+  color: var(--mijdo-dark);
+  font-size: 12px;
+}
+
+/* =========================================================
+CRT
+=========================================================
+
+  The tube effect is two fixed layers over the whole screen and nothing else:
+  a scanline pattern and a vignetted brightness wobble. Both are deliberately
+  near the threshold of perception. The scanlines darken by 5.5 percent on one
+  row in three, and the vignette only reaches 16 percent in the corners, so the
+  display reads as a display rather than as a filter sitting on the interface.
+
+  Only the wobble animates, it animates opacity alone so it stays on the
+  compositor, and it is removed entirely under reduced motion.
+========================================================= */
+
+.mijdo-crt {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  pointer-events: none;
+}
+
+.mijdo-crt::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.055) 2px,
+    rgba(0, 0, 0, 0.055) 3px
+  );
+}
+
+.mijdo-crt::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background-image: radial-gradient(
+    130% 130% at 50% 50%,
+    rgba(0, 0, 0, 0) 55%,
+    rgba(0, 0, 0, 0.16) 100%
+  );
+
+  animation: mijdo-crt-flicker 9s steps(1, end) infinite;
+}
+
+@keyframes mijdo-crt-flicker {
+  0%,
+  46% {
+    opacity: 1;
+  }
+  47%,
+  52% {
+    opacity: 0.86;
+  }
+  53%,
+  100% {
+    opacity: 1;
+  }
 }
 
 /* =========================================================
@@ -964,6 +1556,16 @@ ACCESSIBILITY
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  /*
+    The two effects that would otherwise keep running forever are removed
+    outright rather than shortened, so nothing on the page is still repainting
+    once the preference is set.
+  */
+  .mijdo-crt::after,
+  .mijdo-boot-cursor {
+    animation: none;
+  }
 }
 
 /* =========================================================
@@ -975,68 +1577,98 @@ MOBILE
     font-size: 13px;
   }
 
-  .mijdo-window {
-    border-width: 1px;
+  /*
+    Eight icons in one column do not fit a phone, so the desktop keeps the
+    icons and drops the imitation: they wrap into rows instead of becoming
+    unreachable.
+  */
+  .mijdo-desktop-icons {
+    right: 8px;
+
+    flex-flow: row wrap;
+    align-content: flex-start;
+    gap: 2px;
   }
 
-  .mijdo-titlebar {
-    min-height: 24px;
+  .mijdo-desktop-icons.is-arranged {
+    right: auto;
+    bottom: auto;
+
+    flex-flow: row wrap;
   }
 
-  .mijdo-command-bar {
-    min-height: 30px;
-  }
+  /*
+    A window on a phone is a sheet: it fills the width, and it runs from below
+    the icon rows to the bottom of the surface. useContainedWindowPosition seats
+    it there and publishes the offset it was given, so the height is read back
+    out of that rather than assumed, which keeps the sheet clear of the launcher
+    at any width and however the icons are arranged.
 
-  .mijdo-command-item {
-    padding: 4px 5px;
-  }
-
+    The base cap subtracts a window's own offset so a floating window cannot
+    reach the right edge. That is right for a window at a position and wrong for
+    a sheet that is already inset, so the caps are restated to match the size
+    rules here instead of shaving them.
+  */
   .mijdo-application-window {
     width: calc(100% - 16px);
-    height: calc(100% - 24px);
+    max-width: calc(100% - 16px);
+
+    height: calc(100% - var(--mijdo-window-offset-y, 20px) - 12px);
+    max-height: calc(100% - var(--mijdo-window-offset-y, 20px) - 12px);
   }
 
   .mijdo-application-window.is-dialog {
     width: calc(100% - 16px);
-    height: min(320px, calc(100% - 24px));
+    max-width: calc(100% - 16px);
+
+    height: min(320px, calc(100% - var(--mijdo-window-offset-y, 20px) - 12px));
   }
 
+  /*
+    A sheet fills the surface, so its caption does not move it. The pointer
+    cursor is the cue that would invite the drag, so it goes too.
+  */
+  .mijdo-application-window .mijdo-titlebar {
+    cursor: default;
+  }
+
+  .mijdo-detail-content,
   .mijdo-profile-content {
-    padding: 14px;
-  }
-
-  .mijdo-detail-content {
-    padding: 14px;
+    padding: 12px;
   }
 
   .mijdo-status-bar {
-    padding-inline: 4px;
+    padding-inline: 2px;
   }
 
   .mijdo-status-item {
-    min-width: 0;
+    min-width: 36px;
+    max-width: 110px;
   }
 
   .mijdo-status-actions {
-    gap: 4px;
+    gap: 0;
+    padding-left: 4px;
   }
 
-  .mijdo-status-apps {
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .mijdo-status-apps::-webkit-scrollbar {
-    display: none;
+  .mijdo-status-link,
+  .mijdo-status-cv,
+  .mijdo-status-clock {
+    padding-inline: 3px;
   }
 
   .mijdo-shortcut-key {
-    min-width: 116px;
+    min-width: 112px;
   }
 
   .mijdo-terminal {
     padding: 8px;
     font-size: 12px;
+  }
+
+  .mijdo-boot {
+    padding: 14px 16px;
+    font-size: 13px;
   }
 }
 
@@ -1045,17 +1677,36 @@ NARROW SCREENS
 ========================================================= */
 
 @media (max-width: 420px) {
-  .mijdo-command-bar {
+  .mijdo-command-item {
+    padding: 0 6px;
     font-size: 12px;
   }
 
-  .mijdo-command-item {
-    padding: 4px 4px;
+  .mijdo-desktop-icon {
+    width: 68px;
+    min-height: 66px;
   }
 
-  .mijdo-desktop-icons.is-arranged .mijdo-desktop-icon {
-    width: 72px;
-    height: 62px;
-    font-size: 11px;
+  .mijdo-desktop-icon-label {
+    max-width: 64px;
+    font-size: 10px;
+  }
+
+  .mijdo-desktop-icon-art {
+    width: 28px;
+    height: 28px;
+  }
+
+  .mijdo-desktop-icon-flag {
+    top: 26px;
+  }
+
+  .mijdo-shortcut {
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+
+  .mijdo-shortcut-key {
+    min-width: 0;
   }
 }

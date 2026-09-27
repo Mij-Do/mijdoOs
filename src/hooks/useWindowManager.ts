@@ -76,7 +76,7 @@ function raiseWindow(
   };
 }
 
-function windowManagerReducer(
+export function windowManagerReducer(
   state: WindowManagerState,
   action: WindowManagerAction,
 ): WindowManagerState {
@@ -167,12 +167,21 @@ function windowManagerReducer(
   }
 }
 
+/*
+  The starting point is stated once, so the reducer tests and the hook start
+  from the same state instead of two copies of it that can drift apart.
+*/
+export function createInitialWindowManagerState(
+  windows: WindowMap,
+): WindowManagerState {
+  return { windows, activeWindowId: null, topZIndex: FIRST_Z_INDEX };
+}
+
 export function useWindowManager(initialWindows: WindowMap) {
-  const [state, dispatch] = useReducer(windowManagerReducer, {
-    windows: initialWindows,
-    activeWindowId: null,
-    topZIndex: FIRST_Z_INDEX,
-  });
+  const [state, dispatch] = useReducer(
+    windowManagerReducer,
+    createInitialWindowManagerState(initialWindows),
+  );
 
   const actions = useMemo(
     () => ({

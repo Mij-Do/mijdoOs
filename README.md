@@ -1,873 +1,241 @@
 # MijdoOS
 
-> **A personal computer disguised as a developer portfolio.**
+A browser-based operating system that is also a developer portfolio, for
+**Ahmed Samir** — full-stack / front-end developer and technical co-founder at
+Meem Langs.
 
-MijdoOS is an interactive developer portfolio for **Ahmed Samir**, designed as a fictional early personal computer operating system inspired by the visual language of **Microsoft Windows 1.x and early graphical user interfaces**.
-
-Instead of presenting the portfolio as a traditional modern website, MijdoOS turns the entire experience into an interactive desktop environment.
-
-Visitors can boot the system, open applications, move windows, inspect projects, browse skills and experience, use a terminal, and explore Ahmed's professional profile through an operating-system metaphor.
+The site boots, shows a desktop, and hands the visitor a set of applications:
+windows you can open, move, minimize, maximize and stack, a command prompt that
+answers real questions about the portfolio, and a CV. The visual language is
+Windows 1.x and early graphical user interfaces, drawn entirely with CSS.
 
 ---
 
-# Concept
+## Contents
 
-The central idea behind MijdoOS is:
+- [What it does](#what-it-does)
+- [Stack](#stack)
+- [Getting started](#getting-started)
+- [Scripts](#scripts)
+- [Testing](#testing)
+- [Project structure](#project-structure)
+- [Accessibility](#accessibility)
+- [Browser support](#browser-support)
+- [Deployment](#deployment)
+- [Notes for maintainers](#notes-for-maintainers)
 
-> **The operating system is the portfolio.**
+---
 
-MijdoOS is not a modern portfolio with retro colors.
+## What it does
 
-The entire interface follows an early graphical operating-system architecture:
+**Boot.** A short POST-style sequence runs on load, and any key press skips it.
 
-```text
-Boot
-  ↓
-Desktop
-  ↓
-Applications
-  ↓
-Windows
-  ↓
-Portfolio Content
+**Desktop.** Eight applications, arranged in a cascade so an unopened desktop
+stays readable. Every icon is drawn from a 16×16 pixel map as merged SVG
+rectangles, with no image assets. Icons open on a single click, and a right
+click opens a context menu. `View ▸ Arrange Icons` sorts and upper-cases them
+the way a real desktop does.
+
+**Windows.** Open, close, minimize, restore, maximize, drag, and raise on
+focus. Windows cannot be dragged somewhere their title bar cannot be grabbed
+again. Dialogs are deliberately **not** modal: the desktop stays usable behind
+an open message box, and `Escape` closes it.
+
+**Command bar.** `SYSTEM`, `File`, `View`, `Run`, `Help`, with a
+portal-rendered menu panel, full arrow-key navigation, separators, a checkable
+item, and a disabled item when the action does not apply.
+
+**Terminal.** A real prompt with 13 commands: `help`, `whoami`, `about`,
+`projects`, `skills`, `experience`, `contact`, `github`, `dir`, `clear` (alias
+`cls`), `date`, `version` and `exit`. Commands are case-insensitive and answer
+from the same data the windows render, so `dir` and the desktop can never
+disagree about which programs exist. Scrollback history works with `ArrowUp` /
+`ArrowDown`.
+
+**Task bar and status bar.** Task buttons for every open window, the clock,
+the social links, and the CV link. There is no theme toggle: the palette is a
+deliberate six-colour system with a single light scheme.
+
+**Content.** Profile, education, skills, experience, projects and contact
+details, all sourced from `src/data/` so the terminal, the windows and the
+README cannot drift apart.
+
+## Stack
+
+| Concern | Choice | Notes |
+| --- | --- | --- |
+| Build | Vite 8 | `tsc -b && vite build` |
+| UI | React 19 + TypeScript | strict mode |
+| Styling | One hand-written stylesheet | `src/index.css`, 1 687 lines, BEM-style `mijdo-*` classes and CSS custom properties |
+| Tailwind | v4, **preflight only** | installed and active, but see [Notes for maintainers](#notes-for-maintainers) |
+| Unit tests | Vitest | node environment, no DOM |
+| Browser tests | Playwright | Chromium + Firefox |
+| Linting | ESLint | flat config |
+
+There is no router, no state library, no animation library and no CSS
+framework. Application state is a single `useReducer` in
+`src/hooks/useWindowManager.ts`.
+
+## Getting started
+
+**Prerequisites:** Node.js 20.19+ or 22.12+, which is what Vite 8 requires
+(validated on 24.21.0), and pnpm (validated on 12.4.2).
+
+```bash
+pnpm install
+pnpm dev          # http://localhost:5173
 ```
 
-The primary application is:
+Production build and local preview of that build:
 
-```text
-Mijdo.exe
+```bash
+pnpm build        # type-checks, then emits dist/
+pnpm preview
 ```
 
-which acts as the main portfolio command center.
+## Scripts
 
-Other applications represent different parts of the portfolio:
+| Script | What it does |
+| --- | --- |
+| `pnpm dev` | Vite dev server with fast refresh |
+| `pnpm build` | Type-check the whole project, then build to `dist/` |
+| `pnpm preview` | Serve the built `dist/` |
+| `pnpm lint` | ESLint over the repo |
+| `pnpm test` | Vitest unit suite, single run |
+| `pnpm test:watch` | Vitest in watch mode |
+| `pnpm test:browser` | Playwright suite; builds and previews automatically |
 
-```text
-Mijdo.exe
-Projects Manager
-Mijdo Terminal
-Skills.cfg
-Experience.dat
-Contact
-System Information
-BugCheck.log
+## Testing
+
+**Unit tests** (`pnpm test`) — 142 tests across 5 files, plain node
+environment, no DOM and no testing library:
+
+| File | Covers |
+| --- | --- |
+| `src/features/terminal/terminalParser.test.ts` | whitespace, casing, arguments, quotes |
+| `src/features/terminal/terminalHistory.test.ts` | recall boundaries, repeats, round-tripping |
+| `src/hooks/useWindowManager.test.ts` | every reducer action and the invariants between them |
+| `src/features/terminal/terminalCommands.test.ts` | the command registry, `dir` layout, unknown input |
+| `src/features/desktop/desktopIconPixels.test.ts` | 16×16 grids, palette, bounds, caching |
+
+**Browser tests** (`pnpm test:browser`) — 163 tests in `tests/browser/`, run
+against a real build in Chromium and Firefox:
+
+| Spec | Covers |
+| --- | --- |
+| `boot.spec.ts` | the sequence, skipping, reduced motion |
+| `desktop.spec.ts` | icons, labels, artwork, context menu, arranging |
+| `windows.spec.ts` | lifecycle, focus, stacking, dragging, dialogs, show desktop |
+| `menus.spec.ts` | contents of every menu, dismissal, keyboard navigation |
+| `terminal.spec.ts` | prompt, commands, history, clearing, exit |
+| `keyboard.spec.ts` | tab order, focus rings, the documented shortcuts |
+| `responsive.spec.ts` | desktop, tablet, mobile and narrow-phone layouts |
+| `a11y.spec.ts` | names, roles, live regions, reduced motion |
+
+First run needs the browsers:
+
+```bash
+pnpm exec playwright install chromium firefox
 ```
 
----
-
-# Goals
-
-MijdoOS has four main goals:
-
-1. Present Ahmed's portfolio in a memorable way.
-2. Demonstrate practical React and TypeScript skills.
-3. Build a real interactive desktop/window-management system.
-4. Combine nostalgic computer UI design with a usable professional portfolio.
-
-The retro interface should never prevent visitors from quickly accessing:
-
-* About
-* Experience
-* Skills
-* Projects
-* Contact
-* GitHub
-* Resume / CV
-
----
-
-# Technology Stack
-
-## Core
-
-### React
-
-React is the primary UI framework.
-
-It is responsible for:
-
-* component architecture
-* rendering
-* application state
-* window management UI
-* application composition
-* interactions
-
----
-
-### TypeScript
-
-TypeScript provides type safety across the application.
-
-It will be used for:
-
-* window state
-* reducer actions
-* application definitions
-* terminal commands
-* project data
-* system state
-* component props
-
----
-
-### Vite
-
-Vite is used as the development environment and build tool.
-
-Reasons:
-
-* fast development server
-* React Fast Refresh
-* TypeScript support
-* simple configuration
-* optimized production builds
-
-MijdoOS is primarily a client-side interactive application, so Vite provides a lightweight foundation without introducing unnecessary server architecture.
-
----
-
-# Styling
-
-## Tailwind CSS
-
-Tailwind CSS is the primary styling system.
-
-Tailwind will handle:
-
-* layout
-* spacing
-* sizing
-* positioning
-* responsive behavior
-* flexbox
-* grid
-* typography utilities
-* borders
-* backgrounds
-* state variants
-
-However, MijdoOS will **not** use Tailwind's default visual identity.
-
-A custom MijdoOS design system will be built on top of Tailwind.
-
-The project will define its own:
-
-* colors
-* typography
-* borders
-* bevels
-* window styles
-* buttons
-* menus
-* dialogs
-* desktop environment
-
-Tailwind is the implementation utility layer.
-
-MijdoOS is the visual design system.
-
----
-
-# Visual Identity
-
-MijdoOS is primarily inspired by early Windows 1.x / early graphical operating systems.
-
-The visual language uses:
-
-* rectangular geometry
-* hard borders
-* inset/outset bevels
-* bitmap-inspired typography
-* compact spacing
-* limited colors
-* monochrome controls
-* navy active title bars
-* gray inactive windows
-* solid teal desktop background
-* subtle CRT effects
-
-Avoid:
-
-* glassmorphism
-* gradients
-* rounded cards
-* excessive shadows
-* modern dashboard styling
-* excessive animations
-* neon cyberpunk styling
-
----
-
-# Color System
-
-The primary MijdoOS palette:
-
-```text
-Black       #000000
-White       #FFFFFF
-Light Gray  #C0C0C0
-Gray        #808080
-Dark Gray   #404040
-Navy        #000080
-Teal        #008080
-```
-
-Additional colors should be used very sparingly.
-
-The palette should feel like an early computer display rather than a modern UI.
-
----
-
-# Interaction
-
-MijdoOS behaves like a small desktop environment.
-
-The user can:
-
-* open applications
-* close windows
-* minimize windows
-* restore windows
-* maximize windows
-* move windows
-* focus windows
-* switch between running applications
-* open system menus
-* interact with the terminal
-
-The interface should feel responsive and mechanical rather than heavily animated.
-
----
-
-# Motion
-
-Motion is used selectively for:
-
-* window opening
-* window closing
-* minimizing
-* restoring
-* subtle interaction feedback
-* drag interactions when appropriate
-
-Animations should remain short and restrained.
-
-MijdoOS should never feel like a modern motion-heavy landing page.
-
----
-
-# State Management
-
-The project will initially use native React state management.
-
-The main OS state will be managed with:
-
-```text
-Context
-+
-useReducer
-```
-
-The global OS state includes:
-
-```text
-OS State
-│
-├── Windows
-│   ├── open
-│   ├── minimized
-│   ├── maximized
-│   ├── position
-│   ├── dimensions
-│   └── z-index
-│
-├── Active Window
-├── Open Menus
-├── System State
-└── Terminal State
-```
-
-Example actions:
-
-```text
-OPEN_WINDOW
-CLOSE_WINDOW
-MINIMIZE_WINDOW
-RESTORE_WINDOW
-MAXIMIZE_WINDOW
-FOCUS_WINDOW
-MOVE_WINDOW
-RESIZE_WINDOW
-```
-
-An external state library such as Zustand will not be used initially.
-
----
-
-# Window Manager
-
-The Window Manager is the heart of MijdoOS.
-
-It is responsible for:
-
-* window registration
-* opening
-* closing
-* minimizing
-* restoring
-* maximizing
-* focusing
-* moving
-* positioning
-* z-index management
-
-Architecture:
-
-```text
-User Interaction
-       ↓
-Window Action
-       ↓
-Reducer
-       ↓
-OS State
-       ↓
-Window Manager
-       ↓
-Rendered Windows
-```
-
----
-
-# Dragging
-
-Windows use coordinate-based movement rather than traditional sortable drag-and-drop.
-
-The project can use Motion for pointer and drag interactions.
-
-A drag-and-drop framework such as dnd-kit is intentionally not required because MijdoOS does not need sortable lists or drop zones as its primary interaction model.
-
----
-
-# Terminal
-
-The first version will use a custom React terminal.
-
-Example commands:
-
-```text
-whoami
-help
-projects
-skills
-experience
-contact
-github
-clear
-```
-
-Example:
-
-```text
-C:\MIJDO> whoami
-
-Ahmed Samir
-Developer
-Egypt
-
-C:\MIJDO>
-```
-
-A real terminal emulator such as `xterm` may be introduced later if advanced terminal behavior becomes necessary.
-
----
-
-# Applications
-
-## Mijdo.exe
-
-The main portfolio command center.
-
-Contains:
-
-* introduction
-* biography
-* quick access
-* skills summary
-* recent projects
-* contact shortcuts
-
----
-
-## Projects Manager
-
-Represents projects as files/programs.
-
-Example:
-
-```text
-C:\PROJECTS\*.*
-
-PROJECT_01.EXE
-PROJECT_02.COM
-PROJECT_03.SYS
-```
-
-Selecting a project opens an inspector window containing:
-
-* project name
-* description
-* technologies
-* GitHub
-* live demo
-
----
-
-## Skills.cfg
-
-Technical skills represented as a system configuration file.
-
----
-
-## Experience.dat
-
-Professional experience represented as system data.
-
----
-
-## Mijdo Terminal
-
-Interactive command-line interface for exploring the portfolio.
-
----
-
-## Contact
-
-Contains:
-
-* Email
-* GitHub
-* LinkedIn
-* Instagram
-* X
-* CV
-
----
-
-## BugCheck.log
-
-A fictional diagnostic utility containing small developer Easter eggs.
-
-Example:
-
-```text
-MIJDOOS SYSTEM CHECK
-
-No critical errors detected.
-
-This is suspicious.
-
-[ OK ]
-```
-
----
-
-# Project Architecture
+## Project structure
 
 ```text
 src/
-│
-├── app/
-│   ├── App.tsx
-│   └── providers/
-│       └── OSProvider.tsx
-│
-├── core/
-│   ├── window-manager/
-│   │   ├── types.ts
-│   │   ├── reducer.ts
-│   │   ├── actions.ts
-│   │   └── selectors.ts
-│   │
-│   ├── terminal/
-│   │   ├── commands.ts
-│   │   ├── parser.ts
-│   │   └── types.ts
-│   │
-│   └── system/
-│       ├── boot.ts
-│       ├── clock.ts
-│       └── system-info.ts
-│
-├── components/
-│   │
-│   ├── desktop/
-│   │   ├── Desktop.tsx
-│   │   ├── DesktopIcon.tsx
-│   │   └── DesktopIcons.tsx
-│   │
-│   ├── command-bar/
-│   │   ├── CommandBar.tsx
-│   │   ├── Menu.tsx
-│   │   └── MenuItem.tsx
-│   │
-│   ├── window/
-│   │   ├── Window.tsx
-│   │   ├── WindowTitleBar.tsx
-│   │   ├── WindowControls.tsx
-│   │   └── WindowContent.tsx
-│   │
-│   ├── execution-bar/
-│   │   └── ExecutionBar.tsx
-│   │
-│   └── ui/
-│       ├── Button.tsx
-│       ├── Dialog.tsx
-│       ├── List.tsx
-│       └── Scrollbar.tsx
-│
-├── applications/
-│   ├── mijdo/
-│   │   └── MijdoApp.tsx
-│   │
-│   ├── projects/
-│   │   └── ProjectsApp.tsx
-│   │
-│   ├── terminal/
-│   │   └── TerminalApp.tsx
-│   │
-│   ├── skills/
-│   │   └── SkillsApp.tsx
-│   │
-│   ├── experience/
-│   │   └── ExperienceApp.tsx
-│   │
-│   ├── contact/
-│   │   └── ContactApp.tsx
-│   │
-│   └── system/
-│       ├── AboutSystem.tsx
-│       ├── BugCheck.tsx
-│       └── SystemInfo.tsx
-│
-├── data/
-│   ├── projects.ts
-│   ├── skills.ts
-│   ├── experience.ts
-│   └── contact.ts
-│
-├── styles/
-│   ├── globals.css
-│   ├── typography.css
-│   ├── desktop.css
-│   └── windows.css
-│
-├── assets/
-│   ├── icons/
-│   ├── screenshots/
-│   └── sounds/
-│
-└── utils/
-    ├── clamp.ts
-    ├── coordinates.ts
-    └── format.ts
+  app/AppShell.tsx        window manager wiring, application registry
+  data/                   the portfolio, as typed data
+  features/
+    apps/                 portfolio and system application content
+    boot/                 the boot sequence
+    desktop/              desktop surface, icons, command bar, status bar
+    menu/                 menu definitions and the menu panel
+    mijdo/                the Mijdo.exe landing application
+    terminal/             prompt, parser, history, command registry
+    window/               the window frame and its controls
+  hooks/                  useWindowManager, useDraggableWindow
+  types/                  shared types
+  utils/
+tests/browser/            Playwright specs and shared helpers
 ```
 
----
+Data flows one way: `src/data/` holds the content, features render it, and the
+terminal queries the same modules. Nothing in `src/data/` imports React.
 
-# Layered Architecture
+## Accessibility
 
-MijdoOS is divided into four major layers.
+- Every window, control, icon and menu item has an accessible name.
+- Windows are `role="group"`, message boxes are `role="dialog"` and are
+  intentionally **not** `aria-modal`, because the desktop stays usable.
+- Terminal output is a polite `role="log"` region covering the transcript only,
+  so typing in the prompt is not announced as log activity.
+- Icon artwork and the scanline overlay are `aria-hidden`.
+- Focus is visible everywhere, and the focus ring changes colour on dark
+  surfaces so it never disappears.
+- `prefers-reduced-motion: reduce` removes the scanline and cursor animations
+  outright instead of merely shortening them.
+- Tab order, `Shift+Tab`, `Enter`, `Escape` and the arrow keys all work; the
+  five shortcuts the system documents are covered by tests.
 
-```text
-┌───────────────────────────────────────┐
-│              APPLICATIONS             │
-│ Mijdo.exe / Projects / Terminal / ... │
-└───────────────────┬───────────────────┘
-                    │
-┌───────────────────▼───────────────────┐
-│                 UI                     │
-│ Desktop / Windows / Menus / Controls   │
-└───────────────────┬───────────────────┘
-                    │
-┌───────────────────▼───────────────────┐
-│                 CORE                   │
-│ Window Manager / Terminal / System     │
-└───────────────────┬───────────────────┘
-                    │
-┌───────────────────▼───────────────────┐
-│                DATA                    │
-│ Projects / Skills / Experience / Links │
-└───────────────────────────────────────┘
+There is no automated axe pass in the suite; the checks above are hand-written
+assertions about decisions the code already makes.
+
+## Browser support
+
+Verified manually and by the browser suite: **Chromium**, **Google Chrome**
+(154) and **Firefox** (155). The layout is a flex column with absolute window
+positions and no browser-specific APIs beyond standard CSS, so current
+versions of Safari and Edge are expected to work but are not verified here.
+
+## Deployment
+
+The build is a fully static site: `dist/` is HTML, one hashed JS bundle, one
+hashed CSS file, the favicon and the CV. There is no server component, no
+runtime configuration and no client-side router.
+
+```bash
+pnpm build     # emits dist/
 ```
 
-The important rule is:
+Deploy the contents of `dist/` to any static host — GitHub Pages, Netlify,
+Vercel, Cloudflare Pages, or a plain object store behind a CDN. No rewrite
+rules are needed, because there is no router: every path is served as built.
 
-> Applications should not own the operating system.
-
-The OS core manages the environment.
-
-Applications only provide their content and application-specific behavior.
-
----
-
-# Tailwind CSS Architecture
-
-Tailwind is used throughout the component layer.
-
-Example:
-
-```tsx
-<div className="border border-black bg-mijdo-gray text-black">
-  ...
-</div>
-```
-
-MijdoOS-specific Tailwind tokens should be defined in the Tailwind configuration/theme rather than repeatedly hardcoding colors throughout components.
-
-Example conceptual tokens:
-
-```text
-bg-mijdo-teal
-bg-mijdo-gray
-bg-mijdo-light
-bg-mijdo-dark
-bg-mijdo-navy
-
-text-mijdo-black
-text-mijdo-white
-
-border-mijdo-black
-border-mijdo-gray
-```
-
-Reusable visual primitives such as bevels and title bars can remain in CSS when the effect is too complex or repetitive for utility classes.
-
----
-
-# Data Architecture
-
-Portfolio content is separated from UI components.
-
-Example:
+**Deploying to a sub-path.** `vite.config.ts` sets no `base`, so assets are
+emitted as absolute `/assets/...`. Hosting the site at something like
+`https://example.com/mijdoos/` needs:
 
 ```ts
-export const projects = [
-  {
-    id: "project-01",
-    filename: "PROJECT_01.EXE",
-    title: "Project Name",
-    description: "Project description",
-    technologies: ["React", "TypeScript"],
-    github: "...",
-    demo: "...",
-  },
-];
+export default defineConfig({
+  base: "/mijdoos/",
+  plugins: [react(), tailwindcss()],
+})
 ```
 
-This allows content to change without modifying the OS architecture.
+**The CV** is served from `public/cv.pdf` and linked from the status bar and
+the `File` menu. The link is built with `import.meta.env.BASE_URL`, so it
+follows `base` on its own. Deploy it by deploying `dist/` in full.
+
+`og:url` and `og:image` are intentionally absent from `index.html`: they need
+a real domain and a share image, which do not exist yet. Add them once the site
+has an address.
+
+## Notes for maintainers
+
+**Tailwind is installed but unused.** `src/index.css` starts with
+`@import "tailwindcss"`, and no component uses a single Tailwind utility class.
+All styling is hand-written. What Tailwind currently contributes is its
+preflight base layer — and the stylesheet deliberately overrides part of it (see
+the `RESET` block, which restores list markers). The `@theme` block also
+duplicates tokens already declared in `:root`.
+
+Removing it is a real cleanup, but it is a visual-risk change: preflight
+normalises more than the project currently overrides. It was left in place
+deliberately, and the migration is out of scope for the current phase. If you
+remove it, diff the built CSS and check every list, button, input and heading.
+
+**A `date` command exists.** The terminal's `date` command is intentionally
+hard-coded, so a stale build can never show the wrong build date.
 
 ---
 
-# Responsive Strategy
-
-MijdoOS must remain usable on desktop, tablet, and mobile.
-
-## Desktop
-
-Full desktop environment:
-
-```text
-Desktop
-├── Command Bar
-├── Desktop Icons
-├── Multiple Windows
-└── Execution Bar
-```
-
-## Mobile
-
-The OS remains visually consistent but adapts its window system:
-
-```text
-Desktop
-   ↓
-Application selected
-   ↓
-Window becomes full-screen
-   ↓
-Application remains accessible
-```
-
-The mobile version should not become a standard card-based portfolio.
-
----
-
-# Testing
-
-## Vitest
-
-Used for:
-
-* reducers
-* window actions
-* terminal parser
-* utility functions
-* data helpers
-
-## Playwright
-
-Used for:
-
-* boot sequence
-* opening applications
-* window interactions
-* dragging
-* minimizing
-* restoring
-* terminal commands
-* responsive behavior
-
----
-
-# Performance
-
-MijdoOS should remain lightweight despite simulating a desktop environment.
-
-Principles:
-
-* minimize dependencies
-* avoid unnecessary global state
-* lazy-load non-critical applications when useful
-* optimize images
-* keep animations minimal
-* use CSS for simple effects
-* avoid unnecessary re-renders
-
----
-
-# Development Roadmap
-
-## Phase 1 — Foundation
-
-* [ ] React + TypeScript + Vite
-* [ ] Tailwind CSS
-* [ ] Global design tokens
-* [ ] Typography
-* [ ] Base UI primitives
-
-## Phase 2 — OS Shell
-
-* [ ] Boot screen
-* [ ] Desktop
-* [ ] Command bar
-* [ ] Desktop icons
-* [ ] Execution bar
-* [ ] System clock
-
-## Phase 3 — Window Manager
-
-* [ ] Window state
-* [ ] Open
-* [ ] Close
-* [ ] Minimize
-* [ ] Restore
-* [ ] Maximize
-* [ ] Focus
-* [ ] z-index
-* [ ] Dragging
-* [ ] Responsive behavior
-
-## Phase 4 — Applications
-
-* [ ] Mijdo.exe
-* [ ] Projects Manager
-* [ ] Terminal
-* [ ] Skills.cfg
-* [ ] Experience.dat
-* [ ] Contact
-* [ ] System Information
-* [ ] BugCheck.log
-
-## Phase 5 — Real Content
-
-* [ ] Projects
-* [ ] Experience
-* [ ] Skills
-* [ ] GitHub
-* [ ] Social links
-* [ ] CV
-* [ ] Contact information
-
-## Phase 6 — Polish
-
-* [ ] CRT effect
-* [ ] Pixel icons
-* [ ] Keyboard shortcuts
-* [ ] Easter eggs
-* [ ] Sound effects
-* [ ] Accessibility
-* [ ] Mobile refinement
-
-## Phase 7 — Testing
-
-* [ ] Unit tests
-* [ ] Window Manager tests
-* [ ] Terminal tests
-* [ ] E2E tests
-* [ ] Mobile tests
-* [ ] Cross-browser testing
-
-## Phase 8 — Deployment
-
-* [ ] Production build
-* [ ] Performance audit
-* [ ] Accessibility audit
-* [ ] Final content review
-* [ ] Deployment
-
----
-
-# Final Stack
-
-```text
-MijdoOS
-│
-├── React
-├── TypeScript
-├── Vite
-│
-├── Tailwind CSS
-│
-├── Motion
-│
-├── Vitest
-└── Playwright
-```
-
-Optional future dependency:
-
-```text
-xterm.js
-```
-
-MijdoOS intentionally avoids large UI component libraries.
-
-The UI is custom-built around the MijdoOS design language while Tailwind provides the utility layer needed to build and maintain the interface efficiently.
-
----
-
-# Philosophy
-
-MijdoOS should demonstrate both creativity and engineering.
-
-The visual interface is nostalgic.
-
-The implementation is modern.
-
-The goal is not to recreate an old operating system technically.
-
-The goal is to create a convincing **fictional personal operating system** that happens to be a developer portfolio.
-
-> **Boot the system. Explore the computer. Discover the developer.**
+Built with React, TypeScript and Vite.

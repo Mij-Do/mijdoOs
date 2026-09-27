@@ -1,6 +1,6 @@
 import type { WindowId } from "./window";
 
-export type MenuId = "system" | "file" | "view" | "special" | "run" | "help";
+export type MenuId = "system" | "file" | "view" | "run" | "help";
 
 export type MenuAnchor = {
   left: number;

@@ -101,6 +101,30 @@ export function AppShell() {
     [openWindow, closeWindow, activeWindowId, showDesktop],
   );
 
+  /*
+    The task list only ever shows windows that are open, so it is filtered
+    here and handed over as a stable list instead of the whole window map.
+  */
+  const openWindows = useMemo(
+    () => windowIds.map((id) => windows[id]).filter((state) => state.isOpen),
+    [windows],
+  );
+
+  /*
+    A desktop icon shows that its application is already running, so the shell
+    hands the open window ids down. Memoised because it is rebuilt from the
+    window map on every render otherwise.
+  */
+  const runningWindowIds = useMemo(() => {
+    const running = new Set<WindowId>();
+
+    for (const id of windowIds) {
+      if (windows[id].isOpen) running.add(id);
+    }
+
+    return running;
+  }, [windows]);
+
   function renderWindow(id: WindowId) {
     const windowState = windows[id];
 
@@ -128,11 +152,12 @@ export function AppShell() {
         actions={systemActions}
         isIconsArranged={isIconsArranged}
         onOpenWindow={openWindow}
+        runningWindowIds={runningWindowIds}
       >
         {windowIds.map(renderWindow)}
       </Desktop>
       <StatusBar
-        windows={windowIds.map((id) => windows[id])}
+        windows={openWindows}
         onOpenWindow={openWindow}
       />
     </div>

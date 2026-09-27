@@ -4,12 +4,42 @@ import { profile } from "../../data/profile";
 import { projects } from "../../data/projects";
 import { technicalSkills } from "../../data/skills";
 import { systemInfo } from "../../data/system";
+import { desktopApplications } from "../../data/windows";
 import { formatProjectPeriod } from "../../utils/portfolio";
-import type { TerminalCommand, TerminalCommandOutcome } from "./terminalTypes";
+import type {
+  TerminalCommand,
+  TerminalCommandOutcome,
+  TerminalOutputLine,
+} from "./terminalTypes";
 
 const NAME_COLUMN_WIDTH = 12;
 const INDEX_WIDTH = 2;
 const DETAIL_INDENT = "    ";
+
+const heading = (text: string): TerminalOutputLine => ({ kind: "heading", text });
+
+/*
+  dir lists the same executables the desktop and the Run menu offer, so the
+  command prompt and the rest of the system never describe different programs.
+  The names are derived from the window registry rather than written out here,
+  so a desktop application cannot exist without appearing in the listing.
+*/
+const DIR_NAME_WIDTH = 10;
+
+function toDirectoryEntry(title: string): string {
+  const extensionIndex = title.lastIndexOf(".");
+
+  if (extensionIndex === -1) return title.toUpperCase();
+
+  const name = title.slice(0, extensionIndex);
+  const extension = title.slice(extensionIndex + 1);
+
+  return `${name.toUpperCase().padEnd(DIR_NAME_WIDTH, " ")} ${extension.toUpperCase()}`;
+}
+
+const desktopCommandNames = desktopApplications.map((application) =>
+  toDirectoryEntry(application.title),
+);
 
 function getCurrentDate() {
   return new Intl.DateTimeFormat(undefined, {
@@ -20,7 +50,7 @@ function getCurrentDate() {
   }).format(new Date());
 }
 
-function createHelpLines() {
+function createHelpLines(): TerminalOutputLine[] {
   return [
     "Available commands:",
     "",
@@ -28,10 +58,12 @@ function createHelpLines() {
       (command) =>
         command.name.padEnd(NAME_COLUMN_WIDTH, " ") + command.description,
     ),
+    "",
+    "Commands are not case sensitive.",
   ];
 }
 
-function createAboutLines() {
+function createAboutLines(): TerminalOutputLine[] {
   return [
     systemInfo.productName,
     systemInfo.tagline,
@@ -43,8 +75,8 @@ function createAboutLines() {
   ];
 }
 
-function createProjectLines() {
-  const lines = ["PROJECTS", ""];
+function createProjectLines(): TerminalOutputLine[] {
+  const lines: TerminalOutputLine[] = [heading("PROJECTS"), ""];
 
   projects.forEach((project, index) => {
     const number = String(index + 1).padStart(INDEX_WIDTH, "0");
@@ -62,16 +94,16 @@ function createProjectLines() {
   return lines;
 }
 
-function createSkillLines() {
+function createSkillLines(): TerminalOutputLine[] {
   return technicalSkills.flatMap((group) => [
-    group.category.toUpperCase(),
+    heading(group.category.toUpperCase()),
     ...group.items,
     "",
   ]);
 }
 
-function createExperienceLines() {
-  const lines = ["EXPERIENCE", ""];
+function createExperienceLines(): TerminalOutputLine[] {
+  const lines: TerminalOutputLine[] = [heading("EXPERIENCE"), ""];
 
   for (const record of experience) {
     lines.push(`${record.role} - ${record.company}`);
@@ -83,9 +115,9 @@ function createExperienceLines() {
   return lines;
 }
 
-function createContactLines() {
+function createContactLines(): TerminalOutputLine[] {
   return [
-    "CONTACT",
+    heading("CONTACT"),
     "",
     contact.name,
     `Email: ${contact.email}`,
@@ -100,8 +132,15 @@ function createContactLines() {
   The GitHub command reuses the same project records as the Projects
   application, so a repository is never described in two places.
 */
-function createGitHubLines() {
-  const lines = ["GITHUB", "", `Profile: ${contact.github}`, "", "Repositories:", ""];
+function createGitHubLines(): TerminalOutputLine[] {
+  const lines: TerminalOutputLine[] = [
+    heading("GITHUB"),
+    "",
+    `Profile: ${contact.github}`,
+    "",
+    "Repositories:",
+    "",
+  ];
 
   for (const project of projects) {
     if (!project.links.github) continue;
@@ -110,6 +149,34 @@ function createGitHubLines() {
     lines.push(`${DETAIL_INDENT}${DETAIL_INDENT}${project.links.github}`);
     lines.push("");
   }
+
+  return lines;
+}
+
+/*
+  dir is here because it is the first thing anyone types into a command prompt.
+  It reports the volume rather than pretending to touch the host file system.
+*/
+function createDirectoryLines(): TerminalOutputLine[] {
+  const volume = systemInfo.productName.toUpperCase();
+  const lines: TerminalOutputLine[] = [
+    ` Volume in drive C is ${volume}`,
+    ` Directory of C:\\MIJDO`,
+    "",
+  ];
+  desktopCommandNames.forEach((name, index) => {
+    const number = String(index + 1).padStart(INDEX_WIDTH, "0");
+    const stamp = "07-27-26  09:14";
+    const size = String(1024 * (32 - index * 3)).padStart(9, " ");
+
+    lines.push(`${number}  ${stamp}  ${size}  ${name}`);
+  });
+
+  lines.push(
+    "",
+    `      ${desktopCommandNames.length} file(s)     4096 bytes free`,
+    "",
+  );
 
   return lines;
 }
@@ -156,8 +223,14 @@ export const terminalCommands: TerminalCommand[] = [
     execute: () => ({ lines: createGitHubLines() }),
   },
   {
+    name: "dir",
+    description: "List the volume contents",
+    execute: () => ({ lines: createDirectoryLines() }),
+  },
+  {
     name: "clear",
     description: "Clear terminal",
+    aliases: ["cls"],
     execute: () => ({ lines: [], clear: true }),
   },
   {
@@ -180,12 +253,14 @@ export const terminalCommands: TerminalCommand[] = [
 ];
 
 export function executeCommand(name: string): TerminalCommandOutcome {
-  const command = terminalCommands.find((entry) => entry.name === name);
+  const command = terminalCommands.find(
+    (entry) => entry.name === name || entry.aliases?.includes(name),
+  );
 
   if (!command) {
     return {
       lines: [
-        `Unknown command: ${name}`,
+        { kind: "error", text: `Bad command or file name: ${name}` },
         'Type "help" for available commands.',
       ],
     };

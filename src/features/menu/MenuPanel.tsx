@@ -104,13 +104,22 @@ export function MenuPanel({
     function handlePointerDown(event: PointerEvent) {
       if (panelRef.current?.contains(event.target as Node)) return;
 
+      /*
+        The trigger that opened this panel is left to its own click handler.
+
+        Without this, pressing the open trigger would close the panel here and
+        then reopen it in the click that follows, so clicking the menu you are
+        already on would do nothing.
+      */
+      if (returnFocusRef?.current?.contains(event.target as Node)) return;
+
       onClose();
     }
 
     document.addEventListener("pointerdown", handlePointerDown);
 
     return () => document.removeEventListener("pointerdown", handlePointerDown);
-  }, [onClose]);
+  }, [onClose, returnFocusRef]);
 
   useLayoutEffect(() => {
     const panel = panelRef.current;
@@ -147,8 +156,14 @@ export function MenuPanel({
       return;
     }
 
+    /*
+      Up and down belong to the panel while it is open. Propagation is stopped
+      so the menu bar above does not also read the same arrow press and swap
+      the whole menu out from under the keyboard.
+    */
     if (event.key === "ArrowDown") {
       event.preventDefault();
+      event.stopPropagation();
       setIsKeyboardMode(true);
       focusItem(1);
       return;
@@ -156,6 +171,7 @@ export function MenuPanel({
 
     if (event.key === "ArrowUp") {
       event.preventDefault();
+      event.stopPropagation();
       setIsKeyboardMode(true);
       focusItem(-1);
     }

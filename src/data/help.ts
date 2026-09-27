@@ -13,6 +13,7 @@ export const helpTopics: HelpTopic[] = [
     lines: [
       "Open a menu from the top bar.",
       "Click another menu to switch menus.",
+      "Use the left and right arrow keys to move between menus.",
       "Click anywhere outside a menu to close it.",
       "Press Escape to close the open menu.",
     ],
@@ -22,6 +23,7 @@ export const helpTopics: HelpTopic[] = [
     lines: [
       "Drag a window by its title bar.",
       "Click a window to bring it to the front.",
+      "Press Escape to close a message box.",
       "Right-click the desktop for desktop actions.",
     ],
   },
@@ -48,7 +50,8 @@ export const helpTopics: HelpTopic[] = [
 ];
 
 export const keyboardShortcuts: KeyboardShortcut[] = [
-  { keys: "Escape", action: "Close the open menu" },
+  { keys: "Escape", action: "Close the open menu, or an open message box" },
+  { keys: "Arrow Left / Arrow Right", action: "Move between the top bar menus" },
   { keys: "Arrow Up", action: "Select the previous menu item" },
   { keys: "Arrow Down", action: "Select the next menu item" },
   { keys: "Enter", action: "Activate the selected menu item" },

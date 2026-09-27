@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import type { LinkItem, ProjectRecord } from "../../types/portfolio";
 import type { WindowControllerProps } from "../../types/window";
@@ -7,10 +8,41 @@ type DetailWindowProps = WindowControllerProps & {
   children: ReactNode;
 };
 
+/*
+  A system dialog is dismissed with its own control, exactly like a message
+  box on a real desktop. The content scrolls, the action row stays put, and
+  the button takes focus when the dialog opens so the keyboard can dismiss it
+  straight away.
+*/
+function DialogActions({ onClose }: { onClose: () => void }) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    buttonRef.current?.focus();
+  }, []);
+
+  return (
+    <div className="mijdo-dialog-actions">
+      <button
+        className="mijdo-dialog-button"
+        type="button"
+        ref={buttonRef}
+        onClick={onClose}
+      >
+        OK
+      </button>
+    </div>
+  );
+}
+
 export function DetailWindow(props: DetailWindowProps) {
+  const { windowState, onClose, children } = props;
+  const isDialog = windowState.variant === "dialog";
+
   return (
     <WindowFrame {...props}>
-      <div className="mijdo-detail-content">{props.children}</div>
+      <div className="mijdo-detail-content">{children}</div>
+      {isDialog ? <DialogActions onClose={onClose} /> : null}
     </WindowFrame>
   );
 }
@@ -53,7 +85,13 @@ export function DetailLinkRow({ links }: { links: LinkItem[] }) {
   return (
     <p className="mijdo-detail-links">
       {links.map((link) => (
-        <a href={link.url} key={link.label} target="_blank" rel="noopener noreferrer">
+        <a
+          href={link.url}
+          key={link.label}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open ${link.label} in a new tab`}
+        >
           [{link.label}]
         </a>
       ))}

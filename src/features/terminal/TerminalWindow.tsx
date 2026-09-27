@@ -49,20 +49,29 @@ export function TerminalWindow(props: WindowControllerProps) {
       <div
         className="mijdo-terminal"
         ref={outputRef}
-        role="log"
-        aria-live="polite"
-        aria-label="Terminal output"
         onPointerDown={() => inputRef.current?.focus()}
       >
-        {lines.map((line, index) => (
-          <div
-            className="mijdo-terminal-line"
-            data-kind={line.kind}
-            key={index}
-          >
-            {line.text}
-          </div>
-        ))}
+        {/*
+          The live region covers the transcript only. Keeping the prompt inside
+          it would make every keystroke in the input an announced addition, so
+          the log wraps the lines and the prompt sits beside it.
+        */}
+        <div
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions text"
+          aria-label="Terminal output"
+        >
+          {lines.map((line, index) => (
+            <div
+              className="mijdo-terminal-line"
+              data-kind={line.kind}
+              key={index}
+            >
+              {line.text}
+            </div>
+          ))}
+        </div>
 
         <div className="mijdo-terminal-prompt">
           <label className="mijdo-terminal-prompt-label" htmlFor={INPUT_ID}>

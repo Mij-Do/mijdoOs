@@ -70,18 +70,6 @@ export function createMenuDefinitions(
       ],
     },
     {
-      id: "special",
-      label: "Special",
-      items: [
-        openWindowItem(actions, "My Profile", "profile"),
-        openWindowItem(actions, "My Education", "education"),
-        openWindowItem(actions, "My Skills", "skills"),
-        openWindowItem(actions, "My Experience", "experience"),
-        openWindowItem(actions, "My Projects", "projects"),
-        openWindowItem(actions, "Contact", "contact"),
-      ],
-    },
-    {
       id: "run",
       label: "Run",
       items: [

@@ -4,9 +4,48 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mijdoos</title>
+    <!--
+      The document is the shell of the machine, so it keeps the same identity
+      the boot screen uses: a named product, and a description taken from the
+      role the profile already records.
+    -->
+    <title>MijdoOS 1.0 - Ahmed Samir's Personal Computer</title>
+    <meta
+      name="description"
+      content="MijdoOS is a browser-based operating system portfolio for Ahmed Samir, a full-stack and front-end developer and technical co-founder at Meem Langs. Windows, a terminal, files and a CV, inside a simulated personal computer."
+    />
+    <meta name="author" content="Ahmed Samir" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#000080" />
+    <!--
+      Link preview metadata, minus the two fields that need a decision rather
+      than a value: og:url and og:image both require a real domain and a
+      purpose-made share image, neither of which exists yet. Guessing them
+      would publish a broken preview, so they are left out on purpose and are
+      the first thing to add once the site has an address.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MijdoOS 1.0 - Ahmed Samir's Personal Computer" />
+    <meta
+      property="og:description"
+      content="A browser-based operating system portfolio: windows, a terminal, files and a CV, inside a simulated personal computer."
+    />
+    <meta name="twitter:card" content="summary" />
   </head>
   <body>
+    <noscript>
+      <div style="padding: 2rem; font-family: monospace; line-height: 1.5">
+        <h1>MijdoOS</h1>
+        <p>
+          This portfolio is a desktop environment that runs in the browser, so it
+          needs JavaScript enabled.
+        </p>
+        <p>
+          The same content is available as a CV:
+          <a href="/cv.pdf">cv.pdf</a>
+        </p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

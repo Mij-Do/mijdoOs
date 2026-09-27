@@ -99,15 +99,24 @@ export function ExperienceApplication(props: WindowControllerProps) {
 export function ProjectsApplication(props: WindowControllerProps) {
   return (
     <DetailWindow {...props}>
-      {projects.map((project) => (
-        <DetailSection title={project.name} key={project.name}>
-          <p>{formatProjectPeriod(project)}</p>
-          <p>TECH: {project.technologies.join(" / ")}</p>
-          <p>{project.description}</p>
-          <DetailList items={project.features} />
-          <DetailLinks links={project.links} />
-        </DetailSection>
-      ))}
+      {projects.map((project) => {
+        /*
+          A project without a confirmed timeline has no period line at all.
+          Rendering the empty result would leave a blank gap above the
+          technology line for every such project.
+        */
+        const period = formatProjectPeriod(project);
+
+        return (
+          <DetailSection title={project.name} key={project.name}>
+            {period ? <p>{period}</p> : null}
+            <p>TECH: {project.technologies.join(" / ")}</p>
+            <p>{project.description}</p>
+            <DetailList items={project.features} />
+            <DetailLinks links={project.links} />
+          </DetailSection>
+        );
+      })}
     </DetailWindow>
   );
 }

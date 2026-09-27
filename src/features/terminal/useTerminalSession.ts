@@ -6,13 +6,24 @@ import {
 } from "./terminalHistory";
 import { parseCommandLine } from "./terminalParser";
 import { TERMINAL_PROMPT } from "./terminalPrompt";
-import type { TerminalLine, TerminalLineKind } from "./terminalTypes";
+import type { TerminalLine, TerminalLineKind, TerminalOutputLine } from "./terminalTypes";
 
 const BANNER_LINES = [
   "MijdoOS Terminal",
   'Type "help" for available commands.',
   "",
 ];
+
+/*
+  A command marks a few of its lines; everything else is ordinary output. The
+  blank line in front of a result is what separates the typed command from what
+  it produced, which is the one piece of grouping the terminal needs.
+*/
+function toTerminalLine(line: TerminalOutputLine): TerminalLine {
+  if (typeof line === "string") return { kind: "output", text: line };
+
+  return { kind: line.kind, text: line.text };
+}
 
 function createBanner(): TerminalLine[] {
   return BANNER_LINES.map((text) => ({ kind: "banner" as TerminalLineKind, text }));
@@ -49,10 +60,7 @@ export function useTerminalSession(onClose: () => void) {
       if (outcome.clear) {
         setLines([]);
       } else {
-        const output: TerminalLine[] = outcome.lines.map((text) => ({
-          kind: "output",
-          text,
-        }));
+        const output: TerminalLine[] = outcome.lines.map(toTerminalLine);
 
         if (output.length > 0) output.unshift({ kind: "output", text: "" });
 

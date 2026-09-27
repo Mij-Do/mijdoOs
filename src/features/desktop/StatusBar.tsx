@@ -2,50 +2,65 @@ import { useEffect, useState } from "react";
 import { contact, socialLinks } from "../../data/contact";
 import type { WindowId, WindowState } from "../../types/window";
 
-function getCurrentTime() {
-  return new Intl.DateTimeFormat(undefined, {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(new Date());
-}
-
 type StatusBarProps = {
   windows: WindowState[];
   onOpenWindow: (id: WindowId) => void;
 };
 
-export function StatusBar({ windows, onOpenWindow }: StatusBarProps) {
-  const [time, setTime] = useState(getCurrentTime);
+/*
+  The clock ticks on its own, so it lives in its own component. Otherwise every
+  second would re-render the whole task list and the link row for no reason.
+*/
+function Clock() {
+  const [time, setTime] = useState(() => formatTime(new Date()));
 
   useEffect(() => {
-    const clock = window.setInterval(() => setTime(getCurrentTime()), 1000);
+    const timer = window.setInterval(
+      () => setTime(formatTime(new Date())),
+      1000,
+    );
 
-    return () => window.clearInterval(clock);
+    return () => window.clearInterval(timer);
   }, []);
 
   return (
+    <time className="mijdo-status-clock" dateTime={new Date().toISOString()}>
+      {time}
+    </time>
+  );
+}
+
+function formatTime(date: Date) {
+  return new Intl.DateTimeFormat(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+}
+
+export function StatusBar({ windows, onOpenWindow }: StatusBarProps) {
+  return (
     <footer className="mijdo-status-bar">
       <div className="mijdo-status-apps">
-        {windows
-          .filter((windowState) => windowState.isOpen)
-          .map((windowState) => (
-            <button
-              className="mijdo-status-item"
-              type="button"
-              key={windowState.id}
-              data-active={windowState.isFocused}
-              data-minimized={windowState.isMinimized}
-              aria-label={
-                windowState.isMinimized
-                  ? `Restore ${windowState.title}`
-                  : `Focus ${windowState.title}`
-              }
-              onClick={() => onOpenWindow(windowState.id)}
-            >
-              [{windowState.title}]
-            </button>
-          ))}
+        {windows.map((windowState) => (
+          <button
+            className="mijdo-status-item"
+            type="button"
+            key={windowState.id}
+            data-active={windowState.isFocused}
+            data-minimized={windowState.isMinimized}
+            aria-current={windowState.isFocused ? "true" : undefined}
+            aria-label={
+              windowState.isMinimized
+                ? `Restore ${windowState.title}`
+                : `Focus ${windowState.title}`
+            }
+            title={windowState.title}
+            onClick={() => onOpenWindow(windowState.id)}
+          >
+            [{windowState.title}]
+          </button>
+        ))}
       </div>
       <div className="mijdo-status-actions">
         <div className="mijdo-status-links">
@@ -57,7 +72,7 @@ export function StatusBar({ windows, onOpenWindow }: StatusBarProps) {
               target="_blank"
               rel="noopener noreferrer"
               title={link.label}
-              aria-label={`Open ${link.label}`}
+              aria-label={`Open ${link.label} in a new tab`}
             >
               [{link.badge}]
             </a>
@@ -68,12 +83,12 @@ export function StatusBar({ windows, onOpenWindow }: StatusBarProps) {
           href={contact.cvUrl}
           target="_blank"
           rel="noopener noreferrer"
-          title="CV"
-          aria-label="Open CV"
+          title="Open CV in a new tab"
+          aria-label="Open CV in a new tab"
         >
           [CV]
         </a>
-        <time dateTime={new Date().toISOString()}>{time}</time>
+        <Clock />
       </div>
     </footer>
   );
