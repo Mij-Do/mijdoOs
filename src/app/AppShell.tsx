@@ -1,6 +1,5 @@
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { ReactElement } from "react";
-import { contact } from "../data/contact";
 import { initialWindows } from "../data/windows";
 import {
   ContactApplication,
@@ -60,10 +59,6 @@ export function AppShell() {
   const [isIconsArranged, setIsIconsArranged] = useState(false);
   const [desktopRevision, setDesktopRevision] = useState(0);
 
-  const openCv = useCallback(() => {
-    window.open(contact.cvUrl, "_blank", "noopener,noreferrer");
-  }, []);
-
   /*
     Window callbacks stay stable per window so dragging never
     re-subscribes its pointer listeners.
@@ -93,12 +88,11 @@ export function AppShell() {
       closeActiveWindow: () => {
         if (activeWindowId) closeWindow(activeWindowId);
       },
-      openCv,
       showDesktop,
       toggleArrangeIcons: () => setIsIconsArranged((current) => !current),
       refreshDesktop: () => setDesktopRevision((current) => current + 1),
     }),
-    [openWindow, closeWindow, activeWindowId, showDesktop, openCv],
+    [openWindow, closeWindow, activeWindowId, showDesktop],
   );
 
   function renderWindow(id: WindowId) {
@@ -135,7 +129,6 @@ export function AppShell() {
       <StatusBar
         windows={windowIds.map((id) => windows[id])}
         onOpenWindow={openWindow}
-        onOpenCv={openCv}
       />
     </div>
   );

@@ -1,5 +1,10 @@
 import type { ProjectRecord } from "../types/portfolio";
 
+/*
+  Portfolio projects with their verified public repositories.
+  A project only exposes a live demo once a deployed URL is confirmed,
+  so the live demo field stays absent until then.
+*/
 export const projects: ProjectRecord[] = [
   {
     name: "Full-Stack Todo Application",
@@ -22,7 +27,9 @@ export const projects: ProjectRecord[] = [
       "Responsive UI built with Tailwind CSS and TypeScript used for type safety.",
       "Git and GitHub used for version control.",
     ],
-    links: {},
+    links: {
+      github: "https://github.com/Mij-Do/Full-Stack-To-Do-app-V6",
+    },
   },
   {
     name: "Real Estate Listings Platform",
@@ -38,21 +45,18 @@ export const projects: ProjectRecord[] = [
       "Ability to archive sold properties.",
       "Deployed on Vercel using a serverless Next.js architecture with MongoDB.",
     ],
-    links: {},
+    links: {
+      github: "https://github.com/Mij-Do/real-state-full-stack-project",
+    },
   },
   {
-    name: "Personal Portfolio Website",
-    date: "July 2025",
-    technologies: ["React.js", "TypeScript", "Tailwind CSS"],
+    name: "MijdoOS",
+    technologies: ["React", "TypeScript", "Vite", "Tailwind CSS"],
     description:
-      "Responsive personal portfolio showcasing projects, skills, and contact information.",
-    features: [
-      "React.js component-based architecture.",
-      "TypeScript for type safety.",
-      "Tailwind CSS for styling.",
-      "Interactive sections, animated transitions, and a project gallery.",
-      "Hosted online and version controlled using Git and GitHub.",
-    ],
-    links: {},
+      "MijdoOS is the current developer portfolio, designed as a fictional retro operating system rather than a traditional modern portfolio website.",
+    features: [],
+    links: {
+      github: "https://github.com/Mij-Do/mijdoOs",
+    },
   },
 ];

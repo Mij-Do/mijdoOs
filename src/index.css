@@ -425,9 +425,25 @@ MENU
   flex: 1 1 auto;
 }
 
-.mijdo-menu-item:hover:not(:disabled),
-.mijdo-menu-item:focus,
-.mijdo-menu-item:focus-visible {
+/*
+  Menu item highlight states:
+  - data-selected is the keyboard selection, set by MenuPanel only once the
+    keyboard is actually used. :focus is deliberately never painted, because
+    the panel focuses the first item on open and browsers disagree about
+    whether that counts as :focus-visible (Firefox says yes, which left item
+    one highlighted for the whole time the menu was open).
+  - :hover is declared last so the pointer always wins when it is over an
+    item, which is what "the hover highlight must move" means.
+*/
+.mijdo-menu-item[data-selected="true"] {
+  background: var(--mijdo-navy);
+  color: var(--mijdo-white);
+
+  outline: 1px dotted var(--mijdo-white);
+  outline-offset: -3px;
+}
+
+.mijdo-menu-item:hover:not(:disabled) {
   background: var(--mijdo-navy);
   color: var(--mijdo-white);
 }
@@ -493,17 +509,41 @@ PHASE 01 DESKTOP LAYOUT
   color: var(--mijdo-black);
 
   border-top: 1px solid var(--mijdo-white);
+
+  overflow: hidden;
 }
 
-.mijdo-status-apps,
+/*
+  The task list is the only part allowed to give up room. Without min-width: 0
+  and overflow it kept its full intrinsic width and pushed the clock, the CV
+  control and the social links off the right edge of the window.
+*/
+.mijdo-status-apps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/*
+  The clock and the CV/social links must never be squeezed or pushed away, so
+  they hold their natural size and the task list absorbs the difference.
+*/
 .mijdo-status-actions {
   display: flex;
   align-items: center;
   gap: 8px;
+
+  flex: 0 0 auto;
 }
 
 .mijdo-status-item {
-  min-width: 112px;
+  /* Shrinkable so a full task list never crowds out the clock area. */
+  flex: 0 1 auto;
+  min-width: 0;
 
   padding: 2px 6px;
 
@@ -512,6 +552,10 @@ PHASE 01 DESKTOP LAYOUT
   color: var(--mijdo-black);
   cursor: pointer;
   text-align: left;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mijdo-status-item:hover,
@@ -534,6 +578,17 @@ PHASE 01 DESKTOP LAYOUT
   content: "_ ";
 }
 
+/*
+  Status bar links share the flat retro surface of the task buttons.
+  They are anchors, so they are keyboard focusable and open in a new tab.
+*/
+.mijdo-status-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mijdo-status-link,
 .mijdo-status-cv {
   padding: 2px 6px;
 
@@ -541,8 +596,12 @@ PHASE 01 DESKTOP LAYOUT
   border: 0;
   color: var(--mijdo-black);
   cursor: pointer;
+
+  text-decoration: none;
 }
 
+.mijdo-status-link:hover,
+.mijdo-status-link:focus-visible,
 .mijdo-status-cv:hover,
 .mijdo-status-cv:focus-visible {
   background: var(--mijdo-navy);

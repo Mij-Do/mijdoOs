@@ -20,7 +20,11 @@ export type ExperienceRecord = {
 
 export type ProjectRecord = {
   name: string;
-  date: string;
+  /*
+    Optional: a project only carries a date once its timeline is confirmed.
+    MijdoOS is the current project and has no published date yet.
+  */
+  date?: string;
   type?: string;
   technologies: string[];
   description: string;

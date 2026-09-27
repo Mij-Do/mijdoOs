@@ -30,12 +30,32 @@ export function DetailSection({
 }
 
 export function DetailList({ items }: { items: string[] }) {
+  if (items.length === 0) return null;
+
   return (
     <ul className="mijdo-detail-list">
       {items.map((item) => (
         <li key={item}>{item}</li>
       ))}
     </ul>
+  );
+}
+
+/*
+  Verified profile links. Each row keeps the retro link styling used by
+  project links, so the terminal and the window share one source of truth.
+*/
+export function DetailLinkRow({ links }: { links: { label: string; url: string }[] }) {
+  if (links.length === 0) return null;
+
+  return (
+    <p className="mijdo-detail-links">
+      {links.map((link) => (
+        <a href={link.url} key={link.label} target="_blank" rel="noopener noreferrer">
+          [{link.label}]
+        </a>
+      ))}
+    </p>
   );
 }
 
@@ -57,7 +77,7 @@ export function DetailLinks({ links }: DetailLinksProps) {
   return (
     <p className="mijdo-detail-links">
       {availableLinks.map((link) => (
-        <a href={link.url} key={link.label} target="_blank" rel="noreferrer">
+        <a href={link.url} key={link.label} target="_blank" rel="noopener noreferrer">
           [{link.label}]
         </a>
       ))}

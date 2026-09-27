@@ -1,4 +1,4 @@
-import { contact } from "../../data/contact";
+import { contact, socialLinks } from "../../data/contact";
 import { experience } from "../../data/experience";
 import { profile } from "../../data/profile";
 import { projects } from "../../data/projects";
@@ -52,7 +52,9 @@ function createProjectLines() {
 
     const details = [project.date, project.type].filter(Boolean).join(" - ");
 
-    lines.push(`${DETAIL_INDENT}${details}`);
+    if (details) lines.push(`${DETAIL_INDENT}${details}`);
+    if (project.links.github) lines.push(`${DETAIL_INDENT}${project.links.github}`);
+
     lines.push("");
   });
 
@@ -88,7 +90,28 @@ function createContactLines() {
     `Email: ${contact.email}`,
     `Phone: ${contact.phone}`,
     `Location: ${contact.location}`,
+    "",
+    ...socialLinks.map((link) => `${link.label}: ${link.url}`),
+    `CV: ${contact.cvUrl}`,
   ];
+}
+
+/*
+  The GitHub command reuses the same project records as the Projects
+  application, so a repository is never described in two places.
+*/
+function createGitHubLines() {
+  const lines = ["GITHUB", "", `Profile: ${contact.github}`, "", "Repositories:", ""];
+
+  for (const project of projects) {
+    if (!project.links.github) continue;
+
+    lines.push(`${DETAIL_INDENT}${project.name}`);
+    lines.push(`${DETAIL_INDENT}${DETAIL_INDENT}${project.links.github}`);
+    lines.push("");
+  }
+
+  return lines;
 }
 
 export const terminalCommands: TerminalCommand[] = [
@@ -126,6 +149,11 @@ export const terminalCommands: TerminalCommand[] = [
     name: "contact",
     description: "Display contact information",
     execute: () => ({ lines: createContactLines() }),
+  },
+  {
+    name: "github",
+    description: "Display GitHub profile and repositories",
+    execute: () => ({ lines: createGitHubLines() }),
   },
   {
     name: "clear",

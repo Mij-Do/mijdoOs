@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { contact, socialLinks } from "../../data/contact";
 import type { WindowId, WindowState } from "../../types/window";
 
 function getCurrentTime() {
@@ -12,10 +13,9 @@ function getCurrentTime() {
 type StatusBarProps = {
   windows: WindowState[];
   onOpenWindow: (id: WindowId) => void;
-  onOpenCv: () => void;
 };
 
-export function StatusBar({ windows, onOpenWindow, onOpenCv }: StatusBarProps) {
+export function StatusBar({ windows, onOpenWindow }: StatusBarProps) {
   const [time, setTime] = useState(getCurrentTime);
 
   useEffect(() => {
@@ -48,14 +48,31 @@ export function StatusBar({ windows, onOpenWindow, onOpenCv }: StatusBarProps) {
           ))}
       </div>
       <div className="mijdo-status-actions">
-        <button
+        <div className="mijdo-status-links">
+          {socialLinks.map((link) => (
+            <a
+              className="mijdo-status-link"
+              key={link.label}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={link.label}
+              aria-label={`Open ${link.label}`}
+            >
+              [{link.badge}]
+            </a>
+          ))}
+        </div>
+        <a
           className="mijdo-status-cv"
-          type="button"
+          href={contact.cvUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="CV"
           aria-label="Open CV"
-          onClick={onOpenCv}
         >
           [CV]
-        </button>
+        </a>
         <time dateTime={new Date().toISOString()}>{time}</time>
       </div>
     </footer>

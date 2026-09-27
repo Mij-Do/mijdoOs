@@ -1,4 +1,4 @@
-import { contact } from "../../data/contact";
+import { contact, socialLinks } from "../../data/contact";
 import { education } from "../../data/education";
 import { experience } from "../../data/experience";
 import { profile } from "../../data/profile";
@@ -9,7 +9,13 @@ import {
   technicalSkills,
 } from "../../data/skills";
 import type { WindowControllerProps } from "../../types/window";
-import { DetailLinks, DetailList, DetailSection, DetailWindow } from "./DetailWindow";
+import {
+  DetailLinkRow,
+  DetailLinks,
+  DetailList,
+  DetailSection,
+  DetailWindow,
+} from "./DetailWindow";
 
 export function ProfileApplication(props: WindowControllerProps) {
   return (
@@ -95,8 +101,7 @@ export function ProjectsApplication(props: WindowControllerProps) {
       {projects.map((project) => (
         <DetailSection title={project.name} key={project.name}>
           <p>
-            {project.date}
-            {project.type ? ` - ${project.type}` : ""}
+            {[project.date, project.type].filter(Boolean).join(" - ")}
           </p>
           <p>TECH: {project.technologies.join(" / ")}</p>
           <p>{project.description}</p>
@@ -116,6 +121,14 @@ export function ContactApplication(props: WindowControllerProps) {
         <p>Email: {contact.email}</p>
         <p>Phone: {contact.phone}</p>
         <p>Location: {contact.location}</p>
+      </DetailSection>
+      <DetailSection title="PROFILES">
+        <DetailLinkRow links={socialLinks} />
+        <p>
+          <a href={contact.cvUrl} target="_blank" rel="noopener noreferrer">
+            [CV]
+          </a>
+        </p>
       </DetailSection>
     </DetailWindow>
   );

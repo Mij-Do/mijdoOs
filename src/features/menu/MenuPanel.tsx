@@ -33,8 +33,17 @@ export function MenuPanel({
   returnFocusRef,
 }: MenuPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const itemRefs = useRef<(HTMLElement | null)[]>([]);
   const [position, setPosition] = useState({ left: anchorLeft, top: anchorTop });
+  /*
+    The panel focuses its first item on open so the keyboard works straight
+    away, but that focus must not be painted: a menu opened with the mouse
+    showed item one highlighted for as long as it stayed open. The highlight
+    is therefore driven by this state, which only turns on once the keyboard
+    is actually used, and it is painted through data-selected.
+  */
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const [isKeyboardMode, setIsKeyboardMode] = useState(false);
 
   const focusableIndexes = useMemo(
     () =>
@@ -48,21 +57,33 @@ export function MenuPanel({
   const focusItem = useCallback(
     (offset: number) => {
       if (focusableIndexes.length === 0) {
+        setFocusedIndex(null);
         panelRef.current?.focus();
         return;
       }
 
       const step =
         (offset + focusableIndexes.length) % focusableIndexes.length;
+      const index = focusableIndexes[step];
 
-      itemRefs.current[focusableIndexes[step]]?.focus();
+      setFocusedIndex(index);
+      itemRefs.current[index]?.focus();
     },
     [focusableIndexes],
   );
 
   useEffect(() => {
-    focusItem(0);
-  }, [focusItem]);
+    /*
+      Focus the first item so the keyboard works immediately. This is a DOM
+      focus only: no selection is recorded, so opening a menu with the mouse
+      must not paint anything.
+    */
+    if (focusableIndexes.length > 0) {
+      itemRefs.current[focusableIndexes[0]]?.focus();
+    } else {
+      panelRef.current?.focus();
+    }
+  }, [focusableIndexes]);
 
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
@@ -113,12 +134,14 @@ export function MenuPanel({
 
     if (event.key === "ArrowDown") {
       event.preventDefault();
+      setIsKeyboardMode(true);
       focusItem(1);
       return;
     }
 
     if (event.key === "ArrowUp") {
       event.preventDefault();
+      setIsKeyboardMode(true);
       focusItem(-1);
     }
   }
@@ -134,40 +157,85 @@ export function MenuPanel({
       tabIndex={-1}
       style={{ left: position.left, top: position.top }}
       onKeyDown={handleKeyDown}
+      /*
+        Any real pointer movement hands the highlight to :hover, so the
+        keyboard selection cannot stay painted while the mouse is elsewhere.
+      */
+      onPointerMove={() => setIsKeyboardMode(false)}
       onContextMenu={(event) => event.preventDefault()}
     >
       {items.length === 0 ? null : (
-        items.map((item, index) =>
-          item.type === "separator" ? (
-            <div
-              className="mijdo-menu-separator"
-              key={`separator-${index}`}
-              role="separator"
-            />
-          ) : (
+        items.map((item, index) => {
+          if (item.type === "separator") {
+            return (
+              <div
+                className="mijdo-menu-separator"
+                key={`separator-${index}`}
+                role="separator"
+              />
+            );
+          }
+
+          const role =
+            item.checked === undefined ? "menuitem" : "menuitemcheckbox";
+
+          const registerRef = (element: HTMLElement | null) => {
+            itemRefs.current[index] = element;
+          };
+
+          const content = (
+            <>
+              <span className="mijdo-menu-item-mark" aria-hidden="true">
+                {item.checked ? "✓" : ""}
+              </span>
+              <span className="mijdo-menu-item-label">{item.label}</span>
+            </>
+          );
+
+          const selected = isKeyboardMode && focusedIndex === index;
+
+          /*
+            A link item is a real anchor, so the browser opens the target in
+            a new tab and the shell never has to call window.open.
+          */
+          if (item.href) {
+            return (
+              <a
+                className="mijdo-menu-item"
+                role={role}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                key={item.label}
+                ref={registerRef}
+                data-selected={selected}
+                onClick={() => close(true)}
+              >
+                {content}
+              </a>
+            );
+          }
+
+          return (
             <button
               className="mijdo-menu-item"
               type="button"
-              role={item.checked === undefined ? "menuitem" : "menuitemcheckbox"}
+              role={role}
               aria-checked={item.checked}
               aria-disabled={item.disabled}
               disabled={item.disabled}
               key={item.label}
-              ref={(element) => {
-                itemRefs.current[index] = element;
-              }}
+              ref={registerRef}
+              data-selected={selected}
               onClick={() => {
                 close(true);
                 item.onSelect();
               }}
             >
-              <span className="mijdo-menu-item-mark" aria-hidden="true">
-                {item.checked ? "✓" : ""}
-              </span>
-              <span className="mijdo-menu-item-label">{item.label}</span>
+              {content}
             </button>
-          ),
-        )
+          );
+        })
       )}
     </div>,
     document.body,

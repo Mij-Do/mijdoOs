@@ -6,7 +6,7 @@ export const technicalSkills: SkillGroup[] = [
     items: ["HTML", "CSS", "JavaScript", "TypeScript", "Sass"],
   },
   {
-    category: "Frontend Frameworks & Libraries",
+    category: "Frontend",
     items: ["React.js", "Next.js", "Redux", "Bootstrap", "Tailwind CSS"],
   },
   {
@@ -15,15 +15,18 @@ export const technicalSkills: SkillGroup[] = [
   },
   {
     category: "Authentication & APIs",
-    items: ["Clerk Authentication", "REST APIs", "Axios", "TanStack Query"],
+    items: ["Clerk", "REST APIs", "Axios", "TanStack Query"],
   },
   {
-    category: "Database Tools & Management",
-    items: ["Prisma Studio", "MongoDB Compass"],
-  },
-  {
-    category: "Developer Tools & OS",
-    items: ["VS Code", "Git", "GitHub", "Linux (Ubuntu)"],
+    category: "Tools",
+    items: [
+      "Prisma Studio",
+      "MongoDB Compass",
+      "VS Code",
+      "Git",
+      "GitHub",
+      "Linux (Ubuntu)",
+    ],
   },
 ];
 

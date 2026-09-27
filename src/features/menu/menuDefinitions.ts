@@ -1,3 +1,4 @@
+import { contact } from "../../data/contact";
 import type {
   MenuActions,
   MenuDefinition,
@@ -45,7 +46,7 @@ export function createMenuDefinitions(
           label: "Open Mijdo.exe",
           onSelect: () => actions.openWindow("mijdo"),
         },
-        { type: "item", label: "Open CV", onSelect: actions.openCv },
+        { type: "item", label: "Open CV", onSelect: actions.closeMenu, href: contact.cvUrl },
         separator,
         {
           type: "item",

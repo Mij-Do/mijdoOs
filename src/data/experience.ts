@@ -3,7 +3,7 @@ import type { ExperienceRecord } from "../types/portfolio";
 export const experience: ExperienceRecord[] = [
   {
     role: "Technical Co-Founder",
-    company: "Meem Langs",
+    company: "Meem Langs (Mimeflow)",
     period: "Nov 2025 - Present",
     description: "AI-Powered Language Learning Platform",
     responsibilities: [

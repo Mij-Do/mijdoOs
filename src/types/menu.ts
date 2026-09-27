@@ -10,12 +10,15 @@ export type MenuAnchor = {
 /*
   A checked item behaves like a menuitemcheckbox.
   An item without "checked" behaves like a plain menuitem.
+  An item with "href" is rendered as a real link, so the browser opens it
+  in a new tab instead of the shell calling window.open.
 */
 export type MenuItemAction =
   | {
       type: "item";
       label: string;
       onSelect: () => void;
+      href?: string;
       checked?: boolean;
       disabled?: boolean;
     }
@@ -35,7 +38,6 @@ export type MenuDefinition = {
 export type SystemActions = {
   openWindow: (id: WindowId) => void;
   closeActiveWindow: () => void;
-  openCv: () => void;
   showDesktop: () => void;
   toggleArrangeIcons: () => void;
   refreshDesktop: () => void;
