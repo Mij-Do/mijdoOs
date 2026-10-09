@@ -7,10 +7,10 @@ export const experience: ExperienceRecord[] = [
     period: "Nov 2025 - Present",
     description: "AI-Powered Language Learning Platform",
     responsibilities: [
-      "Co-founded and contribute technically to building an AI-powered platform connecting AI tools with language learning.",
-      "Helped shape the product's vision, structure, and long-term strategic direction.",
-      "Organized and managed weekly sessions, workflows, and collaborative activities for the Meem English Community.",
-      "Coordinated with team members to maintain engagement, streamline operations, and plan upcoming digital initiatives to expand reach and impact.",
+      "Build across the platform's full stack: a Next.js student frontend and dashboard on top of a NestJS backend with Prisma.",
+      "Contribute to product and data-model decisions, including CEFR-based level access rules and course, lesson and subscription contracts, recorded as written decision documents for the team.",
+      "Organize and run weekly sessions, workflows and collaborative activities for the Meem English Community, the platform's core user base.",
+      "Coordinate with team members to keep operations flowing and to plan digital initiatives that expand the community's reach.",
     ],
   },
 ];

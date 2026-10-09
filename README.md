@@ -118,8 +118,8 @@ environment, no DOM and no testing library:
 | `src/features/terminal/terminalCommands.test.ts` | the command registry, `dir` layout, unknown input |
 | `src/features/desktop/desktopIconPixels.test.ts` | 16×16 grids, palette, bounds, caching |
 
-**Browser tests** (`pnpm test:browser`) — 163 tests in `tests/browser/`, run
-against a real build in Chromium and Firefox:
+**Browser tests** (`pnpm test:browser`) — 174 tests in `tests/browser/`, run
+against a real build in Chromium and Firefox (348 runs in total):
 
 | Spec | Covers |
 | --- | --- |

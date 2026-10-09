@@ -1,0 +1,188 @@
+% Ahmed Samir — Curriculum Vitae
+%
+% Source of truth for public/cv.pdf. The portfolio site keeps its own copy of
+% the same facts in src/data/*.ts; the two must be kept in sync by hand.
+%
+% Build (Tectonic, no local TeX Live needed):
+%   tectonic -o public cv/cv.tex
+%
+% Build (XeLaTeX, needs fontspec and an installed Nimbus Sans):
+%   xelatex -output-directory public cv/cv.tex
+
+\documentclass[10pt,letterpaper]{article}
+
+\usepackage[margin=0.6in]{geometry}
+% Tectonic is XeTeX-based: fontspec picks Nimbus Sans (URW's Helvetica
+% clone, installed with the distro) and turns common ligatures off so
+% extracted text stays plain ASCII ("flow", not the single "fl" glyph)
+% for ATS parsers.
+\usepackage{fontspec}
+\setmainfont{Nimbus Sans}[Ligatures=NoCommon]
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{needspace}
+\usepackage{parskip}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+% Restrained navy accent, matching the portfolio's six-colour palette.
+\definecolor{accent}{HTML}{000080}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=accent,
+  linkcolor=black,
+  pdftitle={Ahmed Samir - Curriculum Vitae},
+  pdfauthor={Ahmed Samir},
+}
+
+% Section headings: uppercase, accent-coloured, with a thin rule beneath.
+\titleformat{\section}
+  {\large\bfseries\color{accent}\uppercase}
+  {}{0pt}{}
+  [\vspace{-0.6em}\rule{\textwidth}{0.6pt}]
+\titlespacing*{\section}{0pt}{0.6em}{0.25em}
+
+\setlist[itemize]{
+  leftmargin=1.4em,
+  itemsep=0.08em,
+  topsep=0.15em,
+  parsep=0pt,
+  label={\textcolor{accent}{\textbullet}}
+}
+
+% Right-aligned date column for two-line "entity --- date" headers.
+\newcommand{\dateright}[1]{\hfill\textbf{#1}}
+\newcommand{\headerview}[2]{{\bfseries #1}\dateright{#2}}
+
+\begin{document}
+
+% ---------------------------------------------------------------- header --
+\begin{center}
+  {\Huge\bfseries Ahmed Samir}\\[0.35em]
+  {\large Full-Stack / Front-End Developer --- Technical Co-Founder at Meem Langs}\\[0.45em]
+  Qena, Egypt \ \textbullet\ \ +20 114 661 5338 \ \textbullet\
+  \href{mailto:ahmedmijdo2@gmail.com}{ahmedmijdo2@gmail.com}\\[0.2em]
+  \href{https://www.linkedin.com/in/ahmed-mijdo-samir/}{linkedin.com/in/ahmed-mijdo-samir}
+  \ \textbullet\ \ \href{https://github.com/Mij-Do}{github.com/Mij-Do}
+  \ \textbullet\ \ \href{https://x.com/Mij_do}{x.com/Mij\_do}
+\end{center}
+
+% -------------------------------------------------------------- summary --
+\section{Summary}
+Full-stack developer building complete web applications with Next.js, React,
+TypeScript, Prisma and MongoDB --- from Clerk-secured authentication and
+validated server actions to accessible, tested interfaces. Technical
+Co-Founder at Meem Langs, an AI-powered language learning platform, where
+work spans a Next.js frontend and a NestJS backend with Prisma. Creator of
+MijdoOS, a browser-based portfolio operating system whose window manager,
+terminal and accessibility behaviour are covered by 142 unit tests and 348
+cross-browser test runs.
+
+% ------------------------------------------------------------- projects --
+\section{Projects}
+
+\headerview{Full-Stack Todo Application}{July 2026}\\[0.1em]
+{\footnotesize Next.js, TypeScript, Tailwind CSS, Prisma, MongoDB, Clerk
+\ \textbullet\ \href{https://github.com/Mij-Do/Full-Stack-To-Do-app-V6}{GitHub}}\\[0.15em]
+\begin{itemize}
+  \item Server Components and Server Actions handle todo reads and mutations.
+  \item Clerk authentication with middleware-based route protection; only the
+        sign-in and sign-up routes stay public.
+  \item Zod schemas with react-hook-form validate forms; optimistic UI via
+        \texttt{useOptimistic} rolls back when a mutation fails.
+  \item Prisma ORM on MongoDB models per-user todos with completion state.
+  \item Vitest and React Testing Library unit tests cover the validation
+        schemas and the todo table.
+\end{itemize}
+
+\headerview{Real Estate Listings Platform}{July 2026 --- Freelance Client Project}\\[0.1em]
+{\footnotesize Next.js, TypeScript, MongoDB, Prisma, Tailwind CSS, Cloudinary
+\ \textbullet\ \href{https://github.com/Mij-Do/real-state-full-stack-project}{GitHub}
+\ \textbullet\ \href{https://real-state-full-stack-project.vercel.app/}{Live Demo}}\\[0.15em]
+\begin{itemize}
+  \item Broker-free listings: owners publish homes for sale or rent and
+        buyers contact them directly by phone or WhatsApp from every listing.
+  \item Admin moderation --- new listings stay pending and hidden until
+        approved; a dashboard tracks live inventory and archives sold
+        properties.
+  \item Search and filtering by property type, price range and region.
+  \item Image uploads through Cloudinary; serverless Next.js deployment on
+        Vercel backed by MongoDB via Prisma.
+\end{itemize}
+
+\headerview{MijdoOS --- Interactive Developer Portfolio}{2026}\\[0.1em]
+{\footnotesize React, TypeScript, Vite, Vitest, Playwright
+\ \textbullet\ \href{https://github.com/Mij-Do/mijdoOs}{GitHub}
+\ \textbullet\ \href{https://mijdo-os.vercel.app/}{Live Demo}}\\[0.15em]
+\begin{itemize}
+  \item Browser-based retro operating system: a window manager on a single
+        \texttt{useReducer} --- open, close, minimize, maximize, drag and
+        z-order focus --- with no router or state library.
+  \item Terminal emulator with a hand-written parser, 13 commands and
+        scrollback history, answering from the same typed data the windows
+        render.
+  \item Desktop icons drawn as merged SVG rectangles from $16{\times}16$
+        pixel maps --- no image assets.
+  \item ARIA roles and live regions, full keyboard operation and
+        reduced-motion support; responsive across desktop, tablet and phone.
+  \item 142 Vitest unit tests plus 348 Playwright runs across Chromium and
+        Firefox; static build of about 87\,kB gzipped.
+\end{itemize}
+
+% ------------------------------------------------------------ experience --
+\section{Leadership \& Experience}
+\Needspace{7\baselineskip}
+
+\headerview{Technical Co-Founder --- Meem Langs (Mimeflow)}{Nov 2025 --- Present}\\[0.1em]
+{\itshape AI-Powered Language Learning Platform}\\[0.15em]
+\begin{itemize}
+  \item Build across the platform's full stack: a Next.js student frontend
+        and dashboard on top of a NestJS backend with Prisma.
+  \item Contribute to product and data-model decisions, including CEFR-based
+        level access rules and course, lesson and subscription contracts,
+        recorded as written decision documents for the team.
+  \item Organize and run weekly sessions, workflows and collaborative
+        activities for the Meem English Community, the platform's core user
+        base.
+  \item Coordinate with team members to keep operations flowing and to plan
+        digital initiatives that expand the community's reach.
+\end{itemize}
+
+% ------------------------------------------------------------ education --
+\section{Education}
+
+\headerview{Minya University}{Sep 2020 --- Jun 2025}\\[0.1em]
+Bachelor of Arabic Language \hfill Minya, Egypt
+
+\headerview{CS50 --- Harvard University (via edX)}{2024}\\[0.1em]
+Introduction to Computer Science \hfill Online
+
+% --------------------------------------------------------------- skills --
+\section{Technical Skills}
+\begin{description}[style=nextline,leftmargin=0pt,font=\bfseries\normalfont,itemsep=0.1em]
+  \item[Languages] HTML, CSS, JavaScript, TypeScript, Sass
+  \item[Frontend] React.js, Next.js, Redux, Bootstrap, Tailwind CSS
+  \item[Backend \& Databases] Node.js, Express, Prisma ORM, MongoDB, Strapi
+  \item[Authentication \& APIs] Clerk, REST APIs, Axios, TanStack Query
+  \item[Database Tools] Prisma Studio, MongoDB Compass
+  \item[Testing \& Quality] Vitest, Playwright, ESLint
+  \item[Developer Tools \& Deployment] Git, GitHub, VS Code, Linux (Ubuntu), Vite, Vercel
+\end{description}
+
+\section{Soft Skills}
+\begin{description}[style=nextline,leftmargin=0pt,font=\bfseries\normalfont,itemsep=0.1em]
+  \item[Leadership \& Collaboration] Guides small teams, organizes tasks, and works effectively within a team toward shared goals.
+  \item[Problem Solving \& Adaptability] Breaks down complex challenges into practical solutions and quickly adapts to new tools and frameworks.
+  \item[Time Management \& Consistency] Prioritizes tasks, meets deadlines, and maintains disciplined, reliable output over time.
+  \item[Communication] Clear and professional in both technical and non-technical contexts.
+  \item[Self-Learning] Continuously improves technical skills through independent study and hands-on projects.
+\end{description}
+
+\section{Languages}
+Arabic: Native \hfill English: B2 (Upper-Intermediate)
+
+\end{document}

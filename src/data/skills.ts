@@ -18,15 +18,16 @@ export const technicalSkills: SkillGroup[] = [
     items: ["Clerk", "REST APIs", "Axios", "TanStack Query"],
   },
   {
-    category: "Tools",
-    items: [
-      "Prisma Studio",
-      "MongoDB Compass",
-      "VS Code",
-      "Git",
-      "GitHub",
-      "Linux (Ubuntu)",
-    ],
+    category: "Database Tools",
+    items: ["Prisma Studio", "MongoDB Compass"],
+  },
+  {
+    category: "Testing & Quality",
+    items: ["Vitest", "Playwright", "ESLint"],
+  },
+  {
+    category: "Developer Tools & Deployment",
+    items: ["Git", "GitHub", "VS Code", "Linux (Ubuntu)", "Vite", "Vercel"],
   },
 ];
 
