@@ -1,11 +1,10 @@
 import type { ProjectRecord } from "../types/portfolio";
 
 /*
-  Portfolio projects with verified public repositories.
-  A project only exposes a live demo once an anonymous visitor can actually
-  reach it: the URL must answer successfully without signing in. The Todo
-  app's deployment protects every route with Clerk middleware, so it keeps
-  no demo link until that changes.
+  Portfolio projects, aligned with the reference CV (the canonical profile).
+  Live demos appear only where an anonymous visitor can actually reach the
+  URL: the Todo app's deployment protects every route with Clerk middleware,
+  so it keeps no demo link until that changes.
 */
 export const projects: ProjectRecord[] = [
   {
@@ -20,14 +19,14 @@ export const projects: ProjectRecord[] = [
       "Clerk",
     ],
     description:
-      "Feature-rich full-stack Todo application using the Next.js App Router.",
+      "Full-stack Todo application with secure authentication, validated forms, and persistent data storage.",
     features: [
-      "Server Components and Server Actions for data reads and mutations.",
-      "Secure authentication with Clerk, including middleware-based route protection for every non-public route.",
-      "Centralized Zod schemas with react-hook-form for validated todo forms.",
-      "Optimistic UI updates via React's useOptimistic, with rollback when a mutation fails.",
-      "Prisma ORM backed by MongoDB, modelling todos with completion state and per-user ownership.",
-      "Vitest and React Testing Library unit tests covering the validation schemas and the todo table.",
+      "Used Next.js App Router, Server Components, and Server Actions to handle data mutations and application workflows.",
+      "Implemented authentication and route protection using Clerk to manage user sessions and protect application access.",
+      "Designed database models using Prisma ORM with MongoDB for persistent data storage.",
+      "Used Prisma Studio and MongoDB Compass to inspect records, manage data, and troubleshoot database issues.",
+      "Built a responsive user interface with Tailwind CSS and maintained type safety using TypeScript.",
+      "Managed source code and version control using Git and GitHub.",
     ],
     links: {
       github: "https://github.com/Mij-Do/Full-Stack-To-Do-app-V6",
@@ -37,23 +36,13 @@ export const projects: ProjectRecord[] = [
     name: "Real Estate Listings Platform",
     date: "July 2026",
     type: "Freelance Client Project",
-    technologies: [
-      "Next.js",
-      "TypeScript",
-      "MongoDB",
-      "Prisma",
-      "Tailwind CSS",
-      "Cloudinary",
-    ],
+    technologies: ["Next.js", "MongoDB", "Prisma"],
     description:
-      "Full-stack platform where property owners list homes for sale or rent directly, with admin approval required before a listing goes public.",
+      "Full-stack real estate platform enabling property owners to list properties for sale or rent and connect directly with potential buyers or tenants.",
     features: [
-      "Broker-free listings: owners publish properties for sale or rent and buyers contact them directly.",
-      "Moderation queue: new listings start as pending and stay hidden until an admin approves them.",
-      "Admin dashboard to approve, decline and track live inventory, with an archive for sold properties.",
-      "Search and filtering by property type, price range and region.",
-      "Phone and WhatsApp call-to-action buttons on every listing for direct seller contact.",
-      "Image uploads through Cloudinary; serverless Next.js deployment on Vercel backed by MongoDB via Prisma.",
+      "Implemented an admin moderation workflow in which submitted listings require approval before publication.",
+      "Built property search and filtering by type, price range, and location, alongside administrative tools for managing listings and archiving sold properties.",
+      "Deployed the application on Vercel with MongoDB-backed data storage.",
     ],
     links: {
       github: "https://github.com/Mij-Do/real-state-full-stack-project",
@@ -62,17 +51,16 @@ export const projects: ProjectRecord[] = [
   },
   {
     name: "MijdoOS",
-    date: "2026",
-    technologies: ["React", "TypeScript", "Vite", "Vitest", "Playwright"],
+    date: "September 2026",
+    technologies: ["React 19", "TypeScript", "Vite", "CSS", "Vitest", "Playwright"],
     description:
-      "MijdoOS is the current developer portfolio: a browser-based retro operating system with a boot sequence, a desktop, draggable windows and a working terminal.",
+      "Interactive developer portfolio built as a browser-based desktop environment with a retro operating-system interface.",
     features: [
-      "Window manager on a single useReducer: open, close, minimize, maximize, drag, and z-order focus, with no router or state library.",
-      "Terminal emulator with a hand-written parser, 13 commands and scrollback history, answering from the same typed data the windows render.",
-      "Eight desktop icons drawn from 16x16 pixel maps as merged SVG rectangles, with no image assets.",
-      "Accessibility throughout: ARIA roles and live regions, visible focus everywhere, full keyboard operation and reduced-motion support.",
-      "Responsive layouts for desktop, tablet and phone, shipping as a static build of about 87 kB gzipped.",
-      "142 Vitest unit tests plus 348 Playwright runs across Chromium and Firefox.",
+      "Implemented a window management system supporting dragging, minimizing, maximizing, restoring, closing, and window focus management.",
+      "Developed an interactive terminal with 13 commands for exploring profile information, projects, skills, experience, and contact details.",
+      "Structured the application with React and TypeScript, using a centralized state-management reducer and reusable UI components.",
+      "Added responsive layouts, keyboard navigation, accessible controls, and reduced-motion support.",
+      "Implemented automated unit and browser tests using Vitest and Playwright to validate application behavior and user interactions.",
     ],
     links: {
       github: "https://github.com/Mij-Do/mijdoOs",

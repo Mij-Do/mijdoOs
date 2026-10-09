@@ -1,7 +1,7 @@
 # MijdoOS
 
 A browser-based operating system that is also a developer portfolio, for
-**Ahmed Samir** — full-stack / front-end developer and technical co-founder at
+**Ahmed Samir** — full-stack developer and technical co-founder at
 Meem Langs.
 
 The site boots, shows a desktop, and hands the visitor a set of applications:

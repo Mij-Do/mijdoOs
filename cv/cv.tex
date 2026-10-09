@@ -1,188 +1,313 @@
-% Ahmed Samir — Curriculum Vitae
-%
-% Source of truth for public/cv.pdf. The portfolio site keeps its own copy of
-% the same facts in src/data/*.ts; the two must be kept in sync by hand.
-%
-% Build (Tectonic, no local TeX Live needed):
-%   tectonic -o public cv/cv.tex
-%
-% Build (XeLaTeX, needs fontspec and an installed Nimbus Sans):
-%   xelatex -output-directory public cv/cv.tex
 
-\documentclass[10pt,letterpaper]{article}
+%-------------------------
+% Resume in LaTeX
+% Author: Ahmed Samir
+% Build: /tmp/opencode/tex/tectonic -o public cv/cv.tex
+%-------------------------
 
-\usepackage[margin=0.6in]{geometry}
-% Tectonic is XeTeX-based: fontspec picks Nimbus Sans (URW's Helvetica
-% clone, installed with the distro) and turns common ligatures off so
-% extracted text stays plain ASCII ("flow", not the single "fl" glyph)
-% for ATS parsers.
-\usepackage{fontspec}
-\setmainfont{Nimbus Sans}[Ligatures=NoCommon]
-\usepackage{xcolor}
-\usepackage{enumitem}
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
 \usepackage{titlesec}
-\usepackage{hyperref}
-\usepackage{needspace}
-\usepackage{parskip}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{fontawesome5}
+\usepackage{multicol}
 
-\pagestyle{empty}
-\setlength{\parindent}{0pt}
+% NOTE:
+% glyphtounicode and \pdfgentounicode are pdfTeX-specific.
+% They are intentionally omitted for compatibility with XeTeX.
 
-% Restrained navy accent, matching the portfolio's six-colour palette.
-\definecolor{accent}{HTML}{000080}
+\setlength{\multicolsep}{-3.0pt}
+\setlength{\columnsep}{-1pt}
 
-\hypersetup{
-  colorlinks=true,
-  urlcolor=accent,
-  linkcolor=black,
-  pdftitle={Ahmed Samir - Curriculum Vitae},
-  pdfauthor={Ahmed Samir},
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.6in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.19in}
+\addtolength{\topmargin}{-.7in}
+\addtolength{\textheight}{1.4in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+%-------------------------
+% Custom commands
+
+\newcommand{\resumeItem}[1]{
+  \item\small{#1 \vspace{-2pt}}
 }
 
-% Section headings: uppercase, accent-coloured, with a thin rule beneath.
-\titleformat{\section}
-  {\large\bfseries\color{accent}\uppercase}
-  {}{0pt}{}
-  [\vspace{-0.6em}\rule{\textwidth}{0.6pt}]
-\titlespacing*{\section}{0pt}{0.6em}{0.25em}
-
-\setlist[itemize]{
-  leftmargin=1.4em,
-  itemsep=0.08em,
-  topsep=0.15em,
-  parsep=0pt,
-  label={\textcolor{accent}{\textbullet}}
+\newcommand{\resumeSubheading}[4]{%
+  \vspace{-2pt}\item
+  \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \textbf{#1} & \textbf{\small #2} \\
+    \textit{\small #3} & \textit{\small #4} \\
+  \end{tabular*}\vspace{-7pt}
 }
 
-% Right-aligned date column for two-line "entity --- date" headers.
-\newcommand{\dateright}[1]{\hfill\textbf{#1}}
-\newcommand{\headerview}[2]{{\bfseries #1}\dateright{#2}}
+\renewcommand\labelitemi{
+  $\vcenter{\hbox{\tiny$\bullet$}}$
+}
+
+\newcommand{\resumeSubHeadingListStart}{
+  \begin{itemize}[leftmargin=0.0in, label={}]
+}
+
+\newcommand{\resumeSubHeadingListEnd}{
+  \end{itemize}
+}
+
+\newcommand{\resumeItemListStart}{
+  \begin{itemize}
+}
+
+\newcommand{\resumeItemListEnd}{
+  \end{itemize}\vspace{-5pt}
+}
+
+%-------------------------------------------
+%%%%%% RESUME STARTS HERE %%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
-% ---------------------------------------------------------------- header --
+%----------HEADING----------
+
 \begin{center}
-  {\Huge\bfseries Ahmed Samir}\\[0.35em]
-  {\large Full-Stack / Front-End Developer --- Technical Co-Founder at Meem Langs}\\[0.45em]
-  Qena, Egypt \ \textbullet\ \ +20 114 661 5338 \ \textbullet\
-  \href{mailto:ahmedmijdo2@gmail.com}{ahmedmijdo2@gmail.com}\\[0.2em]
-  \href{https://www.linkedin.com/in/ahmed-mijdo-samir/}{linkedin.com/in/ahmed-mijdo-samir}
-  \ \textbullet\ \ \href{https://github.com/Mij-Do}{github.com/Mij-Do}
-  \ \textbullet\ \ \href{https://x.com/Mij_do}{x.com/Mij\_do}
+    {\Huge \scshape Ahmed Samir} \\ \vspace{1pt}
+    Full-Stack Developer | Technical Co-Founder at Meem Langs \\ \vspace{1pt}
+    Qena, Egypt \\ \vspace{1pt}
+
+    \small
+    \raisebox{-0.1\height}\faPhone\ +201146615338
+    \quad
+    \href{mailto:ahmedmijdo2@gmail.com}{
+      \raisebox{-0.2\height}\faEnvelope\ 
+      \underline{ahmedmijdo2@gmail.com}
+    }
+    \quad
+    \href{https://www.linkedin.com/in/ahmed-mijdo-samir/}{
+      \raisebox{-0.2\height}\faLinkedin\ 
+      \underline{LinkedIn}
+    }
+    \quad
+    \href{https://github.com/Mij-Do}{
+      \raisebox{-0.2\height}\faGithub\ 
+      \underline{GitHub}
+    }
+
+    \vspace{-8pt}
 \end{center}
 
-% -------------------------------------------------------------- summary --
-\section{Summary}
-Full-stack developer building complete web applications with Next.js, React,
-TypeScript, Prisma and MongoDB --- from Clerk-secured authentication and
-validated server actions to accessible, tested interfaces. Technical
-Co-Founder at Meem Langs, an AI-powered language learning platform, where
-work spans a Next.js frontend and a NestJS backend with Prisma. Creator of
-MijdoOS, a browser-based portfolio operating system whose window manager,
-terminal and accessibility behaviour are covered by 142 unit tests and 348
-cross-browser test runs.
+%-----------SUMMARY-----------
 
-% ------------------------------------------------------------- projects --
+\section*{Summary}
+
+\noindent
+Full-Stack Developer with hands-on experience building modern web
+applications using React, Next.js, TypeScript, Node.js, and database
+technologies. Experienced in developing responsive user interfaces,
+implementing authentication, designing data models, and integrating
+REST APIs. Completed training in NestJS to strengthen backend
+development skills and expand expertise in building structured,
+maintainable server-side applications. Technical Co-Founder at
+Meem Langs, an AI-powered language learning platform, combining
+software development with product planning, technical coordination,
+and community leadership.
+
+%-----------PROJECTS-----------
+
 \section{Projects}
 
-\headerview{Full-Stack Todo Application}{July 2026}\\[0.1em]
-{\footnotesize Next.js, TypeScript, Tailwind CSS, Prisma, MongoDB, Clerk
-\ \textbullet\ \href{https://github.com/Mij-Do/Full-Stack-To-Do-app-V6}{GitHub}}\\[0.15em]
-\begin{itemize}
-  \item Server Components and Server Actions handle todo reads and mutations.
-  \item Clerk authentication with middleware-based route protection; only the
-        sign-in and sign-up routes stay public.
-  \item Zod schemas with react-hook-form validate forms; optimistic UI via
-        \texttt{useOptimistic} rolls back when a mutation fails.
-  \item Prisma ORM on MongoDB models per-user todos with completion state.
-  \item Vitest and React Testing Library unit tests cover the validation
-        schemas and the todo table.
-\end{itemize}
+\resumeSubHeadingListStart
 
-\headerview{Real Estate Listings Platform}{July 2026 --- Freelance Client Project}\\[0.1em]
-{\footnotesize Next.js, TypeScript, MongoDB, Prisma, Tailwind CSS, Cloudinary
-\ \textbullet\ \href{https://github.com/Mij-Do/real-state-full-stack-project}{GitHub}
-\ \textbullet\ \href{https://real-state-full-stack-project.vercel.app/}{Live Demo}}\\[0.15em]
-\begin{itemize}
-  \item Broker-free listings: owners publish homes for sale or rent and
-        buyers contact them directly by phone or WhatsApp from every listing.
-  \item Admin moderation --- new listings stay pending and hidden until
-        approved; a dashboard tracks live inventory and archives sold
-        properties.
-  \item Search and filtering by property type, price range and region.
-  \item Image uploads through Cloudinary; serverless Next.js deployment on
-        Vercel backed by MongoDB via Prisma.
-\end{itemize}
+  % Full-Stack Todo Application
 
-\headerview{MijdoOS --- Interactive Developer Portfolio}{2026}\\[0.1em]
-{\footnotesize React, TypeScript, Vite, Vitest, Playwright
-\ \textbullet\ \href{https://github.com/Mij-Do/mijdoOs}{GitHub}
-\ \textbullet\ \href{https://mijdo-os.vercel.app/}{Live Demo}}\\[0.15em]
-\begin{itemize}
-  \item Browser-based retro operating system: a window manager on a single
-        \texttt{useReducer} --- open, close, minimize, maximize, drag and
-        z-order focus --- with no router or state library.
-  \item Terminal emulator with a hand-written parser, 13 commands and
-        scrollback history, answering from the same typed data the windows
-        render.
-  \item Desktop icons drawn as merged SVG rectangles from $16{\times}16$
-        pixel maps --- no image assets.
-  \item ARIA roles and live regions, full keyboard operation and
-        reduced-motion support; responsive across desktop, tablet and phone.
-  \item 142 Vitest unit tests plus 348 Playwright runs across Chromium and
-        Firefox; static build of about 87\,kB gzipped.
-\end{itemize}
+  \resumeSubheading
+    {Full-Stack Todo Application}{July 2026}
+    {Next.js, TypeScript, Tailwind CSS, Prisma, MongoDB, Clerk}
+    {\href{https://github.com/Mij-Do/Full-Stack-To-Do-app-V6}
+    {\underline{GitHub}}}
 
-% ------------------------------------------------------------ experience --
+    \resumeItemListStart
+      \resumeItem{Developed a full-stack Todo application using Next.js App Router, Server Components, and Server Actions to handle data mutations and application workflows.}
+      \resumeItem{Implemented authentication and route protection using Clerk to manage user sessions and protect application access.}
+      \resumeItem{Designed database models using Prisma ORM with MongoDB for persistent data storage.}
+      \resumeItem{Used Prisma Studio and MongoDB Compass to inspect records, manage data, and troubleshoot database issues.}
+      \resumeItem{Built a responsive user interface with Tailwind CSS and maintained type safety using TypeScript.}
+      \resumeItem{Managed source code and version control using Git and GitHub.}
+    \resumeItemListEnd
+
+  % Real Estate Platform
+
+  \resumeSubheading
+    {Real Estate Listings Platform}{July 2026}
+    {Freelance Client Project --- Next.js, MongoDB, Prisma}
+    {\href{https://github.com/Mij-Do/real-state-full-stack-project}
+    {\underline{GitHub}}}
+
+    \resumeItemListStart
+      \resumeItem{Developed a full-stack real estate platform enabling property owners to list properties for sale or rent and connect directly with potential buyers or tenants.}
+      \resumeItem{Implemented an admin moderation workflow in which submitted listings require approval before publication.}
+      \resumeItem{Built property search and filtering by type, price range, and location, alongside administrative tools for managing listings and archiving sold properties.}
+      \resumeItem{Deployed the application on Vercel with MongoDB-backed data storage.}
+    \resumeItemListEnd
+
+  % MijdoOS Portfolio
+
+  \resumeSubheading
+    {MijdoOS --- Interactive Developer Portfolio}{September 2026}
+    {React 19, TypeScript, Vite, CSS, Vitest, Playwright}
+    {\href{https://github.com/Mij-Do/mijdoOs}
+    {\underline{GitHub}} $\vert$
+    \href{https://mijdo-os.vercel.app/}
+    {\underline{Live Demo}}}
+
+    \resumeItemListStart
+      \resumeItem{Built an interactive, browser-based desktop environment that presents a personal developer portfolio through a retro operating-system interface.}
+      \resumeItem{Implemented a window management system supporting dragging, minimizing, maximizing, restoring, closing, and window focus management.}
+      \resumeItem{Developed an interactive terminal with 13 commands for exploring profile information, projects, skills, experience, and contact details.}
+      \resumeItem{Structured the application with React and TypeScript, using a centralized state-management reducer and reusable UI components.}
+      \resumeItem{Added responsive layouts, keyboard navigation, accessible controls, and reduced-motion support.}
+      \resumeItem{Implemented automated unit and browser tests using Vitest and Playwright to validate application behavior and user interactions.}
+    \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+\vspace{-16pt}
+
+%----------LEADERSHIP & EXPERIENCE----------
+
 \section{Leadership \& Experience}
-\Needspace{7\baselineskip}
 
-\headerview{Technical Co-Founder --- Meem Langs (Mimeflow)}{Nov 2025 --- Present}\\[0.1em]
-{\itshape AI-Powered Language Learning Platform}\\[0.15em]
-\begin{itemize}
-  \item Build across the platform's full stack: a Next.js student frontend
-        and dashboard on top of a NestJS backend with Prisma.
-  \item Contribute to product and data-model decisions, including CEFR-based
-        level access rules and course, lesson and subscription contracts,
-        recorded as written decision documents for the team.
-  \item Organize and run weekly sessions, workflows and collaborative
-        activities for the Meem English Community, the platform's core user
-        base.
-  \item Coordinate with team members to keep operations flowing and to plan
-        digital initiatives that expand the community's reach.
-\end{itemize}
+\resumeSubHeadingListStart
 
-% ------------------------------------------------------------ education --
+  \resumeSubheading
+    {Technical Co-Founder --- Meem Langs}
+    {Nov 2025 -- Present}
+    {AI-Powered Language Learning Platform}
+    {}
+
+    \resumeItemListStart
+      \resumeItem{Contribute to the technical development and product direction of an AI-powered language learning platform.}
+      \resumeItem{Participate in defining product requirements, application structure, technical workflows, and long-term development priorities.}
+      \resumeItem{Help organize weekly sessions, workflows, and collaborative activities for the Meem English Community.}
+      \resumeItem{Coordinate with team members to maintain community engagement, organize initiatives, and support platform growth.}
+    \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+\vspace{-12pt}
+
+%-----------EDUCATION-----------
+
 \section{Education}
 
-\headerview{Minya University}{Sep 2020 --- Jun 2025}\\[0.1em]
-Bachelor of Arabic Language \hfill Minya, Egypt
+\resumeSubHeadingListStart
 
-\headerview{CS50 --- Harvard University (via edX)}{2024}\\[0.1em]
-Introduction to Computer Science \hfill Online
+  \resumeSubheading
+    {Minya University}{Sep 2020 -- Jun 2025}
+    {Bachelor of Arabic Language}
+    {Minya, Egypt}
 
-% --------------------------------------------------------------- skills --
+  \resumeSubheading
+    {CS50 --- Harvard University (via edX)}{2024}
+    {Introduction to Computer Science}
+    {Online}
+
+\resumeSubHeadingListEnd
+
+%-----------TECHNICAL SKILLS-----------
+
 \section{Technical Skills}
-\begin{description}[style=nextline,leftmargin=0pt,font=\bfseries\normalfont,itemsep=0.1em]
-  \item[Languages] HTML, CSS, JavaScript, TypeScript, Sass
-  \item[Frontend] React.js, Next.js, Redux, Bootstrap, Tailwind CSS
-  \item[Backend \& Databases] Node.js, Express, Prisma ORM, MongoDB, Strapi
-  \item[Authentication \& APIs] Clerk, REST APIs, Axios, TanStack Query
-  \item[Database Tools] Prisma Studio, MongoDB Compass
-  \item[Testing \& Quality] Vitest, Playwright, ESLint
-  \item[Developer Tools \& Deployment] Git, GitHub, VS Code, Linux (Ubuntu), Vite, Vercel
-\end{description}
+
+\begin{itemize}[leftmargin=0.15in, label={}]
+  \small{
+    \item \textbf{Languages:}
+    HTML, CSS, JavaScript, TypeScript, Sass
+
+    \item \textbf{Frontend Frameworks \& Libraries:}
+    React.js, Next.js, Redux, Bootstrap, Tailwind CSS
+
+    \item \textbf{Backend Development:}
+    Node.js, NestJS, Express.js, REST APIs
+
+    \item \textbf{Databases \& ORMs:}
+    MongoDB, PostgreSQL, Prisma ORM
+
+    \item \textbf{Authentication \& Data Fetching:}
+    Clerk, Axios, TanStack Query
+
+    \item \textbf{Database Tools:}
+    Prisma Studio, MongoDB Compass
+
+    \item \textbf{Testing:}
+    Vitest, Playwright
+
+    \item \textbf{Developer Tools \& OS:}
+    VS Code, Git, GitHub, Linux (Ubuntu)
+  }
+\end{itemize}
+
+\vspace{-16pt}
+
+%-----------SOFT SKILLS-----------
 
 \section{Soft Skills}
-\begin{description}[style=nextline,leftmargin=0pt,font=\bfseries\normalfont,itemsep=0.1em]
-  \item[Leadership \& Collaboration] Guides small teams, organizes tasks, and works effectively within a team toward shared goals.
-  \item[Problem Solving \& Adaptability] Breaks down complex challenges into practical solutions and quickly adapts to new tools and frameworks.
-  \item[Time Management \& Consistency] Prioritizes tasks, meets deadlines, and maintains disciplined, reliable output over time.
-  \item[Communication] Clear and professional in both technical and non-technical contexts.
-  \item[Self-Learning] Continuously improves technical skills through independent study and hands-on projects.
-\end{description}
+
+\begin{itemize}[leftmargin=0.15in, label={}]
+  \small{
+    \item \textbf{Leadership \& Collaboration:}
+    Coordinates tasks, supports collaborative workflows, and works
+    toward shared team goals.
+
+    \item \textbf{Problem Solving \& Adaptability:}
+    Breaks down technical challenges into practical solutions and
+    adapts to new tools and technologies.
+
+    \item \textbf{Time Management \& Consistency:}
+    Prioritizes tasks and maintains consistent progress across
+    learning and development projects.
+
+    \item \textbf{Communication:}
+    Communicates technical concepts and project requirements
+    clearly in technical and non-technical contexts.
+
+    \item \textbf{Self-Learning:}
+    Continuously develops technical skills through structured
+    learning and hands-on implementation.
+  }
+\end{itemize}
+
+%-----------LANGUAGES-----------
 
 \section{Languages}
-Arabic: Native \hfill English: B2 (Upper-Intermediate)
+
+\begin{itemize}[leftmargin=0.15in, label={}]
+  \item \textbf{Arabic:} Native
+  \item \textbf{English:} B2 (Upper-Intermediate)
+\end{itemize}
+
+\vspace{-16pt}
 
 \end{document}

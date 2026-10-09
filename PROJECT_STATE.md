@@ -12,7 +12,7 @@
 
 ## 2. Project Purpose
 
-MijdoOS is a single-page developer portfolio for **Ahmed Samir** (full-stack / front-end developer, technical co-founder at Meem Langs), presented as a fictional early graphical operating system. A visitor boots the machine, lands on a desktop, opens windows by clicking icons or using the command bar, drags and stacks those windows, and reads real portfolio content inside them. A working command prompt exposes the same content as text. The metaphor is load-bearing: the portfolio *is* the desktop, the applications are the content sections, and the terminal is a second route to the same data.
+MijdoOS is a single-page developer portfolio for **Ahmed Samir** (full-stack developer, technical co-founder at Meem Langs), presented as a fictional early graphical operating system. A visitor boots the machine, lands on a desktop, opens windows by clicking icons or using the command bar, drags and stacks those windows, and reads real portfolio content inside them. A working command prompt exposes the same content as text. The metaphor is load-bearing: the portfolio *is* the desktop, the applications are the content sections, and the terminal is a second route to the same data.
 
 ## 3. Current Architecture
 
@@ -329,7 +329,7 @@ All content sourced from `src/data/` — single source of truth for terminal, wi
 
 | File | Status | Notes |
 |------|--------|-------|
-| `profile.ts` | ✅ Verified | Ahmed Samir, Full-Stack/Front-End, Technical Co-Founder Meem Langs |
+| `profile.ts` | ✅ Verified | Ahmed Samir, Full-Stack Developer, Technical Co-Founder Meem Langs |
 | `education.ts` | ✅ Verified | Minya University (2020-2025), CS50 Harvard (2024) |
 | `skills.ts` | ✅ Verified | 6 technical groups, 5 soft skill groups, 2 languages |
 | `experience.ts` | ✅ Verified | Technical Co-Founder Meem Langs (Nov 2025-Present) |

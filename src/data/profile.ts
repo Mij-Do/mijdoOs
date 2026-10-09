@@ -9,11 +9,11 @@ export type Profile = {
 
 export const profile: Profile = {
   name: "Ahmed Samir",
-  title: "Full-Stack / Front-End Developer",
+  title: "Full-Stack Developer",
   role: "Technical Co-Founder at Meem Langs",
-  location: "Qena-Nagaa Hamadi, Egypt",
+  location: "Qena, Egypt",
   summary:
-    "Full-stack developer building complete web applications with Next.js, React, TypeScript, Prisma and MongoDB - from Clerk-secured authentication and validated server actions to accessible, tested interfaces. Technical Co-Founder at Meem Langs, an AI-powered language learning platform, and creator of MijdoOS, a browser-based portfolio operating system covered by 142 unit tests and 348 cross-browser test runs.",
+    "Full-Stack Developer with hands-on experience building modern web applications using React, Next.js, TypeScript, Node.js, and database technologies. Experienced in developing responsive user interfaces, implementing authentication, designing data models, and integrating REST APIs. Completed training in NestJS to strengthen backend development skills and expand expertise in building structured, maintainable server-side applications. Technical Co-Founder at Meem Langs, an AI-powered language learning platform, combining software development with product planning, technical coordination, and community leadership.",
   about:
-    "Currently serving as Technical Co-Founder at Meem Langs, an AI-powered language learning platform, combining hands-on development with product and community leadership.",
+    "Technical Co-Founder at Meem Langs, an AI-powered language learning platform, combining software development with product planning, technical coordination, and community leadership.",
 };

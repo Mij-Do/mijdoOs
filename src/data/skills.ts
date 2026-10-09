@@ -6,28 +6,32 @@ export const technicalSkills: SkillGroup[] = [
     items: ["HTML", "CSS", "JavaScript", "TypeScript", "Sass"],
   },
   {
-    category: "Frontend",
+    category: "Frontend Frameworks & Libraries",
     items: ["React.js", "Next.js", "Redux", "Bootstrap", "Tailwind CSS"],
   },
   {
-    category: "Backend & Databases",
-    items: ["Node.js", "Express", "Prisma ORM", "MongoDB", "Strapi"],
+    category: "Backend Development",
+    items: ["Node.js", "NestJS", "Express.js", "REST APIs"],
   },
   {
-    category: "Authentication & APIs",
-    items: ["Clerk", "REST APIs", "Axios", "TanStack Query"],
+    category: "Databases & ORMs",
+    items: ["MongoDB", "PostgreSQL", "Prisma ORM"],
+  },
+  {
+    category: "Authentication & Data Fetching",
+    items: ["Clerk", "Axios", "TanStack Query"],
   },
   {
     category: "Database Tools",
     items: ["Prisma Studio", "MongoDB Compass"],
   },
   {
-    category: "Testing & Quality",
-    items: ["Vitest", "Playwright", "ESLint"],
+    category: "Testing",
+    items: ["Vitest", "Playwright"],
   },
   {
-    category: "Developer Tools & Deployment",
-    items: ["Git", "GitHub", "VS Code", "Linux (Ubuntu)", "Vite", "Vercel"],
+    category: "Developer Tools & OS",
+    items: ["VS Code", "Git", "GitHub", "Linux (Ubuntu)"],
   },
 ];
 
@@ -35,31 +39,31 @@ export const softSkills: SkillGroup[] = [
   {
     category: "Leadership & Collaboration",
     items: [
-      "Guides small teams, organizes tasks, and works effectively within a team toward shared goals.",
+      "Coordinates tasks, supports collaborative workflows, and works toward shared team goals.",
     ],
   },
   {
     category: "Problem Solving & Adaptability",
     items: [
-      "Breaks down complex challenges into practical solutions and quickly adapts to new tools and frameworks.",
+      "Breaks down technical challenges into practical solutions and adapts to new tools and technologies.",
     ],
   },
   {
     category: "Time Management & Consistency",
     items: [
-      "Prioritizes tasks, meets deadlines, and maintains disciplined, reliable output over time.",
+      "Prioritizes tasks and maintains consistent progress across learning and development projects.",
     ],
   },
   {
     category: "Communication",
     items: [
-      "Clear and professional in both technical and non-technical contexts.",
+      "Communicates technical concepts and project requirements clearly in technical and non-technical contexts.",
     ],
   },
   {
     category: "Self-Learning",
     items: [
-      "Continuously improves technical skills through independent study and hands-on projects.",
+      "Continuously develops technical skills through structured learning and hands-on implementation.",
     ],
   },
 ];
