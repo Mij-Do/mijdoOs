@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { contact, socialLinks } from "../../data/contact";
 import type { WindowId, WindowState } from "../../types/window";
+import { openCv } from "../../utils/openCv";
 
 type StatusBarProps = {
   windows: WindowState[];
@@ -83,8 +84,9 @@ export function StatusBar({ windows, onOpenWindow }: StatusBarProps) {
           href={contact.cvUrl}
           target="_blank"
           rel="noopener noreferrer"
-          title="Open CV in a new tab"
-          aria-label="Open CV in a new tab"
+          title="Open CV"
+          aria-label="Open CV"
+          onClick={openCv}
         >
           [CV]
         </a>

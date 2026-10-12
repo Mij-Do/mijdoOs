@@ -9,6 +9,7 @@ import {
   technicalSkills,
 } from "../../data/skills";
 import type { WindowControllerProps } from "../../types/window";
+import { openCv } from "../../utils/openCv";
 import { formatProjectPeriod } from "../../utils/portfolio";
 import {
   DetailLinkRow,
@@ -138,7 +139,7 @@ export function ContactApplication(props: WindowControllerProps) {
           is a visual change rather than a refactor.
         */}
         <p>
-          <a href={contact.cvUrl} target="_blank" rel="noopener noreferrer">
+          <a href={contact.cvUrl} target="_blank" rel="noopener noreferrer" onClick={openCv}>
             [CV]
           </a>
         </p>

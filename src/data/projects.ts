@@ -2,9 +2,11 @@ import type { ProjectRecord } from "../types/portfolio";
 
 /*
   Portfolio projects, aligned with the reference CV (the canonical profile).
-  Live demos appear only where an anonymous visitor can actually reach the
-  URL: the Todo app's deployment protects every route with Clerk middleware,
-  so it keeps no demo link until that changes.
+  Every link is a URL verified against the repository's own published
+  homepage, never an address invented for this page. The Todo app's address is
+  a live Vercel deployment, but Clerk guards it: a plain HTTP request gets the
+  404 page and a browser is redirected to sign-in, so the demo cannot be used
+  without an account. The link stays because it is the project's real address.
 */
 export const projects: ProjectRecord[] = [
   {
@@ -30,6 +32,7 @@ export const projects: ProjectRecord[] = [
     ],
     links: {
       github: "https://github.com/Mij-Do/Full-Stack-To-Do-app-V6",
+      liveDemo: "https://to-do-app-v6-eta.vercel.app/",
     },
   },
   {
@@ -46,7 +49,6 @@ export const projects: ProjectRecord[] = [
     ],
     links: {
       github: "https://github.com/Mij-Do/real-state-full-stack-project",
-      liveDemo: "https://real-state-full-stack-project.vercel.app/",
     },
   },
   {

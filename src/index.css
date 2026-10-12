@@ -978,7 +978,8 @@ STATUS BAR
 
 /*
   Status bar links share the flat retro surface of the task buttons.
-  They are anchors, so they are keyboard focusable and open in a new tab.
+  They are anchors, so they are keyboard focusable and open in a new tab;
+  the CV keeps that new tab only where a mobile browser would honour it.
 */
 .mijdo-status-links {
   display: flex;

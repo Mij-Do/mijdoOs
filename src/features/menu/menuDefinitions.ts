@@ -5,6 +5,7 @@ import type {
   MenuItemAction,
 } from "../../types/menu";
 import type { WindowId } from "../../types/window";
+import { openCv } from "../../utils/openCv";
 
 type MenuDefinitionState = {
   hasActiveWindow: boolean;
@@ -45,7 +46,7 @@ export function createMenuDefinitions(
       label: "File",
       items: [
         openWindowItem(actions, "Open Mijdo.exe", "mijdo"),
-        { type: "item", label: "Open CV", onSelect: actions.closeMenu, href: contact.cvUrl },
+        { type: "item", label: "Open CV", onSelect: openCv, href: contact.cvUrl },
         separator,
         {
           type: "item",

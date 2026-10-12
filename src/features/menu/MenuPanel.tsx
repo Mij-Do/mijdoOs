@@ -227,7 +227,9 @@ export function MenuPanel({
 
           /*
             A link item is a real anchor, so the browser opens the target in
-            a new tab and the shell never has to call window.open.
+            a new tab and the shell never has to call window.open. The item's
+            action still runs, which is how the CV gives up that new tab on
+            the viewports where a mobile browser will not open a PDF in one.
           */
           if (item.href) {
             return (
@@ -240,7 +242,10 @@ export function MenuPanel({
                 key={item.label}
                 ref={registerRef}
                 data-selected={selected}
-                onClick={() => close(true)}
+                onClick={(event) => {
+                  close(true);
+                  item.onSelect(event);
+                }}
               >
                 {content}
               </a>

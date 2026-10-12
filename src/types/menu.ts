@@ -1,4 +1,5 @@
 import type { WindowId } from "./window";
+import type { LinkActivation } from "../utils/openCv";
 
 export type MenuId = "system" | "file" | "view" | "run" | "help";
 
@@ -11,13 +12,15 @@ export type MenuAnchor = {
   A checked item behaves like a menuitemcheckbox.
   An item without "checked" behaves like a plain menuitem.
   An item with "href" is rendered as a real link, so the browser opens it
-  in a new tab instead of the shell calling window.open.
+  in a new tab instead of the shell calling window.open. Its action still
+  runs, which is how the CV cancels that navigation on the viewports where
+  a mobile browser would refuse to open the resume at all.
 */
 export type MenuItemAction =
   | {
       type: "item";
       label: string;
-      onSelect: () => void;
+      onSelect: (event?: LinkActivation) => void;
       href?: string;
       checked?: boolean;
       disabled?: boolean;
