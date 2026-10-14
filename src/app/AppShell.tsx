@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import type { ReactElement } from "react";
+import { memo, useMemo, useState } from "react";
+import type { ComponentType } from "react";
 import { initialWindows, windowDefinitions } from "../data/windows";
 import {
   ContactApplication,
@@ -24,25 +24,35 @@ import { useWindowManager } from "../hooks/useWindowManager";
 import type { SystemActions } from "../types/menu";
 import type { WindowControllerProps, WindowId } from "../types/window";
 
-type WindowComponent = (props: WindowControllerProps) => ReactElement;
+type WindowComponent = ComponentType<WindowControllerProps>;
 
 /*
   Every declared window must have a component. The Record type enforces
   this at compile time, so the registry and the window table cannot drift.
+
+  Each entry is memoised at this single boundary: a drag dispatches "move",
+  the reducer replaces only the moved window's state object, and the five
+  controllers are created once per mount, so the seven untouched windows
+  keep identical prop identities and skip re-rendering entirely. Actions
+  that must reach every window (focus, open, close, minimize, maximize,
+  show-desktop) rebuild every state object in the reducer, so those still
+  re-render all windows. WindowFrame itself cannot be the boundary because
+  it always receives freshly created children elements, which would fail
+  its shallow comparison on every parent render.
 */
 const windowRegistry: Record<WindowId, WindowComponent> = {
-  mijdo: MijdoWindow,
-  profile: ProfileApplication,
-  education: EducationApplication,
-  skills: SkillsApplication,
-  experience: ExperienceApplication,
-  projects: ProjectsApplication,
-  contact: ContactApplication,
-  terminal: TerminalWindow,
-  about: AboutApplication,
-  "system-info": SystemInfoApplication,
-  help: HelpApplication,
-  shortcuts: ShortcutsApplication,
+  mijdo: memo(MijdoWindow),
+  profile: memo(ProfileApplication),
+  education: memo(EducationApplication),
+  skills: memo(SkillsApplication),
+  experience: memo(ExperienceApplication),
+  projects: memo(ProjectsApplication),
+  contact: memo(ContactApplication),
+  terminal: memo(TerminalWindow),
+  about: memo(AboutApplication),
+  "system-info": memo(SystemInfoApplication),
+  help: memo(HelpApplication),
+  shortcuts: memo(ShortcutsApplication),
 };
 
 /*
