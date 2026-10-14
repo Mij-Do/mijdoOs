@@ -30,7 +30,6 @@ export function ProfileApplication(props: WindowControllerProps) {
       </DetailSection>
       <DetailSection title="SUMMARY">
         <p>{profile.summary}</p>
-        <p>{profile.about}</p>
       </DetailSection>
     </DetailWindow>
   );

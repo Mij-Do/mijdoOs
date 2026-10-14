@@ -22,7 +22,6 @@ export function MijdoWindow(props: WindowControllerProps) {
         <section className="mijdo-profile-section">
           <h2>ABOUT THIS USER</h2>
           <p>{profile.summary}</p>
-          <p>{profile.about}</p>
         </section>
 
         <section className="mijdo-profile-section">

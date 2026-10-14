@@ -138,6 +138,62 @@ test.describe("boot", () => {
     await expect(page.locator(".mijdo-boot-skip")).toHaveText("Press any key to skip");
   });
 
+  /*
+    The skip hint is real text a low-vision visitor has to read in about a
+    second, so it has to clear 4.5:1 against the surface behind it. Measured
+    from the rendered colors rather than pinned to a token: a future palette
+    change passes or fails on the actual ratio. The CRT overlay is a separate,
+    system-wide dimming layer and is not part of this measurement.
+  */
+  test("keeps the skip hint readable against the boot surface", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".mijdo-boot-skip")).toBeVisible();
+
+    const ratio = await page.locator(".mijdo-boot-skip").evaluate((node) => {
+      function parseChannel(value: number) {
+        const channel = value / 255;
+        return channel <= 0.03928
+          ? channel / 12.92
+          : ((channel + 0.055) / 1.055) ** 2.4;
+      }
+
+      function parseColor(color: string): [number, number, number] | null {
+        const match = color.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+        if (!match) return null;
+        return [Number(match[1]), Number(match[2]), Number(match[3])];
+      }
+
+      function isTransparent(color: string) {
+        return (
+          color === "transparent" ||
+          /rgba?\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\s*\)/.test(color)
+        );
+      }
+
+      const foreground = parseColor(getComputedStyle(node).color);
+      if (!foreground) return -1;
+
+      let background: [number, number, number] | null = null;
+      for (let element: Element | null = node; element; element = element.parentElement) {
+        const candidate = getComputedStyle(element).backgroundColor;
+        if (isTransparent(candidate)) continue;
+        background = parseColor(candidate);
+        if (background) break;
+      }
+      if (!background) return -1;
+
+      const luminance = ([r, g, b]: [number, number, number]) =>
+        0.2126 * parseChannel(r) + 0.7152 * parseChannel(g) + 0.0722 * parseChannel(b);
+
+      const lighter = Math.max(luminance(foreground), luminance(background));
+      const darker = Math.min(luminance(foreground), luminance(background));
+
+      return (lighter + 0.05) / (darker + 0.05);
+    });
+
+    expect(ratio).toBeGreaterThanOrEqual(4.5);
+  });
+
   test("is not skipped by Tab, so keyboard users are not interrupted", async ({ page }) => {
     await page.goto("/");
     await expect(bootScreen(page)).toBeVisible();

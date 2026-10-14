@@ -1,6 +1,11 @@
 import cvSource from "../../cv/cv.tex?raw";
 import { describe, expect, it } from "vitest";
+import { contact } from "./contact";
+import { education } from "./education";
+import { experience } from "./experience";
+import { profile } from "./profile";
 import { projects } from "./projects";
+import { technicalSkills } from "./skills";
 
 /*
   The link matrix the portfolio has to present. The URLs are written out here
@@ -98,5 +103,115 @@ describe("the reference CV", () => {
 
   it("keeps the Real Estate live demo out of the CV", () => {
     expect(cvSource).not.toContain(REMOVED_DEMO);
+  });
+});
+
+/*
+  The portfolio data and the CV are two renderings of the same profile, and
+  they have already drifted once (project bullets, education wording, the
+  language level). Only fields that can be matched reliably are guarded here:
+  exact names, dates, contact channels, skill items, responsibilities. Wording
+  that LaTeX reflows or rephrases is deliberately not asserted, so the guard
+  stays signal rather than a fragile parser.
+
+  The CV escapes "&" and wraps lines, so containment is checked against a
+  normalized copy: LaTeX "\&" becomes "&" and runs of whitespace collapse.
+*/
+const normalizedCv = cvSource.replace(/\\&/g, "&").replace(/\s+/g, " ");
+
+describe("portfolio data against the reference CV", () => {
+  it("carries every project name", () => {
+    for (const project of projects) {
+      expect(normalizedCv, `${project.name} should appear in the CV`).toContain(
+        project.name,
+      );
+    }
+  });
+
+  it("carries every project date", () => {
+    for (const project of projects) {
+      if (!project.date) continue;
+
+      expect(normalizedCv, `${project.date} should appear in the CV`).toContain(
+        project.date,
+      );
+    }
+  });
+
+  it("carries every project technology", () => {
+    for (const project of projects) {
+      for (const technology of project.technologies) {
+        expect(
+          normalizedCv,
+          `${project.name}: ${technology} should appear in the CV`,
+        ).toContain(technology);
+      }
+    }
+  });
+
+  it("carries the contact channels", () => {
+    expect(normalizedCv).toContain(contact.email);
+    expect(normalizedCv).toContain(contact.phone);
+    expect(normalizedCv).toContain(contact.github);
+    expect(normalizedCv).toContain(contact.linkedIn);
+  });
+
+  it("carries the identity", () => {
+    expect(normalizedCv).toContain(profile.name);
+    expect(normalizedCv).toContain(profile.title);
+    expect(normalizedCv).toContain(profile.location);
+  });
+
+  it("carries the experience record and every responsibility", () => {
+    for (const record of experience) {
+      expect(normalizedCv).toContain(record.role);
+      expect(normalizedCv).toContain(record.company);
+      expect(normalizedCv).toContain(record.description);
+
+      for (const responsibility of record.responsibilities) {
+        expect(normalizedCv, `responsibility should appear in the CV`).toContain(
+          responsibility,
+        );
+      }
+    }
+  });
+
+  it("carries every education institution and degree", () => {
+    for (const record of education) {
+      for (const field of [record.degree, record.location]) {
+        expect(normalizedCv, `${field} should appear in the CV`).toContain(field);
+      }
+    }
+
+    /* The CS50 entry is titled slightly differently in each surface. */
+    expect(normalizedCv).toContain("CS50");
+    expect(normalizedCv).toContain("Harvard University");
+    expect(normalizedCv).toContain("Minya University");
+  });
+
+  it("carries every technical skill item", () => {
+    for (const group of technicalSkills) {
+      for (const item of group.items) {
+        expect(
+          normalizedCv,
+          `${group.category}: ${item} should appear in the CV`,
+        ).toContain(item);
+      }
+    }
+  });
+
+  it("carries every technical skill category heading", () => {
+    for (const group of technicalSkills) {
+      expect(
+        normalizedCv,
+        `${group.category} should appear in the CV`,
+      ).toContain(group.category);
+    }
+  });
+
+  it("carries the spoken-language level without pinning its punctuation", () => {
+    expect(normalizedCv).toContain("Upper-Intermediate");
+    expect(normalizedCv).toContain("Arabic");
+    expect(normalizedCv).toContain("English");
   });
 });

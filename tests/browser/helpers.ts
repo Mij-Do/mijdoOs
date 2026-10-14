@@ -191,6 +191,45 @@ export async function bootCursorAnimation(page: Page): Promise<string | null> {
 }
 
 /*
+  The usable floor a floating window promises anywhere above the compact
+  breakpoint (RESP-02, RESP-03): at least 320x180 keeps the title bar grabbable
+  and the content area usable instead of collapsing to a sliver. Asserted as
+  product numbers rather than imported from the hooks, so lowering the
+  implementation constants does not silently lower this bar.
+*/
+export const USABLE_WINDOW_WIDTH = 320;
+export const USABLE_WINDOW_HEIGHT = 180;
+
+/*
+  Asserts that a window is settled fully on the desktop surface and meets the
+  usable floor. Sizes are rounded to absorb sub-pixel layout.
+*/
+export async function expectUsableOnSurface(page: Page, title: string): Promise<void> {
+  const surface = await desktop(page).boundingBox();
+  const frame = await settledBox(windowByTitle(page, title));
+
+  expect(surface, "desktop surface should exist").not.toBeNull();
+  expect(frame, `${title} should settle with a box`).not.toBeNull();
+  if (!surface || !frame) return;
+
+  expect(Math.round(frame.width), `${title} width should meet the floor`).toBeGreaterThanOrEqual(
+    USABLE_WINDOW_WIDTH,
+  );
+  expect(Math.round(frame.height), `${title} height should meet the floor`).toBeGreaterThanOrEqual(
+    USABLE_WINDOW_HEIGHT,
+  );
+
+  expect(frame.x, `${title} left should be on the surface`).toBeGreaterThanOrEqual(surface.x - 1);
+  expect(frame.y, `${title} top should be on the surface`).toBeGreaterThanOrEqual(surface.y - 1);
+  expect(frame.x + frame.width, `${title} right should be on the surface`).toBeLessThanOrEqual(
+    surface.x + surface.width + 1,
+  );
+  expect(frame.y + frame.height, `${title} bottom should be on the surface`).toBeLessThanOrEqual(
+    surface.y + surface.height + 1,
+  );
+}
+
+/*
   Waits until an element stops moving before measuring it.
 
   Windows animate on open, minimize and restore, and those keyframes use a

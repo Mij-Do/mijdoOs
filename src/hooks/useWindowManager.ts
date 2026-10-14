@@ -156,6 +156,18 @@ export function windowManagerReducer(
     case "move": {
       if (!target.isOpen) return state;
 
+      /*
+        A drag pinned against the clamp keeps sending the position it already
+        has. Returning the same state object lets React skip the render
+        instead of rebuilding the window map for a move that changes nothing.
+      */
+      if (
+        target.position.x === action.position.x &&
+        target.position.y === action.position.y
+      ) {
+        return state;
+      }
+
       return {
         ...state,
         windows: {

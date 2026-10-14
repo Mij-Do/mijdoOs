@@ -37,12 +37,15 @@ function prefersReducedMotion() {
   manager a pure state machine and keeps the animation next to the frame it
   animates. Whichever of the timeout and the animation ending arrives first
   wins, and both paths are idempotent, so a late second call changes nothing.
+  Both the timer and the animationend listener are torn down by the same
+  helpers, so neither path can leave the other one's listener behind.
 */
 function useExitTransition(
   frameRef: RefObject<HTMLElement | null>,
   setExiting: (kind: ExitKind) => void,
 ) {
   const timerRef = useRef<number | null>(null);
+  const animationEndRef = useRef<((event: AnimationEvent) => void) | null>(null);
 
   const clearTimer = useCallback(() => {
     if (timerRef.current === null) return;
@@ -51,7 +54,20 @@ function useExitTransition(
     timerRef.current = null;
   }, []);
 
-  useEffect(() => clearTimer, [clearTimer]);
+  const clearAnimationEnd = useCallback(() => {
+    if (animationEndRef.current === null) return;
+
+    frameRef.current?.removeEventListener("animationend", animationEndRef.current);
+    animationEndRef.current = null;
+  }, [frameRef]);
+
+  useEffect(
+    () => () => {
+      clearTimer();
+      clearAnimationEnd();
+    },
+    [clearTimer, clearAnimationEnd],
+  );
 
   return useCallback(
     (kind: ExitKind, perform: () => void) => {
@@ -61,9 +77,11 @@ function useExitTransition(
       }
 
       clearTimer();
+      clearAnimationEnd();
       setExiting(kind);
       timerRef.current = window.setTimeout(() => {
         timerRef.current = null;
+        clearAnimationEnd();
         perform();
       }, EXIT_DURATIONS[kind]);
 
@@ -72,14 +90,15 @@ function useExitTransition(
       function handleAnimationEnd(event: AnimationEvent) {
         if (event.target !== frame) return;
 
-        frame?.removeEventListener("animationend", handleAnimationEnd);
+        clearAnimationEnd();
         clearTimer();
         perform();
       }
 
+      animationEndRef.current = handleAnimationEnd;
       frame?.addEventListener("animationend", handleAnimationEnd);
     },
-    [clearTimer, frameRef, setExiting],
+    [clearAnimationEnd, clearTimer, frameRef, setExiting],
   );
 }
 

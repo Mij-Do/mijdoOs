@@ -6,14 +6,17 @@ import type { WindowPosition } from "../types/window";
 type PointerOffset = WindowPosition;
 
 /*
-  Keeps at least this much of the window reachable from the left/top edges,
-  so a window can never be dragged somewhere its title bar cannot be grabbed.
+  The smallest a window may get while it is moved around: enough to keep the
+  title bar grabbable and the content area usable. The stylesheet's offset-based
+  size caps carry the same floor (see .mijdo-application-window in index.css),
+  and both have to agree — the clamp keeps the position where the floored size
+  still fits the surface, and the cap keeps the size where the position allows.
 
   Exported because seating a window on open has to agree with dragging it: the
-  same minimum decides both.
+  same floor decides both.
 */
-export const MIN_REACHABLE_WIDTH = 140;
-export const MIN_REACHABLE_HEIGHT = 48;
+export const MIN_WINDOW_WIDTH = 320;
+export const MIN_WINDOW_HEIGHT = 180;
 
 type Bounds = { left: number; top: number; width: number; height: number };
 
@@ -88,11 +91,11 @@ export function useDraggableWindow(
       */
       const bounds = boundsRef.current;
       const maxX = bounds
-        ? bounds.width - MIN_REACHABLE_WIDTH
-        : window.innerWidth - MIN_REACHABLE_WIDTH;
+        ? bounds.width - MIN_WINDOW_WIDTH
+        : window.innerWidth - MIN_WINDOW_WIDTH;
       const maxY = bounds
-        ? bounds.height - MIN_REACHABLE_HEIGHT
-        : window.innerHeight - MIN_REACHABLE_HEIGHT;
+        ? bounds.height - MIN_WINDOW_HEIGHT
+        : window.innerHeight - MIN_WINDOW_HEIGHT;
 
       onMove({
         x: Math.min(

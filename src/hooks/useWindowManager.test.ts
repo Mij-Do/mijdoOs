@@ -432,6 +432,44 @@ describe("windowManagerReducer", () => {
         }),
       ).toBe(before);
     });
+
+    /*
+      Dragging pins itself against the clamp at the edges of the surface, so
+      the same position arrives over and over. Returning the identical state
+      object lets React skip the render entirely instead of rebuilding the
+      window map for a move that changes nothing.
+    */
+    it("returns the same state when the position has not changed", () => {
+      const before = apply(createState(), OPEN_MIJDO, {
+        type: "move",
+        id: "mijdo",
+        position: { x: 50, y: 60 },
+      });
+
+      expect(
+        apply(before, {
+          type: "move",
+          id: "mijdo",
+          position: { x: 50, y: 60 },
+        }),
+      ).toBe(before);
+    });
+
+    it("still moves when only one coordinate changes", () => {
+      const before = apply(createState(), OPEN_MIJDO, {
+        type: "move",
+        id: "mijdo",
+        position: { x: 50, y: 60 },
+      });
+      const after = apply(before, {
+        type: "move",
+        id: "mijdo",
+        position: { x: 50, y: 61 },
+      });
+
+      expect(after).not.toBe(before);
+      expect(after.windows.mijdo.position).toEqual({ x: 50, y: 61 });
+    });
   });
 
   describe("show-desktop", () => {

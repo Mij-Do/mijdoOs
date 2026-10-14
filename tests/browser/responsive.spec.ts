@@ -5,6 +5,7 @@ import {
   bootAndSkip,
   desktop,
   desktopIcon,
+  expectUsableOnSurface,
   openMenuButton,
   settledBox,
   statusItem,
@@ -37,6 +38,35 @@ async function hasNoHorizontalOverflow(page: import("@playwright/test").Page): P
   return page.evaluate(() => {
     const root = document.documentElement;
     return root.scrollWidth <= root.clientWidth + 1;
+  });
+}
+
+/*
+  Bounding boxes, not scrollWidth: the desktop and the page both clip with
+  overflow: hidden, so a document-level scroll check cannot see an icon that
+  has been pushed off the surface. This reads every icon's box against the
+  surface's box and reports the labels that are no longer fully inside.
+*/
+async function iconLabelsOutsideSurface(
+  page: import("@playwright/test").Page,
+): Promise<string[]> {
+  return page.evaluate(() => {
+    const surface = document.querySelector(".mijdo-desktop");
+    if (!surface) return ["<no surface>"];
+
+    const bounds = surface.getBoundingClientRect();
+
+    return [...document.querySelectorAll(".mijdo-desktop-icon")]
+      .filter((node) => {
+        const box = node.getBoundingClientRect();
+        return !(
+          box.top >= bounds.top - 1 &&
+          box.bottom <= bounds.bottom + 1 &&
+          box.left >= bounds.left - 1 &&
+          box.right <= bounds.right + 1
+        );
+      })
+      .map((node) => node.getAttribute("aria-label") ?? "<unlabelled>");
   });
 }
 
@@ -364,4 +394,242 @@ test.describe("a narrow phone viewport", () => {
     expect(await hasNoHorizontalOverflow(page)).toBe(true);
   });
 
+});
+
+/*
+  Widths the original matrix never reached. Each block asserts real bounding
+  boxes: icons fully inside the desktop surface, windows sized for the surface
+  they sit in. Viewport emulation only — no physical device is exercised.
+*/
+
+test.describe("a wide desktop viewport", () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test("keeps every desktop icon inside the surface", async ({ page }) => {
+    await bootAndSkip(page);
+
+    await expect.poll(() => iconLabelsOutsideSurface(page)).toEqual([]);
+  });
+
+  test("still stacks the icons in a single column", async ({ page }) => {
+    await bootAndSkip(page);
+
+    await expect.poll(() => iconRows(page)).toBe(8);
+  });
+
+  test("opens a window that floats rather than fills the surface", async ({ page }) => {
+    await bootAndSkip(page);
+    await desktopIcon(page, "Mijdo.exe").click();
+
+    const surface = await desktop(page).boundingBox();
+    const frame = await windowByTitle(page, "Mijdo.exe").boundingBox();
+
+    expect(surface).not.toBeNull();
+    expect(frame).not.toBeNull();
+    if (!surface || !frame) return;
+
+    expect(frame.width).toBeLessThan(surface.width);
+  });
+});
+
+test.describe("a laptop viewport", () => {
+  test.use({ viewport: { width: 1024, height: 768 } });
+
+  test("keeps every desktop icon inside the surface", async ({ page }) => {
+    await bootAndSkip(page);
+
+    await expect.poll(() => iconLabelsOutsideSurface(page)).toEqual([]);
+  });
+
+  test("opens a late-cascade window with a usable size", async ({ page }) => {
+    await bootAndSkip(page);
+    await desktopIcon(page, "Terminal.exe").click();
+
+    const frame = await windowByTitle(page, "Terminal.exe").boundingBox();
+
+    expect(frame).not.toBeNull();
+    if (!frame) return;
+
+    expect(frame.width).toBeGreaterThanOrEqual(400);
+    expect(frame.height).toBeGreaterThanOrEqual(300);
+  });
+});
+
+test.describe("a portrait tablet viewport", () => {
+  test.use({ viewport: { width: 768, height: 1024 } });
+
+  test("keeps every desktop icon inside the surface", async ({ page }) => {
+    await bootAndSkip(page);
+
+    await expect.poll(() => iconLabelsOutsideSurface(page)).toEqual([]);
+  });
+
+  test("keeps windows floating", async ({ page }) => {
+    await bootAndSkip(page);
+    await desktopIcon(page, "Mijdo.exe").click();
+
+    const surface = await desktop(page).boundingBox();
+    const frame = await windowByTitle(page, "Mijdo.exe").boundingBox();
+
+    expect(surface).not.toBeNull();
+    expect(frame).not.toBeNull();
+    if (!surface || !frame) return;
+
+    expect(frame.width).toBeLessThan(surface.width);
+  });
+});
+
+/*
+  The 640px boundary, one pixel on either side. At 640 and below the window
+  becomes a full-width sheet and the icons wrap into rows; at 641 the floating
+  desktop layout returns. These two tests pin the boundary so a future
+  breakpoint change has to move both sides deliberately.
+*/
+test.describe("the compact breakpoint boundary", () => {
+  test.use({ viewport: { width: 640, height: 800 } });
+
+  test("640px uses the sheet layout", async ({ page }) => {
+    await bootAndSkip(page);
+
+    await expect.poll(() => iconRows(page)).toBeLessThan(8);
+
+    await desktopIcon(page, "Terminal.exe").click();
+
+    const surface = await desktop(page).boundingBox();
+    /* Settled, not mid-open: the entrance animation scales the frame. */
+    const frame = await settledBox(windowByTitle(page, "Terminal.exe"));
+
+    expect(surface).not.toBeNull();
+    expect(frame).not.toBeNull();
+    if (!surface || !frame) return;
+
+    expect(frame.width).toBeGreaterThanOrEqual(surface.width - 24);
+  });
+});
+
+test.describe("just above the compact breakpoint", () => {
+  test.use({ viewport: { width: 641, height: 800 } });
+
+  test("641px returns to the floating desktop layout", async ({ page }) => {
+    await bootAndSkip(page);
+
+    await expect.poll(() => iconRows(page)).toBe(8);
+
+    await desktopIcon(page, "Terminal.exe").click();
+
+    const surface = await desktop(page).boundingBox();
+    const frame = await windowByTitle(page, "Terminal.exe").boundingBox();
+
+    expect(surface).not.toBeNull();
+    expect(frame).not.toBeNull();
+    if (!surface || !frame) return;
+
+    /* Floating, not a sheet — and every icon still on the surface. */
+    expect(frame.width).toBeLessThan(surface.width);
+    await expect.poll(() => iconLabelsOutsideSurface(page)).toEqual([]);
+
+    /*
+      RESP-03: the late cascade entry used to collapse to 299px wide here,
+      squeezed by the offset-based cap. It must meet the usable floor instead,
+      fully on the surface, while still floating rather than becoming a sheet.
+    */
+    await expectUsableOnSurface(page, "Terminal.exe");
+  });
+});
+
+test.describe("a small phone viewport", () => {
+  test.use({ viewport: { width: 320, height: 568 } });
+
+  test("keeps every desktop icon inside the surface", async ({ page }) => {
+    await bootAndSkip(page);
+
+    await expect.poll(() => iconLabelsOutsideSurface(page)).toEqual([]);
+  });
+
+  test("opens a sheet that fits the surface", async ({ page }) => {
+    await bootAndSkip(page);
+    await desktopIcon(page, "Terminal.exe").click();
+
+    const surface = await desktop(page).boundingBox();
+    const frame = await settledBox(windowByTitle(page, "Terminal.exe"));
+
+    expect(surface).not.toBeNull();
+    expect(frame).not.toBeNull();
+    if (!surface || !frame) return;
+
+    expect(frame.width).toBeGreaterThanOrEqual(surface.width - 24);
+    expect(frame.x).toBeGreaterThanOrEqual(surface.x - 1);
+    expect(frame.x + frame.width).toBeLessThanOrEqual(surface.x + surface.width + 1);
+    expect(frame.y + frame.height).toBeLessThanOrEqual(surface.y + surface.height + 1);
+  });
+
+  test("does not scroll the page sideways", async ({ page }) => {
+    await bootAndSkip(page);
+
+    expect(await hasNoHorizontalOverflow(page)).toBe(true);
+  });
+});
+
+/*
+  Landscape and short viewports above the compact breakpoint (RESP-01, RESP-02).
+
+  Eight icons in one column are taller than these surfaces (70px each plus 1px
+  gaps), and the desktop clips with overflow: hidden, so the base icon column
+  pushed the bottom icons past the visible edge — measured on 2026-10-14 at
+  844x390 (Experience, Projects, Contact and Terminal outside), 1024x600 and
+  768x600 (Terminal outside). The icon block now wraps into a second column the
+  way Arrange Icons already did. The window opened from the last cascade entry
+  must also meet the 320x180 usable floor: at 844x390 the offset-based cap alone
+  left Terminal 66px tall. Viewport emulation only — no physical device is
+  exercised.
+*/
+test.describe("short landscape viewports", () => {
+  const LANDSCAPE_VIEWPORTS = [
+    { width: 844, height: 390 },
+    { width: 1024, height: 600 },
+    { width: 768, height: 600 },
+  ] as const;
+
+  for (const viewport of LANDSCAPE_VIEWPORTS) {
+    test.describe(`${viewport.width}x${viewport.height}`, () => {
+      test.use({ viewport: { ...viewport } });
+
+      test("keeps every desktop icon inside the surface", async ({ page }) => {
+        await bootAndSkip(page);
+
+        await expect.poll(() => iconLabelsOutsideSurface(page)).toEqual([]);
+      });
+
+      test("keeps the shell usable", async ({ page }) => {
+        await bootAndSkip(page);
+
+        expect(await hasNoHorizontalOverflow(page)).toBe(true);
+        await expect(page.locator(".mijdo-status-bar")).toBeVisible();
+
+        await desktopIcon(page, "Mijdo.exe").click();
+
+        const surface = await desktop(page).boundingBox();
+        const frame = await windowByTitle(page, "Mijdo.exe").boundingBox();
+
+        expect(surface).not.toBeNull();
+        expect(frame).not.toBeNull();
+        if (!surface || !frame) return;
+
+        expect(frame.x).toBeGreaterThanOrEqual(surface.x - 1);
+        expect(frame.y).toBeGreaterThanOrEqual(surface.y - 1);
+        expect(frame.x + frame.width).toBeLessThanOrEqual(surface.x + surface.width + 1);
+        expect(frame.y + frame.height).toBeLessThanOrEqual(surface.y + surface.height + 1);
+        expect(frame.width).toBeGreaterThanOrEqual(200);
+      });
+
+      test("opens the last cascade icon at a usable size", async ({ page }) => {
+        await bootAndSkip(page);
+
+        /* Terminal is the eighth icon: wrapped into the second column, reachable. */
+        await desktopIcon(page, "Terminal.exe").click();
+
+        await expectUsableOnSurface(page, "Terminal.exe");
+      });
+    });
+  }
 });

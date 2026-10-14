@@ -1,7 +1,9 @@
 import { expect, test } from "@playwright/test";
 import {
   bootAndSkip,
+  desktop,
   desktopIcon,
+  expectUsableOnSurface,
   menuItem,
   openMenuButton,
   statusItem,
@@ -248,6 +250,32 @@ test.describe("maximizing", () => {
       }, { timeout: 5_000 })
       .toBeLessThanOrEqual(4);
   });
+
+  /*
+    Maximize only overlays the window; the frame keeps its own position and
+    size in state. Restoring must land back on the exact box the visitor
+    maximized from, not merely "a normal-sized window".
+  */
+  test("returns a maximized window to the position and size it had before", async ({ page }) => {
+    await bootAndSkip(page);
+    await desktopIcon(page, "Mijdo.exe").click();
+
+    const before = await settledBox(windowByTitle(page, "Mijdo.exe"));
+
+    await windowByTitle(page, "Mijdo.exe").getByRole("button", { name: "Maximize Mijdo.exe" }).click();
+    await windowByTitle(page, "Mijdo.exe").getByRole("button", { name: "Restore Mijdo.exe" }).click();
+
+    const after = await settledBox(windowByTitle(page, "Mijdo.exe"));
+
+    expect(before).not.toBeNull();
+    expect(after).not.toBeNull();
+    if (!before || !after) return;
+
+    expect(after.x).toBeCloseTo(before.x, 0);
+    expect(after.y).toBeCloseTo(before.y, 0);
+    expect(after.width).toBeCloseTo(before.width, 0);
+    expect(after.height).toBeCloseTo(before.height, 0);
+  });
 });
 
 test.describe("focus and stacking", () => {
@@ -335,6 +363,63 @@ test.describe("dragging", () => {
     expect(frame.width).toBeGreaterThan(100);
   });
 
+  /*
+    The same reachability guarantee in the opposite corner (RESP-02). The
+    offset-based size caps used to shrink the frame to 132x40 at the clamp,
+    because they subtracted the very offset the clamp allowed. The caps now
+    carry a 320x180 floor and the drag clamp honors the same floor, so the
+    window stays entirely on the surface at a usable size with its title bar
+    grabbable.
+  */
+  test("keeps a window dragged to the bottom-right edge fully on the surface", async ({ page }) => {
+    await bootAndSkip(page);
+    await desktopIcon(page, "Mijdo.exe").click();
+
+    const surface = await desktop(page).boundingBox();
+    const bar = windowTitleBar(page, "Mijdo.exe");
+    const box = await bar.boundingBox();
+
+    expect(surface).not.toBeNull();
+    if (!surface || !box) return;
+
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 5000, box.y + 5000, { steps: 16 });
+    await page.mouse.up();
+
+    await expectUsableOnSurface(page, "Mijdo.exe");
+  });
+
+  /*
+    The other three corners of the same guarantee: the clamp is symmetric, so
+    each edge is checked with the pointer driven far past it.
+  */
+  const OTHER_CORNERS = [
+    { name: "top-right", dx: 5000, dy: -5000 },
+    { name: "bottom-left", dx: -5000, dy: 5000 },
+    { name: "top-left", dx: -5000, dy: -5000 },
+  ] as const;
+
+  for (const corner of OTHER_CORNERS) {
+    test(`keeps a window dragged to the ${corner.name} corner usable`, async ({ page }) => {
+      await bootAndSkip(page);
+      await desktopIcon(page, "Mijdo.exe").click();
+
+      const bar = windowTitleBar(page, "Mijdo.exe");
+      const box = await bar.boundingBox();
+
+      expect(box).not.toBeNull();
+      if (!box) return;
+
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(box.x + corner.dx, box.y + corner.dy, { steps: 16 });
+      await page.mouse.up();
+
+      await expectUsableOnSurface(page, "Mijdo.exe");
+    });
+  }
+
   test("does not move a window when the drag starts on a control", async ({ page }) => {
     await bootAndSkip(page);
     await desktopIcon(page, "Mijdo.exe").click();
@@ -390,6 +475,21 @@ test.describe("system dialogs", () => {
     await page.keyboard.press("Escape");
 
     await expect(windowByTitle(page, "System Info.exe")).toHaveCount(0);
+  });
+
+  /*
+    A dialog is a message box: it takes focus on open so Escape or Enter can
+    dismiss it straight away, without hunting for the window first.
+  */
+  test("takes focus on its OK button when it opens", async ({ page }) => {
+    await bootAndSkip(page);
+
+    await openMenuButton(page, "SYSTEM").click();
+    await menuItem(page, "System Info").click();
+
+    await expect(
+      windowByTitle(page, "System Info.exe").getByRole("button", { name: "OK" }),
+    ).toBeFocused();
   });
 
   test("leaves the desktop usable while a dialog is open", async ({ page }) => {

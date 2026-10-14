@@ -450,9 +450,17 @@ WINDOW PLACEMENT
     measure what is left below and beside itself. A window therefore cannot be
     opened or dragged far enough to slide under the command bar or the status
     bar, whatever the viewport does, and no runtime measurement is needed.
+
+    The max() floors hold the cap back from collapsing the window: the offset
+    is only allowed to shave the size down to 320x180, never past it, so a
+    window dragged to the clamp keeps a usable content area and a grabbable
+    title bar instead of shrinking to a sliver. The drag clamp and the seating
+    clamp agree on the same floor (MIN_WINDOW_WIDTH/HEIGHT in
+    useDraggableWindow.ts), which is what keeps the floored window on the
+    surface rather than hanging past its edge.
   */
-  max-width: calc(100% - max(var(--mijdo-window-offset-x, 0px), 24px) - 8px);
-  max-height: calc(100% - max(var(--mijdo-window-offset-y, 0px), 24px) - 8px);
+  max-width: max(320px, calc(100% - max(var(--mijdo-window-offset-x, 0px), 24px) - 8px));
+  max-height: max(180px, calc(100% - max(var(--mijdo-window-offset-y, 0px), 24px) - 8px));
 
   overflow: hidden;
 
@@ -745,15 +753,26 @@ DESKTOP ICONS
 .mijdo-desktop-icons {
   position: absolute;
   top: 14px;
+  bottom: 14px;
   left: 14px;
 
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1px;
+  align-content: flex-start;
+  flex-wrap: wrap;
 
-  max-height: calc(100% - 28px);
+  gap: 1px;
 }
+
+/*
+  The block is pinned top and bottom, so its height is the surface's height
+  minus the insets, and the wrap makes that bound mean something: on a tall
+  desktop all eight icons fit one column and nothing changes, but on a short
+  one — a landscape phone above the compact breakpoint, a low laptop lid — the
+  column wraps into a second column to the right instead of running past the
+  desktop's clipped edge. The same flow Arrange Icons has always used.
+*/
 
 /*
   Arrange Icons fills the desktop downwards, then starts a new column,
@@ -1473,7 +1492,12 @@ BOOT
 .mijdo-boot-skip {
   margin: 0;
 
-  color: var(--mijdo-dark);
+  /*
+    Dim but readable: gray on the black boot surface is 5.3:1, which clears
+    the 4.5:1 floor for normal text while still reading as a quiet system
+    hint. The previous dark gray was 2.0:1 — visible only to sharp eyes.
+  */
+  color: var(--mijdo-gray);
   font-size: 12px;
 }
 
@@ -1585,6 +1609,7 @@ MOBILE
   */
   .mijdo-desktop-icons {
     right: 8px;
+    bottom: auto;
 
     flex-flow: row wrap;
     align-content: flex-start;

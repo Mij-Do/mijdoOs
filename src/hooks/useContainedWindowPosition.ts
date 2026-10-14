@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from "react";
 import type { RefObject } from "react";
-import { MIN_REACHABLE_HEIGHT, MIN_REACHABLE_WIDTH } from "./useDraggableWindow";
+import { MIN_WINDOW_HEIGHT, MIN_WINDOW_WIDTH } from "./useDraggableWindow";
 import type { WindowPosition } from "../types/window";
 
 /*
@@ -129,17 +129,17 @@ function compactSeat(surface: Element, bounds: DOMRect): WindowPosition {
 
 function clampToSurface(current: WindowPosition, bounds: DOMRect): WindowPosition {
   /*
-    The same reachable minimum the drag uses, so a window can never be seated
-    somewhere a drag could not have put it.
+    The same usable floor the drag and the size caps use, so a window is never
+    seated somewhere its floored size would hang off the surface.
   */
   return {
     x: Math.min(
       Math.max(0, current.x),
-      Math.max(0, bounds.width - MIN_REACHABLE_WIDTH),
+      Math.max(0, bounds.width - MIN_WINDOW_WIDTH),
     ),
     y: Math.min(
       Math.max(0, current.y),
-      Math.max(0, bounds.height - MIN_REACHABLE_HEIGHT),
+      Math.max(0, bounds.height - MIN_WINDOW_HEIGHT),
     ),
   };
 }
