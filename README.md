@@ -233,8 +233,10 @@ normalises more than the project currently overrides. It was left in place
 deliberately, and the migration is out of scope for the current phase. If you
 remove it, diff the built CSS and check every list, button, input and heading.
 
-**A `date` command exists.** The terminal's `date` command is intentionally
-hard-coded, so a stale build can never show the wrong build date.
+**A `date` command exists.** The terminal's `date` command reads the clock when
+it runs — `new Date()`, formatted with `Intl.DateTimeFormat` in the runtime's
+locale — so it shows the visitor's current date, not a value baked in at build
+time.
 
 ---
 

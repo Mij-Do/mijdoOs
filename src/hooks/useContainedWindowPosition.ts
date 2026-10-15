@@ -45,8 +45,10 @@ function isCompactSurface(): boolean {
 
   Two things are deliberately left alone. A window the visitor has dragged is
   where they put it, so a later resize only corrects a position that no longer
-  fits, not one that merely differs from the registry. And a maximized window is
-  placed by its own rule rather than by a position, so it is never seated.
+  fits or one that has come to cover the icon rail — the launcher every
+  application opens from, which the desktop promises stays reachable — not one
+  that merely differs from the registry. And a maximized window is placed by
+  its own rule rather than by a position, so it is never seated.
 */
 export function useContainedWindowPosition(
   onMove: (position: WindowPosition) => void,
@@ -89,7 +91,7 @@ export function useContainedWindowPosition(
 
       const fitted = isCompactSurface()
         ? compactSeat(host, bounds)
-        : clampToSurface(current, bounds);
+        : clampToSurface(current, bounds, iconRailClearance(host, element, bounds));
       if (fitted.x === current.x && fitted.y === current.y) return;
 
       latest.current(fitted);
@@ -127,14 +129,21 @@ function compactSeat(surface: Element, bounds: DOMRect): WindowPosition {
   return { x: COMPACT_INSET, y: Math.max(COMPACT_INSET, belowLauncher) };
 }
 
-function clampToSurface(current: WindowPosition, bounds: DOMRect): WindowPosition {
+function clampToSurface(
+  current: WindowPosition,
+  bounds: DOMRect,
+  clearanceX = 0,
+): WindowPosition {
   /*
     The same usable floor the drag and the size caps use, so a window is never
-    seated somewhere its floored size would hang off the surface.
+    seated somewhere its floored size would hang off the surface. The lower
+    bound of x may be raised by the icon rail's measured right edge: a window
+    that comes to rest over the launcher is pushed clear of it, and a window
+    already clear of it is left exactly where it is.
   */
   return {
     x: Math.min(
-      Math.max(0, current.x),
+      Math.max(clearanceX, current.x),
       Math.max(0, bounds.width - MIN_WINDOW_WIDTH),
     ),
     y: Math.min(
@@ -142,4 +151,56 @@ function clampToSurface(current: WindowPosition, bounds: DOMRect): WindowPositio
       Math.max(0, bounds.height - MIN_WINDOW_HEIGHT),
     ),
   };
+}
+
+/*
+  The cascade the registry hands out starts at x=96, which clears the icon rail
+  on a tall desktop (one column: x=14..90) but not on a short one, where the
+  rail wraps into a second column reaching x=167 and the same opening position
+  lands on top of it — measured at 844x390, where the window covered the
+  centers of three icons and the launcher underneath could not be clicked.
+
+  The rail is therefore measured rather than assumed, exactly like the surface:
+  if the window's live rectangle contains any icon's hit target, the seat moves
+  it right of the rail's measured edge; otherwise the position — the visitor's
+  own drag included — is left alone. The edge is the rightmost icon rather
+  than the container's box: on a wrapped rail the container is shrink-to-fit
+  and Firefox reports it one column wide while the second column overflows it,
+  so the icons themselves are the measurement both engines agree on.
+*/
+function iconRailClearance(surface: Element, frame: HTMLElement, bounds: DOMRect): number {
+  const rail = surface.querySelector<HTMLElement>(".mijdo-desktop-icons");
+  if (!rail) return 0;
+
+  const frameBox = frame.getBoundingClientRect();
+  let railRight = 0;
+  let coversIcon = false;
+
+  for (const icon of rail.querySelectorAll<HTMLElement>(".mijdo-desktop-icon")) {
+    const box = icon.getBoundingClientRect();
+    const centerX = box.left + box.width / 2;
+    const centerY = box.top + box.height / 2;
+
+    railRight = Math.max(railRight, box.right);
+
+    if (
+      centerX >= frameBox.left &&
+      centerX <= frameBox.right &&
+      centerY >= frameBox.top &&
+      centerY <= frameBox.bottom
+    ) {
+      coversIcon = true;
+    }
+  }
+
+  if (!coversIcon) return 0;
+
+  /*
+    Capped by the same usable floor as the clamp itself: clear of the rail is
+    worth nothing if the window's floored size would then hang off the surface.
+  */
+  return Math.min(
+    Math.max(0, railRight - bounds.left),
+    Math.max(0, bounds.width - MIN_WINDOW_WIDTH),
+  );
 }

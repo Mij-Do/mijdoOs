@@ -8,6 +8,7 @@ import {
   expectUsableOnSurface,
   openMenuButton,
   settledBox,
+  motionSettledBox,
   statusItem,
   windowByTitle,
   windowTitleBar,
@@ -130,9 +131,16 @@ test.describe("a mobile viewport", () => {
   test("keeps a window inside the surface instead of overflowing it", async ({ page }) => {
     await bootAndSkip(page);
     await desktopIcon(page, "Mijdo.exe").click();
+    await expect(windowByTitle(page, "Mijdo.exe")).toBeVisible();
 
+    /*
+      On a phone the sheet's seat slides it from the cascade position to the
+      inset while the open animation scales the frame, so an immediate
+      boundingBox can read the window part-way off the surface — the recorded
+      mobile flake, whose geometry was correct once the motion landed.
+    */
     const surface = await desktop(page).boundingBox();
-    const frame = await windowByTitle(page, "Mijdo.exe").boundingBox();
+    const frame = await motionSettledBox(windowByTitle(page, "Mijdo.exe"));
 
     expect(surface).not.toBeNull();
     expect(frame).not.toBeNull();
@@ -170,9 +178,16 @@ test.describe("a mobile viewport", () => {
     test(`${title} fills the surface instead of being squeezed by its offset`, async ({ page }) => {
       await bootAndSkip(page);
       await desktopIcon(page, title).click();
+      await expect(windowByTitle(page, title)).toBeVisible();
 
+      /*
+        Same race as the containment test above: the sheet's seat transition
+        and the open animation are both live right after the window appears,
+        and a box sampled then is not the box the contract is about. The
+        geometry is read once the window reports no motion of its own.
+      */
       const surface = await desktop(page).boundingBox();
-      const frame = await windowByTitle(page, title).boundingBox();
+      const frame = await motionSettledBox(windowByTitle(page, title));
 
       expect(surface).not.toBeNull();
       expect(frame).not.toBeNull();
@@ -629,6 +644,77 @@ test.describe("short landscape viewports", () => {
         await desktopIcon(page, "Terminal.exe").click();
 
         await expectUsableOnSurface(page, "Terminal.exe");
+      });
+    });
+  }
+});
+
+/*
+  On these surfaces the icon rail wraps into a second column (right edge x=167
+  measured at 844x390), and the cascade's opening x=96 used to land on top of
+  it: the window covered the centers of Projects, Contact and Terminal, and the
+  icons underneath could not be clicked. The seat now measures the rail and
+  moves a covering window clear of it. What matters here is the real hit target
+  at each icon's center — not the stylesheet's view of where anything is — so
+  the check reads document.elementFromPoint, then proves it with an actual
+  click on the covered icon. 844x400 is the neighboring case: one row taller,
+  the same wrap, the same covering.
+*/
+test.describe("icon reachability on short landscape viewports", () => {
+  const AFFECTED_VIEWPORTS = [
+    { width: 844, height: 390 },
+    { width: 844, height: 400 },
+  ] as const;
+
+  for (const viewport of AFFECTED_VIEWPORTS) {
+    test.describe(`${viewport.width}x${viewport.height}`, () => {
+      test.use({ viewport: { ...viewport } });
+
+      test("keeps every icon's hit target clear while a window is open", async ({ page }) => {
+        await bootAndSkip(page);
+
+        await desktopIcon(page, "Mijdo.exe").click();
+        await expect(windowByTitle(page, "Mijdo.exe")).toBeVisible();
+
+        /*
+          The seat's move is a 220ms transition, so an immediate elementFromPoint
+          reads the covering window mid-flight; poll until the move has landed —
+          the same settle class the click test gets free from actionability.
+        */
+        await expect
+          .poll(async () =>
+            page.evaluate(
+              (titles) =>
+                titles.filter((title) => {
+                  const icon = [...document.querySelectorAll(".mijdo-desktop-icon")].find(
+                    (node) =>
+                      (node.getAttribute("aria-label") ?? "").startsWith(`Open ${title}`),
+                  );
+                  if (!icon) return true;
+
+                  const box = icon.getBoundingClientRect();
+                  const top = document.elementFromPoint(
+                    box.left + box.width / 2,
+                    box.top + box.height / 2,
+                  );
+
+                  return !(top && (top === icon || icon.contains(top)));
+                }),
+              [...DESKTOP_APP_TITLES],
+            ),
+          )
+          .toEqual([]);
+      });
+
+      test("lets a wrapped-column icon be clicked for real while a window is open", async ({ page }) => {
+        await bootAndSkip(page);
+
+        await desktopIcon(page, "Mijdo.exe").click();
+        await expect(windowByTitle(page, "Mijdo.exe")).toBeVisible();
+
+        await desktopIcon(page, "Terminal.exe").click();
+
+        await expect(windowByTitle(page, "Terminal.exe")).toBeVisible();
       });
     });
   }

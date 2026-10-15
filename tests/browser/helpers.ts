@@ -252,3 +252,33 @@ export async function settledBox(locator: Locator, samples = 4, interval = 70) {
 
   return locator.boundingBox();
 }
+
+/*
+  Waits for a window's own CSS motion to finish, then measures it.
+
+  settledBox waits for two identical samples, which can both land before a
+  transition even begins: the restore half of TEST-001 read the still-maximized
+  box that way while the real geometry arrived about a second later, and the
+  mobile sheet's seat transition can be caught the same way. This helper waits
+  for the motion itself instead — WAAPI reports the running open animation and
+  the geometry transitions on the element, and their finished promises resolve
+  exactly when the box has stopped changing. A short loop covers the beat
+  between a state change and the transition being registered; no fixed delay
+  stands in for the motion.
+*/
+export async function motionSettledBox(locator: Locator) {
+  await locator.evaluate(async (element) => {
+    for (let attempt = 0; attempt < 100; attempt += 1) {
+      const animations = element.getAnimations();
+
+      if (animations.length > 0) {
+        await Promise.all(animations.map((animation) => animation.finished));
+        return;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+  });
+
+  return locator.boundingBox();
+}

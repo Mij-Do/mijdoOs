@@ -18,6 +18,13 @@ type PointerOffset = WindowPosition;
 export const MIN_WINDOW_WIDTH = 320;
 export const MIN_WINDOW_HEIGHT = 180;
 
+/*
+  Matches the mobile breakpoint in index.css (and the copy in
+  useContainedWindowPosition), so the refusal to start a drag, the seat and the
+  stylesheet all ask the same question instead of each hard-coding 640.
+*/
+const COMPACT_QUERY = "(max-width: 640px)";
+
 type Bounds = { left: number; top: number; width: number; height: number };
 
 export function useDraggableWindow(
@@ -40,7 +47,7 @@ export function useDraggableWindow(
     */
     if (
       typeof window.matchMedia === "function" &&
-      window.matchMedia("(max-width: 640px)").matches
+      window.matchMedia(COMPACT_QUERY).matches
     ) {
       return;
     }
@@ -113,16 +120,58 @@ export function useDraggableWindow(
       setIsDragging(false);
     }
 
+    /*
+      The surface is measured once when the drag starts so the pointer loop
+      stays free of layout reads. A viewport change during the drag makes that
+      one measurement stale, and the clamp would go on admitting positions the
+      narrower surface can no longer show. Re-measuring on the resize itself —
+      not on the pointer move — keeps the clamp honest without putting a read
+      back into the hot loop.
+    */
+    function refreshBounds() {
+      const desktop = frameRef.current?.closest<HTMLElement>(".mijdo-desktop");
+      if (!desktop) return;
+
+      const surface = desktop.getBoundingClientRect();
+
+      boundsRef.current = {
+        left: surface.left,
+        top: surface.top,
+        width: surface.width,
+        height: surface.height,
+      };
+    }
+
+    /*
+      Below the breakpoint a window is a sheet that fills the surface: its
+      title bar refuses to start a drag (above), and the seat lays it out. A
+      drag already under way when the viewport crosses the breakpoint would
+      keep writing a floating position over that sheet, and the compact rules
+      would leave the window where the pointer could not reach it. Letting go
+      here hands the window back to the seat, which re-seats it as the sheet
+      the stylesheet expects.
+    */
+    const compact =
+      typeof window.matchMedia === "function" ? window.matchMedia(COMPACT_QUERY) : null;
+
+    function handleCompactChange(event: MediaQueryListEvent) {
+      if (event.matches) stopDragging();
+    }
+
+    window.addEventListener("resize", refreshBounds);
+    compact?.addEventListener("change", handleCompactChange);
     window.addEventListener("pointermove", moveWindow);
     window.addEventListener("pointerup", stopDragging);
     window.addEventListener("pointercancel", stopDragging);
 
     return () => {
+      window.removeEventListener("resize", refreshBounds);
+      compact?.removeEventListener("change", handleCompactChange);
       window.removeEventListener("pointermove", moveWindow);
       window.removeEventListener("pointerup", stopDragging);
       window.removeEventListener("pointercancel", stopDragging);
     };
-  }, [isDragging, onMove]);
+  }, [isDragging, onMove, frameRef]);
 
   return { isDragging, startDragging };
 }

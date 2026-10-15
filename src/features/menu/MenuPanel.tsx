@@ -20,7 +20,14 @@ type MenuPanelProps = {
   anchorLeft: number;
   anchorTop: number;
   onClose: () => void;
-  returnFocusRef?: RefObject<HTMLButtonElement | null>;
+  /*
+    The element that owned the keyboard before this panel opened. It is
+    widened beyond buttons because the desktop's context menu hands over
+    whatever happened to hold focus at right-click time, and it may point at
+    anything focusable — or at nothing at all, in which case close() leaves
+    the document alone rather than focusing an unmounted node.
+  */
+  returnFocusRef?: RefObject<HTMLElement | null>;
 };
 
 export function MenuPanel({
@@ -145,7 +152,11 @@ export function MenuPanel({
   function close(returnFocus: boolean) {
     onClose();
 
-    if (returnFocus) returnFocusRef?.current?.focus();
+    if (!returnFocus) return;
+
+    const target = returnFocusRef?.current;
+
+    if (target?.isConnected) target.focus();
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {

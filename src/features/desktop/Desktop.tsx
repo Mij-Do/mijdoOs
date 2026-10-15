@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { MouseEvent, ReactNode } from "react";
 import { desktopApplications } from "../../data/windows";
 import type { MenuAnchor, SystemActions } from "../../types/menu";
@@ -37,6 +37,14 @@ export function Desktop({
   children,
 }: DesktopProps) {
   const [contextAnchor, setContextAnchor] = useState<MenuAnchor | null>(null);
+  const iconsRef = useRef<HTMLDivElement | null>(null);
+  /*
+    The element the context menu hands focus back to when it closes. Captured
+    at right-click time: usually the body, because the click itself has already
+    blurred whatever was focused, but a real control when the menu was opened
+    from the keyboard over a focused icon.
+  */
+  const contextReturnRef = useRef<HTMLElement | null>(null);
 
   /*
     Arranging icons is deterministic: the registry order becomes
@@ -55,6 +63,24 @@ export function Desktop({
 
   function handleContextMenu(event: MouseEvent<HTMLElement>) {
     event.preventDefault();
+
+    /*
+      Escape must leave the keyboard somewhere real instead of on the document
+      body: with the element that held focus when the menu opened when it is
+      still mounted and focusable, and otherwise with the first icon — the
+      desktop's own keyboard entry point.
+    */
+    const owner = document.activeElement;
+
+    contextReturnRef.current =
+      owner instanceof HTMLElement &&
+      owner !== document.body &&
+      owner !== document.documentElement &&
+      owner.isConnected
+        ? owner
+        : (iconsRef.current?.querySelector<HTMLElement>(".mijdo-desktop-icon") ??
+          null);
+
     setContextAnchor({ left: event.clientX, top: event.clientY });
   }
 
@@ -66,6 +92,7 @@ export function Desktop({
             ? "mijdo-desktop-icons is-arranged"
             : "mijdo-desktop-icons"
         }
+        ref={iconsRef}
       >
         {icons.map((application) => {
           const isRunning = runningWindowIds.has(application.id);
@@ -114,6 +141,7 @@ export function Desktop({
           anchorLeft={contextAnchor.left}
           anchorTop={contextAnchor.top}
           onClose={() => setContextAnchor(null)}
+          returnFocusRef={contextReturnRef}
         />
       ) : null}
     </main>

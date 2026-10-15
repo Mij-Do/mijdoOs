@@ -177,4 +177,50 @@ test.describe("the desktop context menu", () => {
 
     await expect(page.locator("#desktop-context-menu")).toHaveCount(0);
   });
+
+  /*
+    The right-click itself has already blurred whatever was focused, so the
+    menu has no owner to hand the keyboard back to: Escape lands it on the
+    first icon, the desktop's keyboard entry point, rather than on the
+    document body where the next Tab press would start over from the command
+    bar.
+  */
+  test("returns focus to the first icon after Escape", async ({ page }) => {
+    await bootAndSkip(page);
+
+    await page.locator(".mijdo-desktop").click({ button: "right", position: { x: 700, y: 400 } });
+    await expect(page.locator("#desktop-context-menu")).toBeVisible();
+
+    await page.keyboard.press("Escape");
+
+    await expect(desktopIcon(page, "Mijdo.exe")).toBeFocused();
+  });
+
+  /*
+    Opened the way the ContextMenu key would, with the icon still holding
+    focus: Escape must hand the keyboard back to that very icon. Playwright's
+    Firefox maps neither ContextMenu nor Shift+F10 to a contextmenu event, so
+    the event itself is dispatched on the focused element — the same event the
+    browser would send for the key press.
+  */
+  test("returns focus to the icon it was opened from with the keyboard", async ({ page }) => {
+    await bootAndSkip(page);
+
+    await desktopIcon(page, "Terminal.exe").focus();
+    await page.evaluate(() => {
+      document.activeElement?.dispatchEvent(
+        new MouseEvent("contextmenu", {
+          bubbles: true,
+          cancelable: true,
+          clientX: 400,
+          clientY: 300,
+        }),
+      );
+    });
+    await expect(page.locator("#desktop-context-menu")).toBeVisible();
+
+    await page.keyboard.press("Escape");
+
+    await expect(desktopIcon(page, "Terminal.exe")).toBeFocused();
+  });
 });

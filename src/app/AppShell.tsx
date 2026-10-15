@@ -61,6 +61,51 @@ const windowRegistry: Record<WindowId, WindowComponent> = {
 */
 const windowIds = windowDefinitions.map((definition) => definition.id);
 
+function windowTitle(id: WindowId) {
+  return windowDefinitions.find((definition) => definition.id === id)?.title;
+}
+
+/*
+  When a window leaves the screen its frame unmounts, and the focus that sat
+  on one of its controls would fall to the document body, where the next Tab
+  press would start over from the command bar. Focus therefore moves to a
+  target that survives the removal: the task bar entry when the window is only
+  minimized, the desktop icon when it is closed, and the first desktop icon in
+  every other case — the keyboard entry point of the desktop itself. All three
+  are matched through attributes that exist before and after the re-render
+  that follows the dispatch, so the same node keeps the focus, and a missing
+  node is never focused.
+*/
+function focusIfConnected(element: HTMLElement | null) {
+  if (!element?.isConnected) return;
+
+  element.focus();
+}
+
+function focusAfterMinimize(id: WindowId) {
+  const title = windowTitle(id);
+  const taskItem = title
+    ? document.querySelector<HTMLElement>(`.mijdo-status-item[title="${title}"]`)
+    : null;
+
+  focusIfConnected(
+    taskItem ?? document.querySelector<HTMLElement>(".mijdo-desktop-icon"),
+  );
+}
+
+function focusAfterClose(id: WindowId) {
+  const title = windowTitle(id);
+  const icon = title
+    ? document.querySelector<HTMLElement>(
+        `.mijdo-desktop-icon[aria-label^="Open ${title}"]`,
+      )
+    : null;
+
+  focusIfConnected(
+    icon ?? document.querySelector<HTMLElement>(".mijdo-desktop-icon"),
+  );
+}
+
 export function AppShell() {
   const {
     windows,
@@ -88,8 +133,14 @@ export function AppShell() {
 
     for (const id of windowIds) {
       controllers[id] = {
-        onClose: () => closeWindow(id),
-        onMinimize: () => minimizeWindow(id),
+        onClose: () => {
+          closeWindow(id);
+          focusAfterClose(id);
+        },
+        onMinimize: () => {
+          minimizeWindow(id);
+          focusAfterMinimize(id);
+        },
         onToggleMaximize: () => toggleMaximize(id),
         onFocus: () => focusWindow(id),
         onMove: (position) => moveWindow(id, position),

@@ -129,6 +129,36 @@ export function WindowFrame({
   const runExit = useExitTransition(frameRef, setExiting);
 
   const isDialog = windowState.variant === "dialog";
+
+  /*
+    Escape already closes the dialog from the section handler below, but that
+    handler only sees keydowns that pass through the React root, and a click on
+    the dialog's own non-interactive content drops focus to the document body,
+    where the key never reaches it. This listener covers exactly that
+    lost-focus case: it exists only while a dialog is on screen, and it acts
+    only for the dialog that holds window focus while the document itself holds
+    the keyboard, so a keypress meant for another window, menu or overlay is
+    left alone. The section handler stops propagation when the key is handled
+    inside the dialog, so one press can never fire both paths.
+  */
+  useEffect(() => {
+    if (!isDialog) return;
+
+    function handleLostFocusEscape(event: globalThis.KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      if (!windowState.isFocused) return;
+
+      const active = document.activeElement;
+
+      if (active !== null && active !== document.body) return;
+
+      runExit("close", onClose);
+    }
+
+    document.addEventListener("keydown", handleLostFocusEscape);
+    return () => document.removeEventListener("keydown", handleLostFocusEscape);
+  }, [isDialog, windowState.isFocused, runExit, onClose]);
+
   const windowClassName = [
     "mijdo-window",
     "mijdo-application-window",
