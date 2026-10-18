@@ -94,6 +94,8 @@ export function Desktop({
         }
         ref={iconsRef}
       >
+        {/* data-window-focus is published for AppShell, which finds this icon
+            by its icon:<id> key when restoring focus after a close. */}
         {icons.map((application) => {
           const isRunning = runningWindowIds.has(application.id);
           const label = splitLabel(
@@ -106,6 +108,7 @@ export function Desktop({
               type="button"
               key={application.id}
               data-running={isRunning}
+              data-window-focus={`icon:${application.id}`}
               title={isRunning ? `${application.title} (running)` : application.title}
               aria-label={
                 isRunning

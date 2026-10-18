@@ -43,6 +43,9 @@ export function StatusBar({ windows, onOpenWindow }: StatusBarProps) {
   return (
     <footer className="mijdo-status-bar">
       <div className="mijdo-status-apps">
+        {/* data-window-focus is published for AppShell, which finds this task
+            button by its status:<id> key when restoring focus after a
+            minimize. */}
         {windows.map((windowState) => (
           <button
             className="mijdo-status-item"
@@ -50,6 +53,7 @@ export function StatusBar({ windows, onOpenWindow }: StatusBarProps) {
             key={windowState.id}
             data-active={windowState.isFocused}
             data-minimized={windowState.isMinimized}
+            data-window-focus={`status:${windowState.id}`}
             aria-current={windowState.isFocused ? "true" : undefined}
             aria-label={
               windowState.isMinimized

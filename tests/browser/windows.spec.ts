@@ -156,6 +156,21 @@ test.describe("closing a window", () => {
     await expect(desktopIcon(page, "Mijdo.exe")).toBeFocused();
   });
 
+  /*
+    Mijdo.exe is the first icon, so the test above also passes when only the
+    first-icon fallback runs. Terminal.exe sits at the other end of the
+    registry, so this one fails unless the icon that belongs to the window
+    that just closed is the one being found.
+  */
+  test("returns focus to its own icon after a non-first window closes", async ({ page }) => {
+    await bootAndSkip(page);
+    await desktopIcon(page, "Terminal.exe").click();
+
+    await windowByTitle(page, "Terminal.exe").getByRole("button", { name: "Close Terminal.exe" }).click();
+
+    await expect(desktopIcon(page, "Terminal.exe")).toBeFocused();
+  });
+
   test("closes the active window from the File menu", async ({ page }) => {
     await bootAndSkip(page);
     await desktopIcon(page, "Mijdo.exe").click();

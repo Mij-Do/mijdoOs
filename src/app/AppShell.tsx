@@ -61,20 +61,21 @@ const windowRegistry: Record<WindowId, WindowComponent> = {
 */
 const windowIds = windowDefinitions.map((definition) => definition.id);
 
-function windowTitle(id: WindowId) {
-  return windowDefinitions.find((definition) => definition.id === id)?.title;
-}
-
 /*
   When a window leaves the screen its frame unmounts, and the focus that sat
   on one of its controls would fall to the document body, where the next Tab
   press would start over from the command bar. Focus therefore moves to a
   target that survives the removal: the task bar entry when the window is only
   minimized, the desktop icon when it is closed, and the first desktop icon in
-  every other case — the keyboard entry point of the desktop itself. All three
-  are matched through attributes that exist before and after the re-render
-  that follows the dispatch, so the same node keeps the focus, and a missing
-  node is never focused.
+  every other case — the keyboard entry point of the desktop itself.
+
+  The targets are found through the published data-window-focus contract
+  rather than each child's own class names and accessible names: StatusBar
+  advertises "status:<id>" on its task button and Desktop advertises
+  "icon:<id>" on every icon, so renaming either child's markup cannot silently
+  change where focus goes. Those attributes exist before and after the
+  re-render that follows the dispatch, so the same node keeps the focus, and
+  a missing node is never focused.
 */
 function focusIfConnected(element: HTMLElement | null) {
   if (!element?.isConnected) return;
@@ -82,28 +83,20 @@ function focusIfConnected(element: HTMLElement | null) {
   element.focus();
 }
 
-function focusAfterMinimize(id: WindowId) {
-  const title = windowTitle(id);
-  const taskItem = title
-    ? document.querySelector<HTMLElement>(`.mijdo-status-item[title="${title}"]`)
-    : null;
+function focusTarget(key: string) {
+  return document.querySelector<HTMLElement>(`[data-window-focus="${key}"]`);
+}
 
-  focusIfConnected(
-    taskItem ?? document.querySelector<HTMLElement>(".mijdo-desktop-icon"),
-  );
+function firstDesktopIcon() {
+  return document.querySelector<HTMLElement>('[data-window-focus^="icon:"]');
+}
+
+function focusAfterMinimize(id: WindowId) {
+  focusIfConnected(focusTarget(`status:${id}`) ?? firstDesktopIcon());
 }
 
 function focusAfterClose(id: WindowId) {
-  const title = windowTitle(id);
-  const icon = title
-    ? document.querySelector<HTMLElement>(
-        `.mijdo-desktop-icon[aria-label^="Open ${title}"]`,
-      )
-    : null;
-
-  focusIfConnected(
-    icon ?? document.querySelector<HTMLElement>(".mijdo-desktop-icon"),
-  );
+  focusIfConnected(focusTarget(`icon:${id}`) ?? firstDesktopIcon());
 }
 
 export function AppShell() {
