@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { systemInfo } from "../../data/system";
+import { prefersReducedMotion } from "../../utils/motion";
 import { TERMINAL_PROMPT } from "../terminal/terminalPrompt";
 
 /*
@@ -26,13 +27,6 @@ const LINE_INTERVAL = 165;
 const LINE_HOLD = 420;
 const REDUCED_MOTION_HOLD = 260;
 const FADE_OUT = 120;
-
-function prefersReducedMotion() {
-  return (
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-}
 
 export function BootScreen({ onDone }: { onDone: () => void }) {
   const [reducedMotion] = useState(prefersReducedMotion);

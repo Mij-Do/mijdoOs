@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import type { RefObject } from "react";
 import type { WindowPosition } from "../types/window";
+import { COMPACT_QUERY } from "../utils/viewport";
 
 type PointerOffset = WindowPosition;
 
@@ -17,13 +18,6 @@ type PointerOffset = WindowPosition;
 */
 export const MIN_WINDOW_WIDTH = 320;
 export const MIN_WINDOW_HEIGHT = 180;
-
-/*
-  Matches the mobile breakpoint in index.css (and the copy in
-  useContainedWindowPosition), so the refusal to start a drag, the seat and the
-  stylesheet all ask the same question instead of each hard-coding 640.
-*/
-const COMPACT_QUERY = "(max-width: 640px)";
 
 type Bounds = { left: number; top: number; width: number; height: number };
 

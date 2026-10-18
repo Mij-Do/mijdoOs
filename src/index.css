@@ -541,6 +541,13 @@ WINDOW MOTION
   animation: mijdo-window-open var(--mijdo-motion-base) var(--mijdo-ease) both;
 }
 
+/*
+  The two exit durations below are the same numbers as EXIT_DURATIONS in
+  src/features/window/exitDurations.ts: the window frame unmounts when
+  whichever occurs first: this keyframe ends or its own timeout expires, so
+  the two have to agree. A test pins the TypeScript side; CSS cannot import
+  it, so this comment is the matching pointer.
+*/
 .mijdo-application-window[data-exiting="close"] {
   animation: mijdo-window-close 110ms var(--mijdo-ease) both;
 }
@@ -1597,6 +1604,8 @@ ACCESSIBILITY
 MOBILE
 ========================================================= */
 
+/* The 640px compact boundary is declared once for TypeScript in
+   src/utils/viewport.ts (COMPACT_QUERY); the two have to agree. */
 @media (max-width: 640px) {
   body {
     font-size: 13px;

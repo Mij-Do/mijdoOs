@@ -1,10 +1,5 @@
 import { contact } from "../data/contact";
-
-/*
-  Matches the mobile breakpoint in index.css, which the window hooks also ask,
-  so the whole shell agrees on where the compact layout starts.
-*/
-const COMPACT_QUERY = "(max-width: 640px)";
+import { COMPACT_QUERY } from "./viewport";
 
 export type LinkActivation = { preventDefault: () => void };
 

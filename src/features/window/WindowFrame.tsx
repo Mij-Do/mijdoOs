@@ -2,34 +2,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { CSSProperties, KeyboardEvent, ReactNode, RefObject } from "react";
 import { useContainedWindowPosition } from "../../hooks/useContainedWindowPosition";
 import { useDraggableWindow } from "../../hooks/useDraggableWindow";
+import { prefersReducedMotion } from "../../utils/motion";
 import type { WindowControllerProps } from "../../types/window";
-
-/*
-  Durations of the two exit keyframes declared in index.css. The frame waits
-  this long before handing the removal back to the window manager, so the
-  manager never has to know that windows animate out.
-*/
-const EXIT_DURATIONS = {
-  close: 110,
-  minimize: 140,
-} as const;
-
-type ExitKind = keyof typeof EXIT_DURATIONS;
+import { EXIT_DURATIONS, type ExitKind } from "./exitDurations";
 
 type WindowFrameProps = WindowControllerProps & {
   children: ReactNode;
 };
-
-/*
-  Reduced motion removes the keyframes, so there is nothing left to wait for
-  and the removal happens immediately.
-*/
-function prefersReducedMotion() {
-  return (
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-}
 
 /*
   Plays the exit animation and only then performs the action that unmounts the

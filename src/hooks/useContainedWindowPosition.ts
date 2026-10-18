@@ -1,13 +1,8 @@
 import { useLayoutEffect, useRef } from "react";
 import type { RefObject } from "react";
 import { MIN_WINDOW_HEIGHT, MIN_WINDOW_WIDTH } from "./useDraggableWindow";
+import { COMPACT_QUERY } from "../utils/viewport";
 import type { WindowPosition } from "../types/window";
-
-/*
-  Matches the mobile breakpoint in index.css. The two have to agree, so both ask
-  the same question of the same stylesheet rather than each hard-coding 640.
-*/
-const COMPACT_QUERY = "(max-width: 640px)";
 
 /*
   The gap a window leaves on every side, and the gap it leaves below the icon
