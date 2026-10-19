@@ -229,6 +229,27 @@ test.describe("minimizing and restoring", () => {
     await expect(statusItem(page, "Mijdo.exe")).toHaveAttribute("data-minimized", "false");
   });
 
+  /*
+    The same restore as the test above, entered from the keyboard: the task
+    button is where focus already sits after minimizing, Enter must activate
+    it like any button, and nothing in the restore path moves focus elsewhere
+    — so the keyboard user is never stranded on the document body.
+  */
+  test("restores a minimized window when its task button is activated from the keyboard", async ({ page }) => {
+    await bootAndSkip(page);
+    await desktopIcon(page, "Mijdo.exe").click();
+    await windowByTitle(page, "Mijdo.exe").getByRole("button", { name: "Minimize Mijdo.exe" }).click();
+    await expect(windowByTitle(page, "Mijdo.exe")).toHaveCount(0);
+
+    const taskButton = page.getByRole("button", { name: "Restore Mijdo.exe" });
+    await taskButton.focus();
+    await page.keyboard.press("Enter");
+
+    await expect(windowByTitle(page, "Mijdo.exe")).toBeVisible();
+    await expect(statusItem(page, "Mijdo.exe")).toHaveAttribute("data-minimized", "false");
+    await expect(statusItem(page, "Mijdo.exe")).toBeFocused();
+  });
+
   test("restores a minimized window back to the front", async ({ page }) => {
     await bootAndSkip(page);
     await desktopIcon(page, "Mijdo.exe").click();

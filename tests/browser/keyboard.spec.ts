@@ -73,6 +73,49 @@ test.describe("reaching everything with Tab", () => {
 
     await expect(desktopIcon(page, "Terminal.exe")).toBeFocused();
   });
+
+  /*
+    The whole desktop in one walk, in the order the shell renders it:
+    command bar (SYSTEM, File, View, Run, Help as createMenuDefinitions
+    declares them), the eight desktop icons in registry order, then the
+    status-bar links. Every stop is addressed by role and accessible name,
+    so the test states the focus contract rather than the markup, and it
+    starts from the document body — the state a dismissed boot screen
+    leaves behind — so a misplaced start cannot wrap around unnoticed.
+  */
+  test("walks the whole desktop from the command bar to the status bar", async ({ page }) => {
+    await bootAndSkip(page);
+
+    await page.evaluate(() => {
+      if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    });
+    expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true);
+
+    const stops = [
+      openMenuButton(page, "SYSTEM"),
+      openMenuButton(page, "File"),
+      openMenuButton(page, "View"),
+      openMenuButton(page, "Run"),
+      openMenuButton(page, "Help"),
+      desktopIcon(page, "Mijdo.exe"),
+      desktopIcon(page, "Profile.exe"),
+      desktopIcon(page, "Education.exe"),
+      desktopIcon(page, "Skills.exe"),
+      desktopIcon(page, "Experience.exe"),
+      desktopIcon(page, "Projects.exe"),
+      desktopIcon(page, "Contact.exe"),
+      desktopIcon(page, "Terminal.exe"),
+      page.getByRole("link", { name: "Open LINKEDIN in a new tab" }),
+      page.getByRole("link", { name: "Open X in a new tab" }),
+      page.getByRole("link", { name: "Open GITHUB in a new tab" }),
+      page.getByRole("link", { name: "Open CV" }),
+    ];
+
+    for (const stop of stops) {
+      await page.keyboard.press("Tab");
+      await expect(stop).toBeFocused();
+    }
+  });
 });
 
 test.describe("visible focus", () => {
