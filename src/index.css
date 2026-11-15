@@ -826,7 +826,7 @@ DESKTOP ICONS
 
 /*
   The label wraps to two lines instead of growing, and the .exe suffix is kept
-  on its own line by the component, so "Experience" over ".exe" is a readable
+  on its own line by the component, so "Projects" over ".exe" is a readable
   break rather than a mid-word one. The fixed height keeps every cell the same
   size whatever the name.
 */

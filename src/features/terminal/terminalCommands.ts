@@ -1,5 +1,4 @@
 import { contact, contactLinks } from "../../data/contact";
-import { experience } from "../../data/experience";
 import { profile } from "../../data/profile";
 import { projects } from "../../data/projects";
 import { technicalSkills } from "../../data/skills";
@@ -68,8 +67,8 @@ function createAboutLines(): TerminalOutputLine[] {
     systemInfo.productName,
     systemInfo.tagline,
     "",
-    `${systemInfo.platform} presenting the work, skills,`,
-    `experience and projects of ${profile.name}.`,
+    `${systemInfo.platform} presenting the profile, skills,`,
+    `projects, and contact details of ${profile.name}.`,
     "",
     `Built with ${systemInfo.technology.join(", ")}.`,
   ];
@@ -100,19 +99,6 @@ function createSkillLines(): TerminalOutputLine[] {
     ...group.items,
     "",
   ]);
-}
-
-function createExperienceLines(): TerminalOutputLine[] {
-  const lines: TerminalOutputLine[] = [heading("EXPERIENCE"), ""];
-
-  for (const record of experience) {
-    lines.push(`${record.role} - ${record.company}`);
-    lines.push(record.period);
-    lines.push(record.description);
-    lines.push("");
-  }
-
-  return lines;
 }
 
 function createContactLines(): TerminalOutputLine[] {
@@ -206,11 +192,6 @@ export const terminalCommands: TerminalCommand[] = [
     name: "skills",
     description: "List technical skills",
     execute: () => ({ lines: createSkillLines() }),
-  },
-  {
-    name: "experience",
-    description: "Display experience",
-    execute: () => ({ lines: createExperienceLines() }),
   },
   {
     name: "contact",

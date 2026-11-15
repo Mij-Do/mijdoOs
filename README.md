@@ -1,8 +1,7 @@
 # MijdoOS
 
 A browser-based operating system that is also a developer portfolio, for
-**Ahmed Samir** — full-stack developer and technical co-founder at
-Meem Langs.
+**Ahmed Samir** — Full-Stack Developer.
 
 The site boots, shows a desktop, and hands the visitor a set of applications:
 windows you can open, move, minimize, maximize and stack, a command prompt that
@@ -30,7 +29,7 @@ Windows 1.x and early graphical user interfaces, drawn entirely with CSS.
 
 **Boot.** A short POST-style sequence runs on load, and any key press skips it.
 
-**Desktop.** Eight applications, arranged in a cascade so an unopened desktop
+**Desktop.** Seven applications, arranged in a cascade so an unopened desktop
 stays readable. Every icon is drawn from a 16×16 pixel map as merged SVG
 rectangles, with no image assets. Icons open on a single click, and a right
 click opens a context menu. `View ▸ Arrange Icons` sorts and upper-cases them
@@ -45,8 +44,8 @@ an open message box, and `Escape` closes it.
 portal-rendered menu panel, full arrow-key navigation, separators, a checkable
 item, and a disabled item when the action does not apply.
 
-**Terminal.** A real prompt with 13 commands: `help`, `whoami`, `about`,
-`projects`, `skills`, `experience`, `contact`, `github`, `dir`, `clear` (alias
+**Terminal.** A real prompt with 12 commands: `help`, `whoami`, `about`,
+`projects`, `skills`, `contact`, `github`, `dir`, `clear` (alias
 `cls`), `date`, `version` and `exit`. Commands are case-insensitive and answer
 from the same data the windows render, so `dir` and the desktop can never
 disagree about which programs exist. Scrollback history works with `ArrowUp` /
@@ -56,7 +55,7 @@ disagree about which programs exist. Scrollback history works with `ArrowUp` /
 the social links, and the CV link. There is no theme toggle: the palette is a
 deliberate six-colour system with a single light scheme.
 
-**Content.** Profile, education, skills, experience, projects and contact
+**Content.** Profile, education, skills, projects and contact
 details, all sourced from `src/data/` so the terminal, the windows and the
 README cannot drift apart.
 

@@ -1,6 +1,5 @@
 import { contact, socialLinks } from "../../data/contact";
 import { education } from "../../data/education";
-import { experience } from "../../data/experience";
 import { profile } from "../../data/profile";
 import { projects } from "../../data/projects";
 import { technicalSkills } from "../../data/skills";
@@ -15,23 +14,12 @@ export function MijdoWindow(props: WindowControllerProps) {
         <div className="mijdo-profile-heading">
           <h1>{profile.name}</h1>
           <p>{profile.title}</p>
-          <p>{profile.role}</p>
           <p>{profile.location}</p>
         </div>
 
         <section className="mijdo-profile-section">
           <h2>ABOUT THIS USER</h2>
           <p>{profile.summary}</p>
-        </section>
-
-        <section className="mijdo-profile-section">
-          <h2>EXPERIENCE OVERVIEW</h2>
-          {experience.map((record) => (
-            <p key={record.company}>
-              {record.role} at {record.company} - {record.description}.
-            </p>
-          ))}
-          <p>See EXPERIENCE.EXE for documented responsibilities.</p>
         </section>
 
         <section className="mijdo-profile-section">

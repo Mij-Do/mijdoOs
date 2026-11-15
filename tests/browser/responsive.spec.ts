@@ -91,7 +91,7 @@ test.describe("a desktop viewport", () => {
   test("stacks the icons in a single column", async ({ page }) => {
     await bootAndSkip(page);
 
-    await expect.poll(() => iconRows(page)).toBe(8);
+    await expect.poll(() => iconRows(page)).toBe(7);
   });
 
   test("does not scroll the page sideways", async ({ page }) => {
@@ -429,7 +429,7 @@ test.describe("a wide desktop viewport", () => {
   test("still stacks the icons in a single column", async ({ page }) => {
     await bootAndSkip(page);
 
-    await expect.poll(() => iconRows(page)).toBe(8);
+    await expect.poll(() => iconRows(page)).toBe(7);
   });
 
   test("opens a window that floats rather than fills the surface", async ({ page }) => {
@@ -528,7 +528,7 @@ test.describe("just above the compact breakpoint", () => {
   test("641px returns to the floating desktop layout", async ({ page }) => {
     await bootAndSkip(page);
 
-    await expect.poll(() => iconRows(page)).toBe(8);
+    await expect.poll(() => iconRows(page)).toBe(7);
 
     await desktopIcon(page, "Terminal.exe").click();
 
@@ -588,12 +588,11 @@ test.describe("a small phone viewport", () => {
 /*
   Landscape and short viewports above the compact breakpoint (RESP-01, RESP-02).
 
-  Eight icons in one column are taller than these surfaces (70px each plus 1px
+  Seven icons in one column are taller than these surfaces (70px each plus 1px
   gaps), and the desktop clips with overflow: hidden, so the base icon column
-  pushed the bottom icons past the visible edge — measured on 2026-10-14 at
-  844x390 (Experience, Projects, Contact and Terminal outside), 1024x600 and
-  768x600 (Terminal outside). The icon block now wraps into a second column the
-  way Arrange Icons already did. The window opened from the last cascade entry
+  pushes lower icons past the visible edge at short viewports. The icon block
+  now wraps into a second column the way Arrange Icons already did. The window
+  opened from the last cascade entry
   must also meet the 320x180 usable floor: at 844x390 the offset-based cap alone
   left Terminal 66px tall. Viewport emulation only — no physical device is
   exercised.

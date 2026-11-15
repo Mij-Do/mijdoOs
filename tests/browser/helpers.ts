@@ -12,7 +12,6 @@ export const DESKTOP_APP_TITLES = [
   "Profile.exe",
   "Education.exe",
   "Skills.exe",
-  "Experience.exe",
   "Projects.exe",
   "Contact.exe",
   "Terminal.exe",

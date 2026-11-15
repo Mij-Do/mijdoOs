@@ -78,7 +78,6 @@ export function createMenuDefinitions(
         openWindowItem(actions, "Terminal.exe", "terminal"),
         openWindowItem(actions, "Projects", "projects"),
         openWindowItem(actions, "Skills", "skills"),
-        openWindowItem(actions, "Experience", "experience"),
         openWindowItem(actions, "Contact", "contact"),
       ],
     },

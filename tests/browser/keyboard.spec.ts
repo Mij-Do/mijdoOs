@@ -67,7 +67,7 @@ test.describe("reaching everything with Tab", () => {
     await desktopIcon(page, "Mijdo.exe").focus();
 
     /* One press per remaining icon, landing on the last one in registry order. */
-    for (let step = 0; step < 7; step += 1) {
+    for (let step = 0; step < 6; step += 1) {
       await page.keyboard.press("Tab");
     }
 
@@ -77,7 +77,7 @@ test.describe("reaching everything with Tab", () => {
   /*
     The whole desktop in one walk, in the order the shell renders it:
     command bar (SYSTEM, File, View, Run, Help as createMenuDefinitions
-    declares them), the eight desktop icons in registry order, then the
+    declares them), the seven desktop icons in registry order, then the
     status-bar links. Every stop is addressed by role and accessible name,
     so the test states the focus contract rather than the markup, and it
     starts from the document body — the state a dismissed boot screen
@@ -101,7 +101,6 @@ test.describe("reaching everything with Tab", () => {
       desktopIcon(page, "Profile.exe"),
       desktopIcon(page, "Education.exe"),
       desktopIcon(page, "Skills.exe"),
-      desktopIcon(page, "Experience.exe"),
       desktopIcon(page, "Projects.exe"),
       desktopIcon(page, "Contact.exe"),
       desktopIcon(page, "Terminal.exe"),

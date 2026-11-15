@@ -4,7 +4,6 @@ import { initialWindows, windowDefinitions } from "../data/windows";
 import {
   ContactApplication,
   EducationApplication,
-  ExperienceApplication,
   ProfileApplication,
   ProjectsApplication,
   SkillsApplication,
@@ -45,7 +44,6 @@ const windowRegistry: Record<WindowId, WindowComponent> = {
   profile: memo(ProfileApplication),
   education: memo(EducationApplication),
   skills: memo(SkillsApplication),
-  experience: memo(ExperienceApplication),
   projects: memo(ProjectsApplication),
   contact: memo(ContactApplication),
   terminal: memo(TerminalWindow),

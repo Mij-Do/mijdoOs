@@ -2,7 +2,6 @@ import cvSource from "../../cv/cv.tex?raw";
 import { describe, expect, it } from "vitest";
 import { contact } from "./contact";
 import { education } from "./education";
-import { experience } from "./experience";
 import { profile } from "./profile";
 import { projects } from "./projects";
 import { technicalSkills } from "./skills";
@@ -12,10 +11,14 @@ import { technicalSkills } from "./skills";
   rather than read from the records, so a link that is edited, dropped or
   invented shows up as a failing test instead of quietly becoming the truth.
 */
-const EXPECTED_LINKS: Record<string, { github: string; liveDemo?: string }> = {
+const EXPECTED_LINKS: Record<
+  string,
+  { github: string; liveDemo?: string; liveDemoLabel?: string }
+> = {
   "Full-Stack Todo Application": {
     github: "https://github.com/Mij-Do/Full-Stack-To-Do-app-V6",
     liveDemo: "https://to-do-app-v6-eta.vercel.app/",
+    liveDemoLabel: "APP (SIGN-IN REQUIRED)",
   },
   "Real Estate Listings Platform": {
     github: "https://github.com/Mij-Do/real-state-full-stack-project",
@@ -34,6 +37,24 @@ function expectedLinksFor(projectName: string) {
   if (!links) throw new Error(`no expected links recorded for "${projectName}"`);
 
   return links;
+}
+
+function expectedLiveDemoFor(projectName: string) {
+  const url = expectedLinksFor(projectName).liveDemo;
+
+  if (!url) throw new Error(`no expected live demo recorded for "${projectName}"`);
+
+  return url.replace(/\/$/, "");
+}
+
+function getCvHrefs() {
+  return [...cvSource.matchAll(/\\href\{([^}]+)\}/g)].map((match) => {
+    const url = match[1];
+
+    if (!url) throw new Error("CV link does not contain a URL");
+
+    return url.replace(/\/$/, "");
+  });
 }
 
 describe("the project records", () => {
@@ -58,6 +79,7 @@ describe("the project records", () => {
       projects.find((project) => project.name === "Real Estate Listings Platform")?.links,
     ).toEqual({ github: expectedLinksFor("Real Estate Listings Platform").github });
   });
+
 });
 
 /*
@@ -88,17 +110,21 @@ describe("the confirmed link policy", () => {
 
 describe("the reference CV", () => {
   it("lists the verified link for every project", () => {
+    const hrefs = getCvHrefs();
+
     for (const links of Object.values(EXPECTED_LINKS)) {
-      expect(cvSource).toContain(links.github);
-      if (links.liveDemo) expect(cvSource).toContain(links.liveDemo);
+      expect(hrefs).toContain(links.github.replace(/\/$/, ""));
+      if (links.liveDemo) {
+        expect(hrefs).toContain(links.liveDemo.replace(/\/$/, ""));
+      }
     }
   });
 
   it("carries the same links as the project records", () => {
-    const hrefs = [...cvSource.matchAll(/\\href\{([^}]+)\}/g)].map((match) => match[1]);
+    const hrefs = getCvHrefs();
 
-    expect(hrefs).toContain(expectedLinksFor("Full-Stack Todo Application").liveDemo);
-    expect(hrefs).toContain(expectedLinksFor("MijdoOS").liveDemo);
+    expect(hrefs).toContain(expectedLiveDemoFor("Full-Stack Todo Application"));
+    expect(hrefs).toContain(expectedLiveDemoFor("MijdoOS"));
   });
 
   it("keeps the Real Estate live demo out of the CV", () => {
@@ -110,7 +136,7 @@ describe("the reference CV", () => {
   The portfolio data and the CV are two renderings of the same profile, and
   they have already drifted once (project bullets, education wording, the
   language level). Only fields that can be matched reliably are guarded here:
-  exact names, dates, contact channels, skill items, responsibilities. Wording
+  exact names, dates, contact channels, technologies, education and skills. Wording
   that LaTeX reflows or rephrases is deliberately not asserted, so the guard
   stays signal rather than a fragile parser.
 
@@ -162,18 +188,8 @@ describe("portfolio data against the reference CV", () => {
     expect(normalizedCv).toContain(profile.location);
   });
 
-  it("carries the experience record and every responsibility", () => {
-    for (const record of experience) {
-      expect(normalizedCv).toContain(record.role);
-      expect(normalizedCv).toContain(record.company);
-      expect(normalizedCv).toContain(record.description);
-
-      for (const responsibility of record.responsibilities) {
-        expect(normalizedCv, `responsibility should appear in the CV`).toContain(
-          responsibility,
-        );
-      }
-    }
+  it("carries the profile summary", () => {
+    expect(normalizedCv).toContain(profile.summary);
   });
 
   it("carries every education institution and degree", () => {

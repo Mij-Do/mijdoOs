@@ -4,9 +4,9 @@ import type { ProjectRecord } from "../types/portfolio";
   Portfolio projects, aligned with the reference CV (the canonical profile).
   Every link is a URL verified against the repository's own published
   homepage, never an address invented for this page. The Todo app's address is
-  a live Vercel deployment, but Clerk guards it: a plain HTTP request gets the
-  404 page and a browser is redirected to sign-in, so the demo cannot be used
-  without an account. The link stays because it is the project's real address.
+  a live Vercel deployment, but Clerk redirects signed-out visitors to sign-in,
+  so the app cannot be used without an account. The link stays because it is the
+  project's real address.
 */
 export const projects: ProjectRecord[] = [
   {
@@ -33,6 +33,7 @@ export const projects: ProjectRecord[] = [
     links: {
       github: "https://github.com/Mij-Do/Full-Stack-To-Do-app-V6",
       liveDemo: "https://to-do-app-v6-eta.vercel.app/",
+      liveDemoLabel: "APP (SIGN-IN REQUIRED)",
     },
   },
   {
@@ -44,7 +45,7 @@ export const projects: ProjectRecord[] = [
       "Full-stack real estate platform enabling property owners to list properties for sale or rent and connect directly with potential buyers or tenants.",
     features: [
       "Implemented an admin moderation workflow in which submitted listings require approval before publication.",
-      "Built property search and filtering by type, price range, and location, alongside administrative tools for managing listings and archiving sold properties.",
+      "Built administrative tools for managing property listings and archiving sold properties.",
       "Deployed the application on Vercel with MongoDB-backed data storage.",
     ],
     links: {
@@ -59,7 +60,7 @@ export const projects: ProjectRecord[] = [
       "Interactive developer portfolio built as a browser-based desktop environment with a retro operating-system interface.",
     features: [
       "Implemented a window management system supporting dragging, minimizing, maximizing, restoring, closing, and window focus management.",
-      "Developed an interactive terminal with 13 commands for exploring profile information, projects, skills, experience, and contact details.",
+      "Developed an interactive terminal with 12 commands for exploring profile information, projects, skills, and contact details.",
       "Structured the application with React and TypeScript, using a centralized state-management reducer and reusable UI components.",
       "Added responsive layouts, keyboard navigation, accessible controls, and reduced-motion support.",
       "Implemented automated unit and browser tests using Vitest and Playwright to validate application behavior and user interactions.",

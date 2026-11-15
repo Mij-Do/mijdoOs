@@ -29,14 +29,6 @@ export type SkillGroup = {
   items: string[];
 };
 
-export type ExperienceRecord = {
-  role: string;
-  company: string;
-  period: string;
-  description: string;
-  responsibilities: string[];
-};
-
 export type ProjectRecord = {
   name: string;
   /*
@@ -51,5 +43,6 @@ export type ProjectRecord = {
   links: {
     github?: string;
     liveDemo?: string;
+    liveDemoLabel?: string;
   };
 };

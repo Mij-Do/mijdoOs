@@ -103,25 +103,6 @@ const SKILLS: readonly string[] = [
   ".......KK.......",
 ];
 
-const EXPERIENCE: readonly string[] = [
-  "................",
-  ".....KKKKKK.....",
-  "....KKKKKKKK....",
-  "..KKKKKKKKKKKK..",
-  ".KWWWWWWWWWWWWK.",
-  ".KWWWWWWWWWWWWK.",
-  ".KWWWKKKKKKWWWK.",
-  ".KWWWKKKKKKWWWK.",
-  ".KWWWWWWWWWWWWK.",
-  ".KWWWWWWWWWWWWK.",
-  ".KWWWWWWWWWWWWK.",
-  ".KWWWWWWWWWWWWK.",
-  ".KWWWWWWWWWWWWK.",
-  ".KKKKKKKKKKKKKK.",
-  "................",
-  "................",
-];
-
 const PROJECTS: readonly string[] = [
   "................",
   "..KKKK..........",
@@ -184,7 +165,6 @@ export const desktopIconPixels: Record<DesktopAppId, readonly string[]> = {
   profile: PROFILE,
   education: EDUCATION,
   skills: SKILLS,
-  experience: EXPERIENCE,
   projects: PROJECTS,
   contact: CONTACT,
   terminal: TERMINAL,

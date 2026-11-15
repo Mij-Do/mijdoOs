@@ -1,6 +1,5 @@
 import { contact, socialLinks } from "../../data/contact";
 import { education } from "../../data/education";
-import { experience } from "../../data/experience";
 import { profile } from "../../data/profile";
 import { projects } from "../../data/projects";
 import {
@@ -25,7 +24,6 @@ export function ProfileApplication(props: WindowControllerProps) {
       <DetailSection title="IDENTITY">
         <p>{profile.name}</p>
         <p>{profile.title}</p>
-        <p>{profile.role}</p>
         <p>{profile.location}</p>
       </DetailSection>
       <DetailSection title="SUMMARY">
@@ -75,23 +73,6 @@ export function SkillsApplication(props: WindowControllerProps) {
           </p>
         ))}
       </DetailSection>
-    </DetailWindow>
-  );
-}
-
-export function ExperienceApplication(props: WindowControllerProps) {
-  return (
-    <DetailWindow {...props}>
-      {experience.map((record) => (
-        <DetailSection
-          title={`${record.role} - ${record.company}`}
-          key={record.company}
-        >
-          <p>{record.period}</p>
-          <p>{record.description}</p>
-          <DetailList items={record.responsibilities} />
-        </DetailSection>
-      ))}
     </DetailWindow>
   );
 }

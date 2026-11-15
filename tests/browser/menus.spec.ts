@@ -112,7 +112,7 @@ test.describe("menu contents", () => {
     await bootAndSkip(page);
     await openMenuButton(page, "Run").click();
 
-    for (const label of ["Mijdo.exe", "Terminal.exe", "Projects", "Skills", "Experience", "Contact"]) {
+    for (const label of ["Mijdo.exe", "Terminal.exe", "Projects", "Skills", "Contact"]) {
       await expect(menuItem(page, label)).toBeVisible();
     }
   });

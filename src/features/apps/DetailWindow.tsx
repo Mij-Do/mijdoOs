@@ -106,7 +106,7 @@ export function DetailLinkRow({ links }: { links: LinkItem[] }) {
 export function DetailLinks({ links }: { links: ProjectRecord["links"] }) {
   const availableLinks: LinkItem[] = [
     { label: "GITHUB", url: links.github },
-    { label: "LIVE DEMO", url: links.liveDemo },
+    { label: links.liveDemoLabel ?? "LIVE DEMO", url: links.liveDemo },
   ].filter((link): link is LinkItem => Boolean(link.url));
 
   return <DetailLinkRow links={availableLinks} />;

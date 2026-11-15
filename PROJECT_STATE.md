@@ -12,7 +12,7 @@
 
 ## 2. Project Purpose
 
-MijdoOS is a single-page developer portfolio for **Ahmed Samir** (full-stack developer, technical co-founder at Meem Langs), presented as a fictional early graphical operating system. A visitor boots the machine, lands on a desktop, opens windows by clicking icons or using the command bar, drags and stacks those windows, and reads real portfolio content inside them. A working command prompt exposes the same content as text. The metaphor is load-bearing: the portfolio *is* the desktop, the applications are the content sections, and the terminal is a second route to the same data.
+MijdoOS is a single-page developer portfolio for **Ahmed Samir** (Full-Stack Developer), presented as a fictional early graphical operating system. A visitor boots the machine, lands on a desktop, opens windows by clicking icons or using the command bar, drags and stacks those windows, and reads real portfolio content inside them. A working command prompt exposes the same content as text. The metaphor is load-bearing: the portfolio *is* the desktop, the applications are the content sections, and the terminal is a second route to the same data.
 
 ## 3. Current Architecture
 
@@ -24,12 +24,11 @@ src/
 ├── App.tsx                     # Boot flag + CRT overlay
 ├── app/AppShell.tsx            # Composition root, window registry, controller wiring
 ├── data/                       # Portfolio content, zero React imports
-│   ├── windows.ts              # Window registry (12 definitions, initial state)
+│   ├── windows.ts              # Window registry (11 definitions, initial state)
 │   ├── profile.ts              # Identity
 │   ├── contact.ts              # Contact details, social links, CV URL
 │   ├── projects.ts             # Project records
 │   ├── skills.ts               # Technical, soft, language groups
-│   ├── experience.ts           # Experience records
 │   ├── education.ts            # Education records
 │   ├── system.ts               # Product name, version, tagline
 │   └── help.ts                 # Help topics, keyboard shortcuts
@@ -81,9 +80,9 @@ Data flows one way: `src/data/` holds typed content → features render it → t
 ├── playwright.config.ts
 ├── vitest.config.ts
 ├── public/
-│   ├── cv.pdf (117 KiB)
+│   ├── cv.pdf (36 KiB)
 │   └── favicon.svg
-├── src/                        # 43 files, ~5,097 lines
+├── src/                        # 42 files, ~5,097 lines
 ├── tests/browser/              # 8 spec files, 348 tests
 └── dist/                       # Build output (generated)
 ```
@@ -93,13 +92,13 @@ Data flows one way: `src/data/` holds typed content → features render it → t
 | Feature | Status | Details |
 |---------|--------|---------|
 | Boot sequence | ✅ Implemented | POST-style, skippable, reduced-motion path, a11y announced |
-| Desktop icons | ✅ Implemented | 8 icons, 16×16 pixel art as merged SVG rects, single-click open, context menu |
+| Desktop icons | ✅ Implemented | 7 icons, 16×16 pixel art as merged SVG rects, single-click open, context menu |
 | Window lifecycle | ✅ Implemented | Open, close, minimize, restore, maximize, focus, z-order, drag, containment |
 | Command bar | ✅ Implemented | 5 menus (SYSTEM, File, View, Run, Help), portal panel, full keyboard nav |
 | Status bar | ✅ Implemented | Task buttons, clock, social links, CV button |
-| Terminal | ✅ Implemented | 13 commands, history, case-insensitive, shared data with windows |
+| Terminal | ✅ Implemented | 12 commands, history, case-insensitive, shared data with windows |
 | System dialogs | ✅ Implemented | About, System Info, Help, Shortcuts (non-modal, Escape dismiss) |
-| Portfolio windows | ✅ Implemented | Profile, Education, Skills, Experience, Projects, Contact, Mijdo |
+| Portfolio windows | ✅ Implemented | Profile, Education, Skills, Projects, Contact, Mijdo |
 | Responsive | ✅ Implemented | Desktop >640px, tablet, mobile 390×844, narrow 360×640 |
 | Accessibility | ✅ Implemented | Names, roles, live regions, focus rings, reduced motion, Tab/Shift+Tab |
 | Unit tests | ✅ Implemented | 142 tests, 5 files (parser, history, reducer, commands, icon pixels) |
@@ -266,7 +265,7 @@ $ pnpm build
 dist/index.html                    2.29 kB (1.03 kB gzip)
 dist/assets/index-*.js           259.99 kB (80.69 kB gzip)
 dist/assets/index-*.css           26.35 kB (5.76 kB gzip)
-dist/cv.pdf                      119.93 kB
+dist/cv.pdf                       36.68 kB
 dist/favicon.svg                   3.5 kB
 ```
 
@@ -329,10 +328,9 @@ All content sourced from `src/data/` — single source of truth for terminal, wi
 
 | File | Status | Notes |
 |------|--------|-------|
-| `profile.ts` | ✅ Verified | Ahmed Samir, Full-Stack Developer, Technical Co-Founder Meem Langs |
+| `profile.ts` | ✅ Verified | Ahmed Samir, Full-Stack Developer |
 | `education.ts` | ✅ Verified | Minya University (2020-2025), CS50 Harvard (2024) |
 | `skills.ts` | ✅ Verified | 6 technical groups, 5 soft skill groups, 2 languages |
-| `experience.ts` | ✅ Verified | Technical Co-Founder Meem Langs (Nov 2025-Present) |
 | `projects.ts` | ✅ Verified | 3 projects, all with GitHub links, 1 with type "Freelance Client Project" |
 | `contact.ts` | ✅ Verified | Email, phone, location, CV, GitHub, X, LinkedIn — all real URLs |
 | `system.ts` | ✅ Verified | Product name, version 1.0, tagline, tech stack |

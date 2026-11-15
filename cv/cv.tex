@@ -1,8 +1,6 @@
-
 %-------------------------
-% Resume in LaTeX
+% Resume in LaTeX - Updated Version
 % Author: Ahmed Samir
-% Build: /tmp/opencode/tex/tectonic -o public cv/cv.tex
 %-------------------------
 
 \documentclass[letterpaper,11pt]{article}
@@ -14,16 +12,16 @@
 \usepackage[usenames,dvipsnames]{color}
 \usepackage{verbatim}
 \usepackage{enumitem}
+\usepackage{iftex}
 \usepackage[hidelinks]{hyperref}
 \usepackage{fancyhdr}
 \usepackage[english]{babel}
 \usepackage{tabularx}
 \usepackage{fontawesome5}
 \usepackage{multicol}
-
-% NOTE:
-% glyphtounicode and \pdfgentounicode are pdfTeX-specific.
-% They are intentionally omitted for compatibility with XeTeX.
+\ifPDFTeX
+  \input{glyphtounicode}
+\fi
 
 \setlength{\multicolsep}{-3.0pt}
 \setlength{\columnsep}{-1pt}
@@ -50,6 +48,11 @@
 \titleformat{\section}{
   \vspace{-4pt}\scshape\raggedright\large\bfseries
 }{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure PDF is ATS-parsable
+\ifPDFTeX
+  \pdfgentounicode=1
+\fi
 
 %-------------------------
 % Custom commands
@@ -87,7 +90,7 @@
 }
 
 %-------------------------------------------
-%%%%%% RESUME STARTS HERE %%%%%%%%%%%%%%%%%%
+%%%%%% RESUME STARTS HERE %%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
@@ -95,27 +98,22 @@
 
 \begin{center}
     {\Huge \scshape Ahmed Samir} \\ \vspace{1pt}
-    Full-Stack Developer | Technical Co-Founder at Meem Langs \\ \vspace{1pt}
+    Full-Stack Developer \\ \vspace{1pt}
     Qena, Egypt \\ \vspace{1pt}
-
     \small
-    \raisebox{-0.1\height}\faPhone\ +201146615338
-    \quad
+    \raisebox{-0.1\height}\faPhone\ +201146615338 ~
     \href{mailto:ahmedmijdo2@gmail.com}{
-      \raisebox{-0.2\height}\faEnvelope\ 
+      \raisebox{-0.2\height}\faEnvelope\
       \underline{ahmedmijdo2@gmail.com}
-    }
-    \quad
+    } ~
     \href{https://www.linkedin.com/in/ahmed-mijdo-samir/}{
-      \raisebox{-0.2\height}\faLinkedin\ 
-      \underline{LinkedIn}
-    }
-    \quad
+      \raisebox{-0.2\height}\faLinkedin\
+      \underline{Ahmed Samir}
+    } ~
     \href{https://github.com/Mij-Do}{
-      \raisebox{-0.2\height}\faGithub\ 
-      \underline{GitHub}
+      \raisebox{-0.2\height}\faGithub\
+      \underline{Mijdo}
     }
-
     \vspace{-8pt}
 \end{center}
 
@@ -130,15 +128,13 @@ technologies. Experienced in developing responsive user interfaces,
 implementing authentication, designing data models, and integrating
 REST APIs. Completed training in NestJS to strengthen backend
 development skills and expand expertise in building structured,
-maintainable server-side applications. Technical Co-Founder at
-Meem Langs, an AI-powered language learning platform, combining
-software development with product planning, technical coordination,
-and community leadership.
+maintainable server-side applications. Focused on building practical,
+scalable web solutions through personal projects and continuous
+hands-on learning.
 
 %-----------PROJECTS-----------
 
 \section{Projects}
-
 \resumeSubHeadingListStart
 
   % Full-Stack Todo Application
@@ -148,7 +144,7 @@ and community leadership.
     {Next.js, TypeScript, Tailwind CSS, Prisma, MongoDB, Clerk}
     {\href{https://github.com/Mij-Do/Full-Stack-To-Do-app-V6}
     {\underline{GitHub}} $\vert$
-    \href{https://to-do-app-v6-eta.vercel.app/}
+    \href{https://to-do-app-v6-eta.vercel.app}
     {\underline{Live Demo}}}
 
     \resumeItemListStart
@@ -171,7 +167,7 @@ and community leadership.
     \resumeItemListStart
       \resumeItem{Developed a full-stack real estate platform enabling property owners to list properties for sale or rent and connect directly with potential buyers or tenants.}
       \resumeItem{Implemented an admin moderation workflow in which submitted listings require approval before publication.}
-      \resumeItem{Built property search and filtering by type, price range, and location, alongside administrative tools for managing listings and archiving sold properties.}
+      \resumeItem{Built administrative tools for managing property listings and archiving sold properties.}
       \resumeItem{Deployed the application on Vercel with MongoDB-backed data storage.}
     \resumeItemListEnd
 
@@ -188,43 +184,18 @@ and community leadership.
     \resumeItemListStart
       \resumeItem{Built an interactive, browser-based desktop environment that presents a personal developer portfolio through a retro operating-system interface.}
       \resumeItem{Implemented a window management system supporting dragging, minimizing, maximizing, restoring, closing, and window focus management.}
-      \resumeItem{Developed an interactive terminal with 13 commands for exploring profile information, projects, skills, experience, and contact details.}
+      \resumeItem{Developed an interactive terminal with 12 commands for exploring profile information, projects, skills, and contact details.}
       \resumeItem{Structured the application with React and TypeScript, using a centralized state-management reducer and reusable UI components.}
       \resumeItem{Added responsive layouts, keyboard navigation, accessible controls, and reduced-motion support.}
       \resumeItem{Implemented automated unit and browser tests using Vitest and Playwright to validate application behavior and user interactions.}
     \resumeItemListEnd
 
 \resumeSubHeadingListEnd
-
 \vspace{-16pt}
-
-%----------LEADERSHIP & EXPERIENCE----------
-
-\section{Leadership \& Experience}
-
-\resumeSubHeadingListStart
-
-  \resumeSubheading
-    {Technical Co-Founder --- Meem Langs}
-    {Nov 2025 -- Present}
-    {AI-Powered Language Learning Platform}
-    {}
-
-    \resumeItemListStart
-      \resumeItem{Contribute to the technical development and product direction of an AI-powered language learning platform.}
-      \resumeItem{Participate in defining product requirements, application structure, technical workflows, and long-term development priorities.}
-      \resumeItem{Help organize weekly sessions, workflows, and collaborative activities for the Meem English Community.}
-      \resumeItem{Coordinate with team members to maintain community engagement, organize initiatives, and support platform growth.}
-    \resumeItemListEnd
-
-\resumeSubHeadingListEnd
-
-\vspace{-12pt}
 
 %-----------EDUCATION-----------
 
 \section{Education}
-
 \resumeSubHeadingListStart
 
   \resumeSubheading
@@ -242,7 +213,6 @@ and community leadership.
 %-----------TECHNICAL SKILLS-----------
 
 \section{Technical Skills}
-
 \begin{itemize}[leftmargin=0.15in, label={}]
   \small{
     \item \textbf{Languages:}
@@ -270,41 +240,38 @@ and community leadership.
     VS Code, Git, GitHub, Linux (Ubuntu)
   }
 \end{itemize}
-
 \vspace{-16pt}
 
 %-----------SOFT SKILLS-----------
 
 \section{Soft Skills}
-
 \begin{itemize}[leftmargin=0.15in, label={}]
   \small{
-    \item \textbf{Leadership \& Collaboration:}
+    \item{\textbf{Leadership \& Collaboration:}
     Coordinates tasks, supports collaborative workflows, and works
-    toward shared team goals.
+    toward shared team goals.}
 
-    \item \textbf{Problem Solving \& Adaptability:}
+    \item{\textbf{Problem Solving \& Adaptability:}
     Breaks down technical challenges into practical solutions and
-    adapts to new tools and technologies.
+    adapts to new tools and technologies.}
 
-    \item \textbf{Time Management \& Consistency:}
+    \item{\textbf{Time Management \& Consistency:}
     Prioritizes tasks and maintains consistent progress across
-    learning and development projects.
+    learning and development projects.}
 
-    \item \textbf{Communication:}
+    \item{\textbf{Communication:}
     Communicates technical concepts and project requirements
-    clearly in technical and non-technical contexts.
+    clearly in technical and non-technical contexts.}
 
-    \item \textbf{Self-Learning:}
+    \item{\textbf{Self-Learning:}
     Continuously develops technical skills through structured
-    learning and hands-on implementation.
+    learning and hands-on implementation.}
   }
 \end{itemize}
 
 %-----------LANGUAGES-----------
 
 \section{Languages}
-
 \begin{itemize}[leftmargin=0.15in, label={}]
   \item \textbf{Arabic:} Native
   \item \textbf{English:} B2 (Upper-Intermediate)

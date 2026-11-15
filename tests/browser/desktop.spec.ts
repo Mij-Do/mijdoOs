@@ -13,7 +13,6 @@ const REGISTRY_ORDER = [
   "Profile.exe",
   "Education.exe",
   "Skills.exe",
-  "Experience.exe",
   "Projects.exe",
   "Contact.exe",
   "Terminal.exe",

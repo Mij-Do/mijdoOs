@@ -8,7 +8,6 @@ export type DesktopAppId =
   | "profile"
   | "education"
   | "skills"
-  | "experience"
   | "projects"
   | "contact"
   | "terminal";

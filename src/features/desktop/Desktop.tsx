@@ -18,7 +18,7 @@ type DesktopProps = {
 /*
   Titles carry the .exe suffix that gives the desktop its identity, so the
   suffix is split off and kept on its own line. A classic icon label wraps
-  rather than growing, and "Experience" over ".exe" is a readable break
+  rather than growing, and "Projects" over ".exe" is a readable break
   instead of a mid-word one.
 */
 function splitLabel(title: string) {

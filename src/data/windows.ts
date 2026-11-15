@@ -39,10 +39,9 @@ export const desktopApplications: DesktopApplicationDefinition[] = [
   { id: "profile", title: "Profile.exe", icon: "PRF", position: { x: 130, y: 104 } },
   { id: "education", title: "Education.exe", icon: "EDU", position: { x: 164, y: 130 } },
   { id: "skills", title: "Skills.exe", icon: "SKL", position: { x: 198, y: 156 } },
-  { id: "experience", title: "Experience.exe", icon: "EXP", position: { x: 232, y: 182 } },
-  { id: "projects", title: "Projects.exe", icon: "PRJ", position: { x: 266, y: 208 } },
-  { id: "contact", title: "Contact.exe", icon: "CNT", position: { x: 300, y: 234 } },
-  { id: "terminal", title: "Terminal.exe", icon: "TRM", position: { x: 334, y: 260 } },
+  { id: "projects", title: "Projects.exe", icon: "PRJ", position: { x: 232, y: 182 } },
+  { id: "contact", title: "Contact.exe", icon: "CNT", position: { x: 266, y: 208 } },
+  { id: "terminal", title: "Terminal.exe", icon: "TRM", position: { x: 300, y: 234 } },
 ];
 
 export const systemApplications: SystemApplicationDefinition[] = [
